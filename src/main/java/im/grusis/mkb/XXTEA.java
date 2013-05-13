@@ -13,26 +13,18 @@ public class XXTEA {
   private static int delta = 0x9E3779B9;
 
   private static String fromCharCode(int... codePoints) {
-    int nonZeroLength = codePoints.length;
-    while(nonZeroLength > 0) {
-      if(codePoints[nonZeroLength - 1] == 0) {
-        nonZeroLength--;
-      } else {
-        break;
-      }
-    }
-    return new String(codePoints, 0, nonZeroLength);
+    return new String(codePoints, 0, codePoints.length);
   }
 
   public static String intArrayToString(int[] data, boolean includeLength) {
     int length = data.length;
     int n = (length - 1) << 2;
     if(includeLength) {
-      int m = data[length - 1];
-      if(m < n - 3 || m > n) {
+      int charNumber = data[length - 1];
+      if(charNumber < n - 3 || charNumber > n) {
         return null;
       }
-      n = m;
+      n = charNumber;
     }
     String[] resultArray = new String[length];
     for(int i = 0; i < length; i++) {
@@ -106,10 +98,11 @@ public class XXTEA {
       int[] kTemp = new int[4];
       Arrays.fill(kTemp, 0);
       System.arraycopy(k, 0, kTemp, 0, k.length);
+      k = kTemp;
     }
     int n = v.length - 1;
     int z, y = v[0], mx;
-    int e, p, q = (int)((double)6 + 52 / (n + 1)), sum = q * delta;
+    int e, p, q = (int)Math.floor(6d + 52d / (n + 1)), sum = q * delta;
     while(sum != 0) {
       e = sum >>> 2 & 3;
       for(p = n; p > 0; p--) {
