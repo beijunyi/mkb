@@ -6,8 +6,8 @@ package im.grusis.mkb;
  * Time: 下午10:49
  */
 public class MkbUtils {
-  public static boolean isInteger(String s) {
-    return isInteger(s,10);
+  public static boolean isInteger(Object o) {
+    return o instanceof Integer || isInteger(o.toString(), 10);
   }
 
   public static boolean isInteger(String s, int radix) {
