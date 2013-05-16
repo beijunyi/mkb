@@ -8,19 +8,19 @@ import java.util.*;
  * Time: 15:59
  */
 public class Unserializer {
-  public Object unserializeNull() {
+  public static Object unserializeNull() {
     return null;
   }
 
-  public boolean unserializeBoolean(String value) {
+  public static boolean unserializeBoolean(String value) {
     return value.charAt(0) != '0';
   }
 
-  public int unserializeInteger(String value) {
+  public static int unserializeInteger(String value) {
     return Integer.valueOf(value);
   }
 
-  public double unserializeDouble(String value) {
+  public static double unserializeDouble(String value) {
     if(value.equalsIgnoreCase("NAN")) {
       return Double.NaN;
     }
@@ -33,13 +33,13 @@ public class Unserializer {
     return Double.valueOf(value);
   }
 
-  public String unserializeString(String value) {
+  public static String unserializeString(String value) {
     int lengthBreak = value.indexOf(":", 1);
     int length = Integer.valueOf(value.substring(1, lengthBreak));
-    return value.substring(lengthBreak + 1, lengthBreak + 1 + length);
+    return value.substring(lengthBreak + 2, lengthBreak + 2 + length);
   }
 
-  private int findEnd(String value, int startIndex) {
+  private static int findEnd(String value, int startIndex) {
     int length = value.length();
     int openBrackets = 0;
     for(int i = startIndex; i < length; i++) {
@@ -57,7 +57,7 @@ public class Unserializer {
     return -1;
   }
 
-  public Map<String, Object> unserializeMap(String value) {
+  public static Map<String, Object> unserializeMap(String value) {
     Map<String, Object> result = new LinkedHashMap<String, Object>();
     int sizeBreak = value.indexOf(":", 1);
     int size = Integer.valueOf(value.substring(1, sizeBreak));
@@ -65,17 +65,25 @@ public class Unserializer {
     String key;
     Object object;
     for(int i = 0; i < size; i++) {
-      end = value.indexOf(";", start);
-      key = unserializeString(value.substring(start, end));
-      start = end;
+      switch(value.charAt(start++)) {
+        case 'i':
+          end = value.indexOf(";", start);
+          key = Integer.toString(unserializeInteger(value.substring(start, end)));
+          break;
+        default:
+          end = value.indexOf(";", start);
+          key = unserializeString(value.substring(start, end));
+      }
+      start = end + 1;
       end = findEnd(value, start);
       object = unserialize(value.substring(start, end));
+      start = end;
       result.put(key, object);
     }
     return result;
   }
 
-  public Date unserializeDate(String value) {
+  public static Date unserializeDate(String value) {
     Map<String, Object> map = unserializeMap(value);
     Calendar calendar = Calendar.getInstance();
     calendar.set(Calendar.YEAR, (Integer) map.get("year"));
@@ -88,7 +96,7 @@ public class Unserializer {
     return calendar.getTime();
   }
 
-  public Object unserialize(String value) {
+  public static Object unserialize(String value) {
     char head = value.charAt(0);
     int start = 1;
     int end = findEnd(value, start);
