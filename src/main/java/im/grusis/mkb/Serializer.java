@@ -1,6 +1,5 @@
 package im.grusis.mkb;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -10,27 +9,19 @@ import java.util.*;
  */
 public class Serializer {
 
-  public int p = 0;
-  public Map<Integer, Object> hashMap = new HashMap<Integer, Object>();
-  public int hv = 1;
-
-  public boolean inHashMap(Object object) {
-    return hashMap.values().contains(object);
-  }
-
-  public String serializeNull() {
+  public static String serializeNull() {
     return "N;";
   }
 
-  public String serializeBoolean(boolean value) {
+  public static String serializeBoolean(boolean value) {
     return value ? "b:1;" : "b:0;";
   }
 
-  public String serializeInteger(int value) {
+  public static String serializeInteger(int value) {
     return "i:" + value + ";";
   }
 
-  public String serializeDouble(double value) {
+  public static String serializeDouble(double value) {
     String append;
     if(Double.isNaN(value)) {
       append = "NAN";
@@ -44,17 +35,17 @@ public class Serializer {
     return "d:" + append + ";";
   }
 
-  public String serializeString(String value) {
+  public static String serializeString(String value) {
     return "s:" + value.length() + ":" + value + ";";
   }
 
-  public String serializeDate(Date value) {
+  public static String serializeDate(Date value) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(value);
     return "O:11:\"PHPRPC_Date\":7:{" + "s:4:\"year\";" + serializeInteger(calendar.get(Calendar.YEAR)) + "s:5:\"month\";" + serializeInteger(calendar.get(Calendar.MONTH) + 1) + "s:3:\"day\";" + serializeInteger(calendar.get(Calendar.DAY_OF_MONTH)) + "s:4:\"hour\";" + serializeInteger(calendar.get(Calendar.HOUR_OF_DAY)) + "s:6:\"minute\";" + serializeInteger(calendar.get(Calendar.MINUTE)) + "s:6:\"second\";" + serializeInteger(calendar.get(Calendar.SECOND)) + "s:11:\"millisecond\";" + serializeInteger(calendar.get(Calendar.MILLISECOND)) + "}";
   }
 
-  public String serializeMap(Map map) {
+  public static String serializeMap(Map map) {
     StringBuilder stringBuilder = new StringBuilder();
     Set entries = map.entrySet();
     stringBuilder.append("a:").append(map.size()).append(":{");
@@ -68,7 +59,7 @@ public class Serializer {
     return stringBuilder.append("}").toString();
   }
 
-  public String serializeList(List list) {
+  public static String serializeList(List list) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append("a:").append(list.size()).append(":{");
     int count = 0;
@@ -78,11 +69,11 @@ public class Serializer {
     return stringBuilder.append("}").toString();
   }
 
-  public String serializeArray(Object[] array) {
+  public static String serializeArray(Object[] array) {
     return serializeList(Arrays.asList(array));
   }
 
-  public String serialize(Object o) {
+  public static String serialize(Object o) {
     if(o == null) {
       return serializeNull();
     }
