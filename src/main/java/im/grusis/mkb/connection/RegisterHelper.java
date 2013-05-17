@@ -45,7 +45,14 @@ public class RegisterHelper {
     return null;
   }
 
-//  public boolean confirmEncryptKey(EncryptKeyResponse encryptKeyResponse) {
-//
-//  }
+  public boolean confirmEncryptKey(EncryptKeyResponse encryptKeyResponse, HttpClient client) {
+    if(client == null) {
+      client = new DefaultHttpClient();
+    }
+    HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do" +
+                                "?muhe_id=" + getToken(false) +
+                                "&muhe_encode=false" +
+                                "&muhe_encrypt=");
+    return false;
+  }
 }

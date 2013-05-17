@@ -27,4 +27,9 @@ public class Client {
     }
     return sb.toString();
   }
+
+  public static String pgyEncode(String data) {
+    data = idEncrypt(Encoder.atob(data));
+    return data;
+  }
 }
