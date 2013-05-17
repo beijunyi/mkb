@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 public class XXTEA {
   private static int delta = 0x9E3779B9;
 
-  private static String fromCharCode(int... codePoints) {
+  public static String fromCharCode(int... codePoints) {
     return new String(codePoints, 0, codePoints.length);
   }
 
