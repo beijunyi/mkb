@@ -10,6 +10,6 @@ import org.testng.annotations.Test;
 public class registerHelperTest {
   @Test
   public void firstConnection() {
-    new RegisterHelper().firstConnection();
+    new RegisterHelper().requestEncryptKey();
   }
 }
