@@ -11,17 +11,17 @@ import java.util.regex.Pattern;
  * Time: 14:48
  */
 public class EncryptKeyResponse {
-  public static final Pattern KeyPattern = Pattern.compile("muhe_encrypt=\"([^\"]*)\";");
-  public static final Pattern UrlPattern = Pattern.compile("muhe_url=\"([^\"]*)\";");
+  public static final String KeyPattern = "muhe_encrypt=\"([^\"]*)\";";
+  public static final String UrlPattern = "muhe_url=\"([^\"]*)\";";
 
   private String key;
   private String url;
   private Map<String, String> extraProperties = new HashMap<String, String>();
 
   public EncryptKeyResponse(String responseString) {
-    Matcher keyMatcher = KeyPattern.matcher(responseString);
+    Matcher keyMatcher = Pattern.compile(KeyPattern).matcher(responseString);
     if(keyMatcher.find()) key = keyMatcher.group(1);
-    Matcher urlMatcher = UrlPattern.matcher(responseString);
+    Matcher urlMatcher = Pattern.compile(UrlPattern).matcher(responseString);
     if(urlMatcher.find()) url = urlMatcher.group(1);
     if(url.contains(";")) {
       int urlBreakIndex = url.indexOf(";");
