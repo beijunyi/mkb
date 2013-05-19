@@ -1,5 +1,11 @@
 package im.grusis.mkb;
 
+import java.math.BigInteger;
+import java.util.Map;
+import java.util.Random;
+
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * User: Mothership
  * Date: 13-5-16
@@ -7,7 +13,9 @@ package im.grusis.mkb;
  */
 public class Client {
 
-  public static String encryptArgs(String data, String key, int t, int n, int r) {
+  public String key;
+
+  public String encryptArgs(String data, int t, int n, int r) {
     if(t >= n) {
       data = XXTEA.encrypt(data, key);
     }
@@ -17,7 +25,7 @@ public class Client {
     return data;
   }
 
-  public static String idEncrypt(String data) {
+  public String idEncrypt(String data) {
     String id = "3f52f005e3f0b506b8e63a504b784f3e";
     int idLength = id.length();
     StringBuilder sb = new StringBuilder();
@@ -28,9 +36,35 @@ public class Client {
     return sb.toString();
   }
 
-  public static String pgyEncode(String data) {
-    data = idEncrypt(Encoder.atob(data));
+  public String generateKey(String data) {
+    return generateKey(data, new BigInteger(127, new Random()));
+  }
 
-    return data;
+  public String generateKey(String data, BigInteger s) {
+    data = idEncrypt(Encoder.atob(data));
+    Map dataMap = Unserializer.unserializeMap(data);
+    BigInteger n = new BigInteger((String)dataMap.get("p"));
+    BigInteger r = new BigInteger((String)dataMap.get("g"));
+    BigInteger i = new BigInteger((String)dataMap.get("y"));
+    BigInteger o = i.modPow(s, n);
+      String oString = BigIntegerHelper.BigIntegerToString(o);
+      int f = 16 - oString.length();
+      String[] l = new String[f + 1];
+      for(int h = 0; h < f; h++) {
+        l[h] = "\0";
+      }
+      l[f] = oString;
+      key = StringUtils.join(l);
+    String p = r.modPow(s, n).toString();
+    p = idEncrypt(p);
+    return Encoder.btoa(p);
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public String getKey() {
+    return key;
   }
 }

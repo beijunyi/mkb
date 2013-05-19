@@ -16,6 +16,7 @@ public class responseTest {
     EncryptKeyResponse model = new EncryptKeyResponse(response);
     Assert.assertEquals(model.getKey(), "UlwGCB1DCgRfERYSWUYKBVsCRwQDUwUBB1MFDgdWC10AUgAHVwYFDVUEVwZQAgEAUghVAQtWBwECURUDR1wCXxEBFwkVCgMNXxFfAVMEAA9TD1IOC1QHCAxaBA8NUApcBVUDAlAGAQdUC1QAVgUCD0ADFgwCWxdJFllEAgdeCUcEVAMBVwQCAlMHXwZRBgMBWgtUAAVTAgIAVAQIB1EEUAReBAdWABIOGA==");
     Assert.assertEquals(model.getUrl(), "http://pp.fantasytoyou.com/pp/userService.do");
+    Assert.assertEquals(model.getKeylen(), 128);
     Assert.assertEquals(model.get("jsessionid"), "2bef416a404b0242fc2cdabaefc1");
     Assert.assertEquals(model.get("extra"), "randomProperty");
   }
