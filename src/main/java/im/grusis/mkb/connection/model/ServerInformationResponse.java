@@ -1,5 +1,6 @@
 package im.grusis.mkb.connection.model;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +34,10 @@ public class ServerInformationResponse {
     if(outputMatcher.find()) output = outputMatcher.group(1);
 
     try {
-      result = new String(XXTEA.decrypt(result, key).getBytes("UTF-8"), "UTF-16");
+      System.out.println("longArrayToString(" + Arrays.toString(XXTEA.stringToIntArray(result, true)) + ", true)");
+      System.out.println("longArrayToString(" + Arrays.toString(XXTEA.stringToIntArray(key, true)) + ", true)");
+      String decryptedResult = XXTEA.decrypt(result, key);
+      result = new String(decryptedResult.getBytes("UTF-8"), "UTF-16");
     } catch(Exception e) {
       e.printStackTrace();
     }

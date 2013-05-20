@@ -13,7 +13,17 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class Client {
 
-  public String key;
+
+  private BigInteger overrideRandom;
+  private String key;
+
+  public Client() {
+  }
+
+  public Client(BigInteger overrideRandom, String key) {
+    this.overrideRandom = overrideRandom;
+    this.key = key;
+  }
 
   public String encryptArgs(String data, int t, int n, int r) {
     if(t >= n) {
@@ -37,6 +47,7 @@ public class Client {
   }
 
   public String generateKey(String data) {
+    if(overrideRandom != null) return generateKey(data, overrideRandom);
     return generateKey(data, new BigInteger(127, new Random()));
   }
 
@@ -60,11 +71,8 @@ public class Client {
     return Encoder.btoa(p);
   }
 
-  public void setKey(String key) {
-    this.key = key;
-  }
-
   public String getKey() {
     return key;
   }
+
 }

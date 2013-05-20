@@ -15,8 +15,7 @@ public class clientTest {
   @Test
   public void encryptArgsTest() {
     String value = "a:1:{i:0;s:57:\"{\"gameName\":\"CARD-ANDROID-CHS\",\"locale\":\"\",\"udid\":\"null\"}\";}";
-    Client client = new Client();
-    client.key = XXTEA.intArrayToString(new int[] {-548756353, 8497807, 604538387, 48853545, 16}, true);
+    Client client = new Client(null, XXTEA.intArrayToString(new int[] {-548756353, 8497807, 604538387, 48853545, 16}, true));
     int t = 2;
     int n = 1;
     int r = 0;
@@ -40,5 +39,9 @@ public class clientTest {
     String key = client.getKey();
     Assert.assertEquals(result, XXTEA.intArrayToString(new int[] {1314483265, 1245196610, 1363310402, 1180003393, 1115115862, 1245801537, 1145665366, 1182224726, 1198731585, 1480737091, 1160801345, 1097037653, 1246839126, 52}, true));
     Assert.assertEquals(key, XXTEA.intArrayToString(new int[] {1962971704, -369762588, -1142715736, -1043371245, 16}, true));
+
+    str = "UlwGCB1DCgRfERYSWUYKBVsCRwQKUwMIBlAHDgFRAVcAVgABUgQDAFYHUgVQBQAFVgFVAAVSBgUNWxUDR1wCXxEBFwkVCgMMXxFXBFANBwJTCFAHBVQNBwxTAQsEUAZXC1IHA18GAQdWAFUAUgwFA1MaXkUJUA8STUAMSw5VC18RVQMKUgkBBFYHXgZQDAgPVgFVAQdYAwYNUA4KB1cLVwNQBQFQAwIXXk4=";
+    result = client.generateKey(str, random);
+    Assert.assertEquals(result, "AVECAlEIAAFXClMFVwUGBlsAVgQHVAMGBlEOCQdRAlQBVgIKUQUJ");
   }
 }

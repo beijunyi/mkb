@@ -40,6 +40,13 @@ public class RegisterHelper {
     token = "js" + (long)Math.floor(Math.random() * System.currentTimeMillis());
   }
 
+  public RegisterHelper(DefaultHttpClient httpClient, Client client, String token, EncryptKeyResponse encryptKeyResponse) {
+    this.httpClient = httpClient;
+    this.client = client;
+    this.token = token;
+    this.encryptKeyResponse = encryptKeyResponse;
+  }
+
   public void requestEncryptKey() {
     HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do" +
                                 "?muhe_id=" + token +
