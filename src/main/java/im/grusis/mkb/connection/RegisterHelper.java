@@ -6,15 +6,16 @@ import java.util.List;
 import im.grusis.mkb.Client;
 import im.grusis.mkb.connection.model.EncryptKeyResponse;
 import im.grusis.mkb.connection.model.ServerInformationResponse;
-import org.apache.http.*;
+import im.grusis.mkb.connection.model.response.ServerInformation;
+import org.apache.http.Consts;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,15 @@ public class RegisterHelper {
   private Client client;
   private String token;
   private EncryptKeyResponse encryptKeyResponse;
+  private ServerInformationResponse serverInformationResponse;
+
+  public static ServerInformation getServerInformation() {
+    RegisterHelper helper = new RegisterHelper();
+    helper.requestEncryptKey();
+    helper.proposeCounterKey();
+    helper.requestServerInformation();
+    return helper.getServerInformationResponse().getModel();
+  }
 
   public RegisterHelper() {
     httpClient = new DefaultHttpClient();
@@ -82,7 +92,7 @@ public class RegisterHelper {
     return false;
   }
 
-  public void getServerInformation() {
+  public void requestServerInformation() {
     HttpPost post = new HttpPost("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token);
 
     String args = client.encryptArgs("a:1:{i:0;s:57:\"{\"gameName\":\"CARD-ANDROID-CHS\",\"locale\":\"\",\"udid\":\"null\"}\";}", EncryptMode, 1, 0);
@@ -98,25 +108,21 @@ public class RegisterHelper {
       post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
 
       HttpResponse response = httpClient.execute(post);
-      HttpEntity entity = response.getEntity();
 
       BasicResponseHandler handler = new BasicResponseHandler();
       String responseString = handler.handleResponse(response);
-      Log.info("Received response for counter key proposal {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
-      new ServerInformationResponse(responseString, client.getKey());
-      EntityUtils.consume(entity);
-
-      System.out.println("Post logon cookies:");
-      List<Cookie> cookies = httpClient.getCookieStore().getCookies();
-      if (cookies.isEmpty()) {
-        System.out.println("None");
-      } else {
-        for(Cookie cooky : cookies) {
-          System.out.println("- " + cooky.toString());
-        }
-      }
+      Log.info("Received response for server information request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
+      serverInformationResponse = new ServerInformationResponse(responseString, client.getKey());
     } catch(Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public EncryptKeyResponse getEncryptKeyResponse() {
+    return encryptKeyResponse;
+  }
+
+  public ServerInformationResponse getServerInformationResponse() {
+    return serverInformationResponse;
   }
 }

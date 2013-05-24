@@ -12,10 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 public class XXTEA {
   private static int delta = 0x9E3779B9;
 
-  public static String fromCharCode(int... codePoints) {
-    return new String(codePoints, 0, codePoints.length);
-  }
-
   public static String intArrayToString(int[] data, boolean includeLength) {
     int length = data.length;
     int n = (length - 1) << 2;
@@ -28,10 +24,10 @@ public class XXTEA {
     }
     String[] resultArray = new String[length];
     for(int i = 0; i < length; i++) {
-      resultArray[i] = fromCharCode(data[i] & 0xff,
-                                     data[i] >>> 8 & 0xff,
-                                     data[i] >>> 16 & 0xff,
-                                     data[i] >>> 24 & 0xff);
+      resultArray[i] = StringHelper.fromCharCode(data[i] & 0xff,
+                                                  data[i] >>> 8 & 0xff,
+                                                  data[i] >>> 16 & 0xff,
+                                                  data[i] >>> 24 & 0xff);
     }
     String result = StringUtils.join(resultArray);
     if(includeLength) {

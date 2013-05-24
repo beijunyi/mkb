@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,22 +17,27 @@ public class Unserializer {
 
   private static final Logger Log = LoggerFactory.getLogger(Unserializer.class);
 
-  public static final String StringPattern = "s:(\\d+):\"([^\"]*)\";";
+  public static final String StringPattern = "s:(\\d+):\"([\\w\\W]*)\";";
   public static final String ArrayPattern = "a:(\\d+):\\{([^}]*)}";
   public static final String ValuePairPattern = "%([^%]*)%%([^%]*)%";
 
-  public static List<Object> unserialize(String string) {
+  public static List<Object> Unserialize(String string) {
     Map<Object, Object> refs = new HashMap<Object, Object>();
-    Matcher stringMatcher = Pattern.compile(StringPattern).matcher(string);
+//    string = string.replace("{\"", "{'").replace("\":", "':").replace(":\"", ":'").replace("\",", "',").replace(",\"", ",'").replace("\"}", "'}");
+    Pattern sp = Pattern.compile(StringPattern);
     int length;
+    Matcher sm;
     String block, value, hash;
-    while(stringMatcher.find()) {
-      block = stringMatcher.group(0);
-      length = Integer.parseInt(stringMatcher.group(1));
-      value = stringMatcher.group(2);
+    while((sm = sp.matcher(string)).find()) {
+      block = sm.group(0);
+      length = Integer.parseInt(sm.group(1));
+      value = sm.group(2);
       Log.debug("Unserialize string {}", block);
-      if(length != value.length())
-        Log.warn("Detected unmatched string length when unserializing {}. Expected length: {} Actual length: {}", block, length, value.length());
+      if(length < value.length()) {
+        int diff = value.length() - length;
+        block = block.substring(0, block.length() - diff);
+        value = value.substring(0, length);
+      }
       hash = Integer.toHexString(block.hashCode());
       refs.put(hash, value);
       string = string.replace(block, '%' + hash + '%');
@@ -40,8 +46,7 @@ public class Unserializer {
     Pattern vpp = Pattern.compile(ValuePairPattern);
     Matcher apm, vppm;
     Map<Object, Object> arrayMap;
-    String pairKey;
-    String pairValue;
+    String pairKey, pairValue;
     while((apm = ap.matcher(string)).find()) {
       block = apm.group(0);
       length = Integer.parseInt(apm.group(1));
@@ -66,8 +71,21 @@ public class Unserializer {
     return new ArrayList<Object>(refs.values());
   }
 
-  public static Map unserializeMap(String string) {
-    List<Object> list = unserialize(string);
+  public static String UnserializeString(String string) {
+    List<Object> list = Unserialize(string);
+    if(list.size() != 1) {
+      Log.warn("Unserializing {} results unexpected number of element(s). Expected: 1 Actual: {}", string, list.size());
+    }
+    for(Object o : list) {
+      if(o instanceof String) {
+        return (String)o;
+      }
+    }
+    return null;
+  }
+
+  public static Map UnserializeMap(String string) {
+    List<Object> list = Unserialize(string);
     if(list.size() != 1) {
       Log.warn("Unserializing {} results unexpected number of element(s). Expected: 1 Actual: {}", string, list.size());
     }
@@ -77,5 +95,9 @@ public class Unserializer {
       }
     }
     return null;
+  }
+
+  public static LinkedHashMap JsonToMap(String string) {
+    return new Gson().fromJson(string, LinkedHashMap.class);
   }
 }

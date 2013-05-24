@@ -41,7 +41,7 @@ public class Client {
     StringBuilder sb = new StringBuilder();
     for(int i = 0; i < data.length(); i++) {
       int o = i % idLength;
-      sb.append(XXTEA.fromCharCode(data.charAt(i) ^ id.charAt(o)));
+      sb.append(StringHelper.fromCharCode(data.charAt(i) ^ id.charAt(o)));
     }
     return sb.toString();
   }
@@ -53,7 +53,7 @@ public class Client {
 
   public String generateKey(String data, BigInteger s) {
     data = idEncrypt(Encoder.atob(data));
-    Map dataMap = Unserializer.unserializeMap(data);
+    Map dataMap = Unserializer.UnserializeMap(data);
     BigInteger n = new BigInteger((String)dataMap.get("p"));
     BigInteger r = new BigInteger((String)dataMap.get("g"));
     BigInteger i = new BigInteger((String)dataMap.get("y"));

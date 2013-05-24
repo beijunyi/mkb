@@ -1,5 +1,7 @@
 package im.grusis.mkb.connection;
 
+import im.grusis.mkb.connection.model.response.ServerInformation;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -10,6 +12,8 @@ import org.testng.annotations.Test;
 public class registerhelperTest {
 
   @Test
-  public void proposeCounterKeyTest() {
+  public void overallTest() {
+    ServerInformation si = RegisterHelper.getServerInformation();
+    Assert.assertFalse(si.getReturnObjs().getGAME_SERVER().isEmpty());
   }
 }

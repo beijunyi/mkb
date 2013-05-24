@@ -1,10 +1,13 @@
 package im.grusis.mkb.connection.model;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+import im.grusis.mkb.StringHelper;
+import im.grusis.mkb.Unserializer;
 import im.grusis.mkb.XXTEA;
+import im.grusis.mkb.connection.model.response.ServerInformation;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
@@ -24,6 +27,9 @@ public class ServerInformationResponse {
   private String errstr;
   private String output;
 
+  public ServerInformationResponse() {
+  }
+
   public ServerInformationResponse(String responseString, String key) {
     Matcher resultMatcher = Pattern.compile(ResultPattern).matcher(responseString);
     if(resultMatcher.find()) result = resultMatcher.group(1);
@@ -35,15 +41,24 @@ public class ServerInformationResponse {
     if(outputMatcher.find()) output = outputMatcher.group(1);
 
     result = StringEscapeUtils.unescapeJava(result.replace("\\x", "\\u00"));
+    String decryptedResult = XXTEA.decrypt(result, key);
+    result = Unserializer.UnserializeString(StringHelper.toUTF16(decryptedResult));
+  }
 
-    try {
-      System.out.println("longArrayToString(" + Arrays.toString(XXTEA.stringToIntArray(result, true)) + ", true)");
-      System.out.println("longArrayToString(" + Arrays.toString(XXTEA.stringToIntArray(key, true)) + ", true)");
-      String decryptedResult = XXTEA.decrypt(result, key);
-      result = new String(decryptedResult.getBytes("UTF-8"), "UTF-16");
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
+  public void setResult(String result) {
+    this.result = result;
+  }
+
+  public void setErrno(String errno) {
+    this.errno = errno;
+  }
+
+  public void setErrstr(String errstr) {
+    this.errstr = errstr;
+  }
+
+  public void setOutput(String output) {
+    this.output = output;
   }
 
   public String getResult() {
@@ -60,5 +75,10 @@ public class ServerInformationResponse {
 
   public String getOutput() {
     return output;
+  }
+
+  public ServerInformation getModel() {
+    String fixed = StringEscapeUtils.unescapeJava(result.replace("\"[", "[").replace("]\"", "]"));
+    return new Gson().fromJson(fixed, ServerInformation.class);
   }
 }

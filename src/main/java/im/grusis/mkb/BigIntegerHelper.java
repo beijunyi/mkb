@@ -75,7 +75,7 @@ public class BigIntegerHelper {
     int n = num.length;
     String[] s = new String[n];
     for(int i = 0; i < n; i++) {
-      s[n - i - 1] = XXTEA.fromCharCode(num[i] >> 8 & 0xff, num[i] & 0xff);
+      s[n - i - 1] = StringHelper.fromCharCode(num[i] >> 8 & 0xff, num[i] & 0xff);
     }
     return StringUtils.join(s);
   }
