@@ -39,6 +39,18 @@ public class EncryptKeyResponse {
     }
   }
 
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public void setKeylen(int keylen) {
+    this.keylen = keylen;
+  }
+
   public String getKey() {
     return key;
   }

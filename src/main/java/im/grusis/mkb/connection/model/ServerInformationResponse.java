@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import im.grusis.mkb.XXTEA;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * User: Mothership
@@ -32,6 +33,8 @@ public class ServerInformationResponse {
     if(errstrMatcher.find()) errstr = errstrMatcher.group(1);
     Matcher outputMatcher = Pattern.compile(OutputPattern).matcher(responseString);
     if(outputMatcher.find()) output = outputMatcher.group(1);
+
+    result = StringEscapeUtils.unescapeJava(result.replace("\\x", "\\u00"));
 
     try {
       System.out.println("longArrayToString(" + Arrays.toString(XXTEA.stringToIntArray(result, true)) + ", true)");
