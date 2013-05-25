@@ -5,6 +5,7 @@ import java.util.List;
 
 import im.grusis.mkb.Client;
 import im.grusis.mkb.connection.model.EncryptKeyResponse;
+import im.grusis.mkb.connection.model.PassportRequest;
 import im.grusis.mkb.connection.model.ServerInformationResponse;
 import im.grusis.mkb.connection.model.response.ServerInformation;
 import org.apache.http.Consts;
@@ -24,9 +25,9 @@ import org.slf4j.LoggerFactory;
  * Date: 13-5-17
  * Time: 上午12:32
  */
-public class RegisterHelper {
+public class PassportHelper {
 
-  private static final Logger Log = LoggerFactory.getLogger(RegisterHelper.class);
+  private static final Logger Log = LoggerFactory.getLogger(PassportHelper.class);
 
   public static final int EncryptMode = 2;
 
@@ -37,20 +38,20 @@ public class RegisterHelper {
   private ServerInformationResponse serverInformationResponse;
 
   public static ServerInformation getServerInformation() {
-    RegisterHelper helper = new RegisterHelper();
+    PassportHelper helper = new PassportHelper();
     helper.requestEncryptKey();
     helper.proposeCounterKey();
     helper.requestServerInformation();
     return helper.getServerInformationResponse().getModel();
   }
 
-  public RegisterHelper() {
+  public PassportHelper() {
     httpClient = new DefaultHttpClient();
     client = new Client();
     token = "js" + (long)Math.floor(Math.random() * System.currentTimeMillis());
   }
 
-  public RegisterHelper(DefaultHttpClient httpClient, Client client, String token, EncryptKeyResponse encryptKeyResponse) {
+  public PassportHelper(DefaultHttpClient httpClient, Client client, String token, EncryptKeyResponse encryptKeyResponse) {
     this.httpClient = httpClient;
     this.client = client;
     this.token = token;
@@ -101,6 +102,29 @@ public class RegisterHelper {
       List<NameValuePair> nvps = new ArrayList<NameValuePair>();
       nvps.add(new BasicNameValuePair("muhe_func", "getLoginGameServers"));
       nvps.add(new BasicNameValuePair("muhe_args", args));
+      nvps.add(new BasicNameValuePair("muhe_encode", "false"));
+      nvps.add(new BasicNameValuePair("muhe_encrypt", "2"));
+      nvps.add(new BasicNameValuePair("muhe_ref", "false"));
+
+      post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+
+      HttpResponse response = httpClient.execute(post);
+
+      BasicResponseHandler handler = new BasicResponseHandler();
+      String responseString = handler.handleResponse(response);
+      Log.info("Received response for server information request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
+      serverInformationResponse = new ServerInformationResponse(responseString, client.getKey());
+    } catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void sendRequest(PassportRequest passportRequest) {
+    HttpPost post = new HttpPost("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token);
+    try {
+      List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+      nvps.add(new BasicNameValuePair("muhe_func", passportRequest.getFunc()));
+      nvps.add(new BasicNameValuePair("muhe_args", passportRequest.getArgs()));
       nvps.add(new BasicNameValuePair("muhe_encode", "false"));
       nvps.add(new BasicNameValuePair("muhe_encrypt", "2"));
       nvps.add(new BasicNameValuePair("muhe_ref", "false"));

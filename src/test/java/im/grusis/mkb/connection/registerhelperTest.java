@@ -13,7 +13,7 @@ public class registerhelperTest {
 
   @Test
   public void overallTest() {
-    ServerInformation si = RegisterHelper.getServerInformation();
+    ServerInformation si = PassportHelper.getServerInformation();
     Assert.assertFalse(si.getReturnObjs().getGAME_SERVER().isEmpty());
   }
 }
