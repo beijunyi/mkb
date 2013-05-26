@@ -1,11 +1,11 @@
-package im.grusis.mkb.connection.model.basic;
+package im.grusis.mkb.connection.model.response;
 
 /**
  * User: Mothership
  * Date: 13-5-24
  * Time: 下午11:17
  */
-public class ServerResponse<T> {
+public class ReturnTemplate<T> {
   private int returnCode;
   private String returnMsg;
   private T returnObjs;

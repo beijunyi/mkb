@@ -1,11 +1,13 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.model.request;
+
+import im.grusis.mkb.connection.model.response.LoginInformationResponse;
 
 /**
  * User: Mothership
  * Date: 13-5-25
  * Time: 下午3:02
  */
-public class LoginRequest extends PassportRequest {
+public class LoginRequest extends PassportRequest<LoginInformationResponse> {
 
   public LoginRequest(String username, String password) {
     argMap.put("userName", username);

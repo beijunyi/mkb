@@ -1,5 +1,6 @@
 package im.grusis.mkb.connection.model;
 
+import im.grusis.mkb.connection.model.request.LoginRequest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -7,7 +7,7 @@ import java.util.List;
  * Date: 13-5-24
  * Time: 下午11:14
  */
-public class GameServerInformation {
+public class ServerInformation {
   int SERVER_DISTRIBUTE;
   List<GameServer> GAME_SERVER;
   long RECOMMENT_SERVER_ID;

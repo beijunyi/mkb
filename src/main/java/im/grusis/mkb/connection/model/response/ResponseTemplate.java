@@ -1,13 +1,11 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.model.response;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
 import im.grusis.mkb.StringHelper;
 import im.grusis.mkb.Unserializer;
 import im.grusis.mkb.XXTEA;
-import im.grusis.mkb.connection.model.response.ServerInformation;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
@@ -15,7 +13,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
  * Date: 13-5-19
  * Time: 上午12:08
  */
-public class ServerInformationResponse {
+public class ResponseTemplate {
 
   public static final String ResultPattern = "muhe_result=\"([^\"]*)\";";
   public static final String ErrnoPattern = "muhe_errno=\"([^\"]*)\";";
@@ -27,10 +25,10 @@ public class ServerInformationResponse {
   private String errstr;
   private String output;
 
-  public ServerInformationResponse() {
+  public ResponseTemplate() {
   }
 
-  public ServerInformationResponse(String responseString, String key) {
+  public ResponseTemplate(String responseString, String key) {
     Matcher resultMatcher = Pattern.compile(ResultPattern).matcher(responseString);
     if(resultMatcher.find()) result = resultMatcher.group(1);
     Matcher errnoMatcher = Pattern.compile(ErrnoPattern).matcher(responseString);
@@ -43,6 +41,7 @@ public class ServerInformationResponse {
     result = StringEscapeUtils.unescapeJava(result.replace("\\x", "\\u00"));
     String decryptedResult = XXTEA.decrypt(result, key);
     result = Unserializer.UnserializeString(StringHelper.toUTF16(decryptedResult));
+    result = StringEscapeUtils.unescapeJava(result.replace("\"[", "[").replace("]\"", "]"));
   }
 
   public void setResult(String result) {
@@ -75,10 +74,5 @@ public class ServerInformationResponse {
 
   public String getOutput() {
     return output;
-  }
-
-  public ServerInformation getModel() {
-    String fixed = StringEscapeUtils.unescapeJava(result.replace("\"[", "[").replace("]\"", "]"));
-    return new Gson().fromJson(fixed, ServerInformation.class);
   }
 }

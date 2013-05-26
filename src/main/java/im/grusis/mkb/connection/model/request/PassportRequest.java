@@ -1,15 +1,17 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.model.request;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
+import im.grusis.mkb.connection.model.response.ReturnTemplate;
 
 /**
  * User: Mothership
  * Date: 13-5-25
  * Time: 下午2:47
  */
-public abstract class PassportRequest {
+public abstract class PassportRequest<T extends ReturnTemplate> {
 
   protected Map<String, String> argMap = new LinkedHashMap<String, String>();
 
@@ -17,7 +19,7 @@ public abstract class PassportRequest {
 
   public String getArgs() {
     StringBuilder sb = new StringBuilder();
-    Set<Map.Entry<String,String>> es = argMap.entrySet();
+    Set<Map.Entry<String, String>> es = argMap.entrySet();
     for(Map.Entry<String, String> e : es) {
       if(sb.length() != 0) {
         sb.append(',');
