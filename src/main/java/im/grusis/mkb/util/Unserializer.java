@@ -1,4 +1,4 @@
-package im.grusis.mkb;
+package im.grusis.mkb.util;
 
 import java.util.*;
 import java.util.regex.Matcher;

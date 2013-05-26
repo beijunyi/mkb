@@ -4,6 +4,8 @@ import java.math.BigInteger;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import im.grusis.mkb.util.Client;
+import im.grusis.mkb.util.XXTEA;
 
 /**
  * User: Mothership

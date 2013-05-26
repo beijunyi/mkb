@@ -3,12 +3,9 @@ package im.grusis.mkb.connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.grusis.mkb.Client;
-import im.grusis.mkb.connection.model.*;
-import im.grusis.mkb.connection.model.response.ResponseTemplate;
-import im.grusis.mkb.connection.model.response.ReturnTemplate;
+import im.grusis.mkb.util.Client;
+import im.grusis.mkb.connection.model.response.*;
 import im.grusis.mkb.connection.model.request.PassportRequest;
-import im.grusis.mkb.connection.model.response.EncryptKeyResponse;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -36,7 +33,6 @@ public class PassportHelper {
   private Client client;
   private String token;
   private EncryptKeyResponse encryptKeyResponse;
-  private ResponseTemplate responseResponseTemplate;
 
   public static <T extends ReturnTemplate> T request(PassportRequest<T> passportRequest, Class<T> clazz) {
     PassportHelper helper = new PassportHelper();
@@ -93,32 +89,6 @@ public class PassportHelper {
     return false;
   }
 
-//  public void requestServerInformation() {
-//    HttpPost post = new HttpPost("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token);
-//
-//    String args = client.encryptArgs("a:1:{i:0;s:57:\"{\"gameName\":\"CARD-ANDROID-CHS\",\"locale\":\"\",\"udid\":\"null\"}\";}", EncryptMode, 1, 0);
-//
-//    try {
-//      List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-//      nvps.add(new BasicNameValuePair("muhe_func", "getLoginGameServers"));
-//      nvps.add(new BasicNameValuePair("muhe_args", args));
-//      nvps.add(new BasicNameValuePair("muhe_encode", "false"));
-//      nvps.add(new BasicNameValuePair("muhe_encrypt", "2"));
-//      nvps.add(new BasicNameValuePair("muhe_ref", "false"));
-//
-//      post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
-//
-//      HttpResponse response = httpClient.execute(post);
-//
-//      BasicResponseHandler handler = new BasicResponseHandler();
-//      String responseString = handler.handleResponse(response);
-//      Log.info("Received response for server information request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
-//      responseResponseTemplate = new ResponseTemplate(responseString, client.getKey());
-//    } catch(Exception e) {
-//      e.printStackTrace();
-//    }
-//  }
-
   public <T extends ReturnTemplate> T sendRequest(PassportRequest<T> passportRequest, Class<T> clazz) {
     HttpPost post = new HttpPost("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token);
     try {
@@ -126,7 +96,7 @@ public class PassportHelper {
       nvps.add(new BasicNameValuePair("muhe_func", passportRequest.getFunc()));
       nvps.add(new BasicNameValuePair("muhe_args", client.encryptArgs(passportRequest.getArgs(), EncryptMode, 1, 0)));
       nvps.add(new BasicNameValuePair("muhe_encode", "false"));
-      nvps.add(new BasicNameValuePair("muhe_encrypt", "2"));
+      nvps.add(new BasicNameValuePair("muhe_encrypt", Integer.toString(EncryptMode)));
       nvps.add(new BasicNameValuePair("muhe_ref", "false"));
 
       post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
@@ -135,20 +105,12 @@ public class PassportHelper {
 
       BasicResponseHandler handler = new BasicResponseHandler();
       String responseString = handler.handleResponse(response);
-      Log.info("Received response for server information request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
+      Log.info("Received response for {} {}:\n\t{}", token, passportRequest.getClass().getSimpleName(), responseString.replaceAll("\n", "\n\t"));
 
       return ResponseFactory.getResponse(responseString, client.getKey(), clazz);
     } catch(Exception e) {
       e.printStackTrace();
       return null;
     }
-  }
-
-  public EncryptKeyResponse getEncryptKeyResponse() {
-    return encryptKeyResponse;
-  }
-
-  public ResponseTemplate getResponseResponseTemplate() {
-    return responseResponseTemplate;
   }
 }

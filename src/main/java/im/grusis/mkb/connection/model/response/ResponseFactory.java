@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.model.response;
 
 import com.google.gson.Gson;
 import im.grusis.mkb.connection.model.response.ResponseTemplate;

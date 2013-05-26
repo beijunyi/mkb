@@ -3,9 +3,9 @@ package im.grusis.mkb.connection.model.response;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import im.grusis.mkb.StringHelper;
-import im.grusis.mkb.Unserializer;
-import im.grusis.mkb.XXTEA;
+import im.grusis.mkb.util.StringHelper;
+import im.grusis.mkb.util.Unserializer;
+import im.grusis.mkb.util.XXTEA;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 /**

@@ -1,8 +1,8 @@
 package im.grusis.mkb;
 
 import im.grusis.mkb.connection.PassportHelper;
-import im.grusis.mkb.connection.model.request.ServerRequest;
-import im.grusis.mkb.connection.model.response.ServerInformationResponse;
+import im.grusis.mkb.connection.model.request.LoginRequest;
+import im.grusis.mkb.connection.model.response.LoginInformationResponse;
 import org.testng.annotations.Test;
 
 /**
@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class TEMP {
   @Test
   public void T() {
-    ServerInformationResponse ir = PassportHelper.request(new ServerRequest(), ServerInformationResponse.class);
+    LoginInformationResponse ir = PassportHelper.request(new LoginRequest("mewrobot0001", "123456"), LoginInformationResponse.class);
     System.currentTimeMillis();
   }
 }

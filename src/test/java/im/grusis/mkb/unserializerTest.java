@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import im.grusis.mkb.util.Unserializer;
 
 /**
  * User: Mothership
