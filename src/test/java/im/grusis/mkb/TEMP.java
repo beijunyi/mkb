@@ -18,7 +18,5 @@ public class TEMP {
   public void T() {
     LoginInformation li = PassportHelper.request(new LoginRequest("mewrobot0001", "123456", null), LoginInformationResponse.class).getReturnObjs();
     MkbCore core = new MkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), MacAddressHelper.getMacAddress(), li.getTimestamp());
-    String r = core.doPassportLogin();
-    System.currentTimeMillis();
   }
 }

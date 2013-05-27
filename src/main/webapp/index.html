@@ -1,18 +1,53 @@
 <!doctype html>
-<html ng-app>
+<html ng-app='mkb'>
 <head>
-  <script src="lib/angular-1.1.5/angular.min.js"></script>
+  <link rel='stylesheet' href='lib/bootstrap/css/bootstrap.css'>
+  <link rel='stylesheet' href='lib/bootstrap/css/bootstrap-responsive.css'>
+  <link rel='stylesheet' href='mkb/mkb.css'>
 
-  <script src="app/controllers/ManualAccessCtrl.js"></script>
+  <style type="text/css">
+  </style>
+
 </head>
 <body>
-<div>
-  <label>Name:</label>
-  <label>
-    <input type="text" ng-model="yourName" placeholder="Enter a name here">
-  </label>
-  <hr>
-  <h1>Hello {{yourName}}!</h1>
-</div>
+<section id="navigation">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="/">MKB</a>
+
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="active"><a href="#/manual"><i class="icon-wrench"></i> Manual Access</a></li>
+            <li><a href="#/auto"><i class="icon-tasks"></i>Automated Production</a></li>
+            <li><a href="#/stats"><i class="icon-info-sign"></i>Statistics</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="content">
+  <div class="container-narrow" ng-view></div>
+</section>
+
+<section id="footer">
+
+</section>
+
+<script src='lib/jquery/jquery-2.0.1.js'></script>
+<script src="lib/bootstrap/js/bootstrap.js"></script>
+<script src='lib/angular/angular.min.js'></script>
+
+<script src='mkb/mkb.js'></script>
+<script src="mkb/controllers/ManualAccessCtrl.js"></script>
+<script src="mkb/controllers/AutomatedProductionCtrl.js"></script>
+<script src="mkb/controllers/StatisticsCtrl.js"></script>
 </body>
 </html>
