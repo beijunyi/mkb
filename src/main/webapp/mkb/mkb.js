@@ -1,4 +1,4 @@
-var app = angular.module('mkb', []);
+var app = angular.module('mkb', ['ngResource']);
 
 app.config(function($routeProvider) {
   $routeProvider

@@ -2,3 +2,16 @@ body {
   padding-top: 60px;
   padding-bottom: 40px;
 }
+
+a {
+  cursor: pointer;
+}
+
+textarea {
+  width:90%;
+  resize: none;
+}
+
+.manual .monitor textarea {
+  height: 500px;
+}
