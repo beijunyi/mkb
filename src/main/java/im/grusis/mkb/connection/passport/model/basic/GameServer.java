@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model.basic;
+package im.grusis.mkb.connection.passport.model.basic;
 
 /**
  * User: Mothership
@@ -6,19 +6,19 @@ package im.grusis.mkb.connection.model.basic;
  * Time: 下午11:10
  */
 public class GameServer {
-  String gsChatIp;
-  int gsChatPort;
-  long gsCreateDate;
-  String gsDesc;
-  long gsId;
-  String gsIp;
-  String gsName;
-  String gsPlatform;
-  int gsPort;
-  int gsServiceType;
-  String gsServiceUrl;
-  int gsState;
-  int userCount;
+  private String gsChatIp;
+  private int gsChatPort;
+  private long gsCreateDate;
+  private String gsDesc;
+  private long gsId;
+  private String gsIp;
+  private String gsName;
+  private String gsPlatform;
+  private int gsPort;
+  private int gsServiceType;
+  private String gsServiceUrl;
+  private int gsState;
+  private int userCount;
 
   public String getGsChatIp() {
     return gsChatIp;

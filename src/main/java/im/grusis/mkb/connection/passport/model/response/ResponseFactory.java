@@ -1,7 +1,6 @@
-package im.grusis.mkb.connection.model.response;
+package im.grusis.mkb.connection.passport.model.response;
 
 import com.google.gson.Gson;
-import im.grusis.mkb.connection.model.response.ResponseTemplate;
 
 /**
  * User: Mothership
@@ -10,7 +9,7 @@ import im.grusis.mkb.connection.model.response.ResponseTemplate;
  */
 public class ResponseFactory {
 
-  public static <T> T getResponse(String str, String key, Class<T> clazz) {
+  public static <T extends ReturnTemplate> T getResponse(String str, String key, Class<T> clazz) {
     try {
       String result = new ResponseTemplate(str, key).getResult();
       return new Gson().fromJson(result, clazz);

@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model.request;
+package im.grusis.mkb.connection.passport.model.request;
 
 /**
  * User: Mothership

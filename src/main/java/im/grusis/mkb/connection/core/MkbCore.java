@@ -1,7 +1,10 @@
-package im.grusis.mkb.connection;
+package im.grusis.mkb.connection.core;
 
 import java.util.*;
 
+import im.grusis.mkb.connection.core.model.basic.PassportLogin;
+import im.grusis.mkb.connection.core.model.response.GameDataFactory;
+import im.grusis.mkb.connection.core.model.response.PassportLoginResponse;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -21,21 +24,27 @@ public class MkbCore {
   private DefaultHttpClient httpClient;
 
   private String host;
-  private String uid;
+  private String username;
+  private long uid;
   private String key;
-  private long timestamp;
+  private String mac;
+  private long time;
 
-
-
-  public MkbCore(String host, String uid, String key, String mac, long timestamp) {
-
+  public MkbCore(String host, String username, long uid, String key, String mac, long time) {
+    this.host = host;
+    this.username = username;
+    this.uid = uid;
+    this.key = key;
+    this.mac = mac;
+    this.time = time;
+    httpClient = new DefaultHttpClient();
   }
 
   public String doAction(String service, String action, Map<String, String> params) {
-    String url = host + action;
+    String url = host + service + "?do=" + action;
     List<NameValuePair> nvps = new ArrayList<NameValuePair>();
     Set<Map.Entry<String, String>> entrySet = params.entrySet();
-    for(Map.Entry<String, String> entry: entrySet) {
+    for(Map.Entry<String, String> entry : entrySet) {
       nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
     }
     HttpPost post = new HttpPost(url);
@@ -48,5 +57,17 @@ public class MkbCore {
       e.printStackTrace();
       return null;
     }
+  }
+
+  public PassportLogin doPassportLogin() {
+    Map<String, String> paramMap = new LinkedHashMap<String, String>();
+    paramMap.put("Devicetoken", "");
+    paramMap.put("time", Long.toString(time));
+    paramMap.put("key", key);
+    paramMap.put("Origin", "TTGM");
+    paramMap.put("Udid", mac);
+    paramMap.put("UserName", username);
+    paramMap.put("Password", Long.toString(uid));
+    return GameDataFactory.getGameData(doAction("login.php", "PassportLogin", paramMap), PassportLoginResponse.class).getData();
   }
 }

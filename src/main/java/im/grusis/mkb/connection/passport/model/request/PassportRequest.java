@@ -1,10 +1,10 @@
-package im.grusis.mkb.connection.model.request;
+package im.grusis.mkb.connection.passport.model.request;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import im.grusis.mkb.connection.model.response.ReturnTemplate;
+import im.grusis.mkb.connection.passport.model.response.ReturnTemplate;
 
 /**
  * User: Mothership

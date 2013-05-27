@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model.basic;
+package im.grusis.mkb.connection.passport.model.basic;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import java.util.List;
  * Time: 下午11:14
  */
 public class ServerInformation {
-  int SERVER_DISTRIBUTE;
-  List<GameServer> GAME_SERVER;
-  long RECOMMENT_SERVER_ID;
+  private int SERVER_DISTRIBUTE;
+  private List<GameServer> GAME_SERVER;
+  private long RECOMMENT_SERVER_ID;
 
   public int getSERVER_DISTRIBUTE() {
     return SERVER_DISTRIBUTE;

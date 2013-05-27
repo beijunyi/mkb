@@ -1,6 +1,6 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.passport.model;
 
-import im.grusis.mkb.connection.model.request.LoginRequest;
+import im.grusis.mkb.connection.passport.model.request.LoginRequest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 public class requestTest {
   @Test
   public void loginRequestTest() {
-    LoginRequest lr = new LoginRequest("mewrobot0001", "123456");
+    LoginRequest lr = new LoginRequest("mewrobot0001", "123456", null);
     Assert.assertEquals(lr.getFunc(), "login");
     Assert.assertEquals(lr.getArgs(), "a:1:{i:0;s:148:\"{\"userName\":\"mewrobot0001\",\"userPassword\":\"123456\",\"gameName\":\"CARD-ANDROID-CHS\",\"udid\":\"null\",\"clientType\":\"flash\",\"releaseChannel\":\"\",\"locale\":\"\"}\";}");
   }

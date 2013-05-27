@@ -1,8 +1,11 @@
 package im.grusis.mkb;
 
-import im.grusis.mkb.connection.PassportHelper;
-import im.grusis.mkb.connection.model.request.LoginRequest;
-import im.grusis.mkb.connection.model.response.LoginInformationResponse;
+import im.grusis.mkb.connection.core.MkbCore;
+import im.grusis.mkb.connection.passport.PassportHelper;
+import im.grusis.mkb.connection.passport.model.basic.LoginInformation;
+import im.grusis.mkb.connection.passport.model.request.LoginRequest;
+import im.grusis.mkb.connection.passport.model.response.LoginInformationResponse;
+import im.grusis.mkb.util.MacAddressHelper;
 import org.testng.annotations.Test;
 
 /**
@@ -13,7 +16,9 @@ import org.testng.annotations.Test;
 public class TEMP {
   @Test
   public void T() {
-    LoginInformationResponse ir = PassportHelper.request(new LoginRequest("mewrobot0001", "123456"), LoginInformationResponse.class);
+    LoginInformation li = PassportHelper.request(new LoginRequest("mewrobot0001", "123456", null), LoginInformationResponse.class).getReturnObjs();
+    MkbCore core = new MkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), MacAddressHelper.getMacAddress(), li.getTimestamp());
+    String r = core.doPassportLogin();
     System.currentTimeMillis();
   }
 }

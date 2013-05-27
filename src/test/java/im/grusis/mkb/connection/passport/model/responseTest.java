@@ -1,6 +1,6 @@
-package im.grusis.mkb.connection.model;
+package im.grusis.mkb.connection.passport.model;
 
-import im.grusis.mkb.connection.model.response.EncryptKeyResponse;
+import im.grusis.mkb.connection.passport.model.response.EncryptKeyResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

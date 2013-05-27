@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model.response;
+package im.grusis.mkb.connection.passport.model.response;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
-package im.grusis.mkb.connection.model.request;
+package im.grusis.mkb.connection.passport.model.request;
 
-import im.grusis.mkb.connection.model.response.LoginInformationResponse;
+import im.grusis.mkb.connection.passport.model.response.LoginInformationResponse;
 
 /**
  * User: Mothership
@@ -9,11 +9,11 @@ import im.grusis.mkb.connection.model.response.LoginInformationResponse;
  */
 public class LoginRequest extends PassportRequest<LoginInformationResponse> {
 
-  public LoginRequest(String username, String password) {
+  public LoginRequest(String username, String password, String mac) {
     argMap.put("userName", username);
     argMap.put("userPassword", password);
     argMap.put("gameName", "CARD-ANDROID-CHS");
-    argMap.put("udid", "null");
+    argMap.put("udid", mac);
     argMap.put("clientType", "flash");
     argMap.put("releaseChannel", "");
     argMap.put("locale", "");

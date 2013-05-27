@@ -1,4 +1,4 @@
-package im.grusis.mkb.connection.model.basic;
+package im.grusis.mkb.connection.passport.model.basic;
 
 /**
  * User: Mothership
@@ -6,19 +6,19 @@ package im.grusis.mkb.connection.model.basic;
  * Time: 下午11:14
  */
 public class LoginInformation {
-  String GS_NAME;
-  String GS_IP;
-  String friendCode;
-  String GS_PORT;
-  long timestamp;
-  int GS_CHAT_PORT;
-  String source;
-  String userName;
-  String GS_DESC;
-  long U_ID;
-  String key;
-  int G_TYPE;
-  String GS_CHAT_IP;
+  private String GS_NAME;
+  private String GS_IP;
+  private String friendCode;
+  private String GS_PORT;
+  private long timestamp;
+  private int GS_CHAT_PORT;
+  private String source;
+  private String userName;
+  private String GS_DESC;
+  private long U_ID;
+  private String key;
+  private int G_TYPE;
+  private String GS_CHAT_IP;
 
   public String getGS_NAME() {
     return GS_NAME;

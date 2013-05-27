@@ -1,11 +1,11 @@
-package im.grusis.mkb.connection;
+package im.grusis.mkb.connection.passport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import im.grusis.mkb.util.Client;
-import im.grusis.mkb.connection.model.response.*;
-import im.grusis.mkb.connection.model.request.PassportRequest;
+import im.grusis.mkb.connection.passport.model.response.*;
+import im.grusis.mkb.connection.passport.model.request.PassportRequest;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;

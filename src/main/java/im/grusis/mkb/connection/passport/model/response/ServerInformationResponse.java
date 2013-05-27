@@ -1,6 +1,6 @@
-package im.grusis.mkb.connection.model.response;
+package im.grusis.mkb.connection.passport.model.response;
 
-import im.grusis.mkb.connection.model.basic.ServerInformation;
+import im.grusis.mkb.connection.passport.model.basic.ServerInformation;
 
 /**
  * User: Mothership
