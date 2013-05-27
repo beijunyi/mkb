@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Import;
  * Time: 22:58
  */
 @Configuration
-@Import({ServiceConfig.class, ControllerConfig.class})
+@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class})
 public class RuntimeConfig {
 }

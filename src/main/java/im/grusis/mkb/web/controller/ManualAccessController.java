@@ -1,6 +1,8 @@
 package im.grusis.mkb.web.controller;
 
-import javax.ws.rs.Path;
+import java.util.Map;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.web.service.ManualAccessService;
 import org.slf4j.Logger;
@@ -19,5 +21,18 @@ public class ManualAccessController extends MkbController {
 
   @Autowired
   private ManualAccessService manualAccessService;
+
+  @GET
+  @Path("/do/{service}")
+  public Response doAction(@PathParam("service") String service, @QueryParam("username") String username,
+                              @QueryParam("do") String action, @QueryParam("params") Map<String, String> params) {
+    return Response.ok(manualAccessService.doAction(username, service, action, params)).build();
+  }
+
+  @GET
+  @Path("/login")
+  public Response login(@QueryParam("username") String username, @QueryParam("password") String password) {
+    return Response.ok(manualAccessService.login(username, password)).build();
+  }
 
 }

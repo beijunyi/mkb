@@ -30,14 +30,14 @@ public class MkbCore {
   private String mac;
   private long time;
 
-  public MkbCore(String host, String username, long uid, String key, String mac, long time) {
+  public MkbCore(String host, String username, long uid, String key, String mac, long time, DefaultHttpClient httpClient) {
     this.host = host;
     this.username = username;
     this.uid = uid;
     this.key = key;
     this.mac = mac;
     this.time = time;
-    httpClient = new DefaultHttpClient();
+    this.httpClient = httpClient;
   }
 
   public String doAction(String service, String action, Map<String, String> params) {

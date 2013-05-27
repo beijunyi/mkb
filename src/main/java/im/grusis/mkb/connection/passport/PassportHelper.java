@@ -34,24 +34,17 @@ public class PassportHelper {
   private String token;
   private EncryptKeyResponse encryptKeyResponse;
 
-  public static <T extends ReturnTemplate> T request(PassportRequest<T> passportRequest, Class<T> clazz) {
-    PassportHelper helper = new PassportHelper();
+  public static <T extends ReturnTemplate> T request(PassportRequest<T> passportRequest, Class<T> clazz, DefaultHttpClient httpClient) {
+    PassportHelper helper = new PassportHelper(httpClient);
     helper.requestEncryptKey();
     helper.proposeCounterKey();
     return helper.sendRequest(passportRequest, clazz);
   }
 
-  public PassportHelper() {
-    httpClient = new DefaultHttpClient();
+  public PassportHelper(DefaultHttpClient httpClient) {
+    this.httpClient = httpClient;
     client = new Client();
     token = "js" + (long)Math.floor(Math.random() * System.currentTimeMillis());
-  }
-
-  public PassportHelper(DefaultHttpClient httpClient, Client client, String token, EncryptKeyResponse encryptKeyResponse) {
-    this.httpClient = httpClient;
-    this.client = client;
-    this.token = token;
-    this.encryptKeyResponse = encryptKeyResponse;
   }
 
   public void requestEncryptKey() {

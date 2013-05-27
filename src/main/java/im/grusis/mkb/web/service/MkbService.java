@@ -7,4 +7,6 @@ package im.grusis.mkb.web.service;
  */
 
 public abstract class MkbService {
+
+
 }

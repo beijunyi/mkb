@@ -3,11 +3,17 @@ package im.grusis.mkb.web.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import im.grusis.mkb.connection.core.MkbCore;
+import im.grusis.mkb.connection.core.model.basic.PassportLogin;
 import im.grusis.mkb.connection.passport.PassportHelper;
 import im.grusis.mkb.connection.passport.model.basic.LoginInformation;
 import im.grusis.mkb.connection.passport.model.request.LoginRequest;
 import im.grusis.mkb.connection.passport.model.response.LoginInformationResponse;
 import im.grusis.mkb.util.MacAddressHelper;
+import im.grusis.mkb.web.model.internal.MkAccount;
+import im.grusis.mkb.web.repository.AccountRepository;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,21 +24,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class ManualAccessService extends MkbService {
 
-  private Map<String, String> macMap = new HashMap<String, String>();
+  @Autowired
+  private AccountRepository accountRepository;
 
-  private String getMac(String username) {
-    String mac = macMap.get(username);
-    if(mac == null) {
-      mac = MacAddressHelper.getMacAddress();
-      macMap.put(username, mac);
-    }
-    return mac;
+  private Map<String, MkbCore> coreMap = new HashMap<String, MkbCore>();
+
+  public String doAction(String username, String service, String action, Map<String, String> params) {
+    MkbCore core = coreMap.get(username);
+    return core.doAction(service, action, params);
   }
 
-  public LoginInformation login(String username, String password) {
-    String mac = getMac(username);
-    LoginInformationResponse r = PassportHelper.request(new LoginRequest(username, password, mac), LoginInformationResponse.class);
-    return r.getReturnObjs();
+  public PassportLogin login(String username, String password) {
+    DefaultHttpClient httpClient = new DefaultHttpClient();
+    MkAccount account = accountRepository.getAccount(username);
+    if(account == null) {
+      account = new MkAccount();
+      account.setUsername(username);
+      account.setPassword(password);
+      account.setMac(MacAddressHelper.getMacAddress());
+    }
+    String mac = account.getMac();
+    LoginInformationResponse response = PassportHelper.request(new LoginRequest(username, password, mac), LoginInformationResponse.class, httpClient);
+    LoginInformation li = response.getReturnObjs();
+    MkbCore core = new MkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp(), httpClient);
+    coreMap.put(username, core);
+    return core.doPassportLogin();
   }
 
 }
