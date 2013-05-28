@@ -2,6 +2,7 @@ package im.grusis.mkb.web.controller;
 
 import java.util.Map;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.web.service.ManualAccessService;
@@ -16,18 +17,19 @@ import org.springframework.stereotype.Controller;
  */
 @Controller
 @Path("api/manual")
+@Produces(MediaType.APPLICATION_JSON)
 public class ManualAccessController extends MkbController {
   private static final Logger Log = org.slf4j.LoggerFactory.getLogger(ManualAccessController.class);
 
   @Autowired
   private ManualAccessService manualAccessService;
 
-  @GET
-  @Path("/do/{service}")
-  public Response doAction(@PathParam("service") String service, @QueryParam("username") String username,
-                              @QueryParam("do") String action, @QueryParam("params") Map<String, String> params) {
-    return Response.ok(manualAccessService.doAction(username, service, action, params)).build();
-  }
+//  @GET
+//  @Path("/do/{service}")
+//  public Response doAction(@PathParam("service") String service, @QueryParam("username") String username,
+//                              @QueryParam("do") String action, @QueryParam("params") Map<String, String> params) {
+//    return Response.ok(manualAccessService.doAction(username, service, action, params)).build();
+//  }
 
   @GET
   @Path("/login")

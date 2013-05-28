@@ -21,7 +21,10 @@ app.controller('ManualAccessCtrl', function($scope, ManualAccessService) {
     collection: '',
 
     login: function() {
-      alert('login');
+      var me = $scope.manual;
+      ManualAccessService.login(me.username, me.password, function(obj) {
+        alert(obj);
+      })
     }
   }
 

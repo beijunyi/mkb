@@ -8,13 +8,13 @@
             <div class='control-group'>
               <label class='control-label' for='username'>Username</label>
               <div class='controls'>
-                <input type='text' id='username' placeholder='Username'>
+                <input type='text' ng-model='manual.username' id='username' placeholder='Username'>
               </div>
             </div>
             <div class='control-group'>
               <label class='control-label' for='password'>Password</label>
               <div class='controls'>
-                <input type='password' id='password' placeholder='Password'>
+                <input type='password' ng-model='manual.password' id='password' placeholder='Password'>
               </div>
             </div>
             <div class="control-group">
@@ -22,7 +22,7 @@
                 <label class="checkbox">
                   <input type="checkbox"> Remember me
                 </label>
-                <button type="submit" class="btn" ng-click='manual.login()'>Sign in</button>
+                <button type="submit" ng-disabled='!manual.username || !manual.password' class="btn" ng-click='manual.login()'>Sign in</button>
               </div>
             </div>
           </form>

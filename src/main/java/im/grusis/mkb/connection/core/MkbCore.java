@@ -68,6 +68,7 @@ public class MkbCore {
     paramMap.put("Udid", mac);
     paramMap.put("UserName", username);
     paramMap.put("Password", Long.toString(uid));
-    return GameDataFactory.getGameData(doAction("login.php", "PassportLogin", paramMap), PassportLoginResponse.class).getData();
+    String responseString = doAction("login.php", "PassportLogin", paramMap);
+    return GameDataFactory.getGameData(responseString, PassportLoginResponse.class).getData();
   }
 }
