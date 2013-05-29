@@ -1,18 +1,19 @@
 package im.grusis.mkb.connection.core;
 
+import java.io.IOException;
 import java.util.*;
 
 import im.grusis.mkb.connection.core.model.basic.PassportLogin;
 import im.grusis.mkb.connection.core.model.response.GameDataFactory;
 import im.grusis.mkb.connection.core.model.response.PassportLoginResponse;
-import org.apache.http.Consts;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
+import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 /**
  * User: Mothership
@@ -20,6 +21,11 @@ import org.apache.http.message.BasicNameValuePair;
  * Time: 下午12:59
  */
 public class MkbCore {
+
+  public static String Platform = "ANDROID";
+  public static String Language = "ZH_CN";
+  public static String VersionClient = "1.2.0";
+  public static String VersionBuild = "2013-04-16%2012%3A46%3A54";
 
   private DefaultHttpClient httpClient;
 
@@ -41,7 +47,7 @@ public class MkbCore {
   }
 
   public String doAction(String service, String action, Map<String, String> params) {
-    String url = host + service + "?do=" + action;
+    String url = host + service + "?do=" + action + "&phpp=" + Platform + "&phpl=" + Language + "&pvc=" + VersionClient + "&pvb=" + VersionBuild;
     HttpPost post = new HttpPost(url);
     if(params != null) {
       List<NameValuePair> nvps = new ArrayList<NameValuePair>();
@@ -52,9 +58,29 @@ public class MkbCore {
       post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
     }
     try {
+      httpClient.addResponseInterceptor(new HttpResponseInterceptor() {
+
+        public void process(final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+          HttpEntity entity = response.getEntity();
+          if(entity != null) {
+            Header ceheader = entity.getContentEncoding();
+            if(ceheader != null) {
+              HeaderElement[] codecs = ceheader.getElements();
+              for(HeaderElement codec : codecs) {
+                if(codec.getName().equalsIgnoreCase("gzip")) {
+                  response.setEntity(new GzipDecompressingEntity(response.getEntity()));
+                  return;
+                }
+              }
+            }
+          }
+        }
+
+      });
       HttpResponse response = httpClient.execute(post);
-      BasicResponseHandler handler = new BasicResponseHandler();
-      return handler.handleResponse(response);
+      HttpEntity entity = response.getEntity();
+      String content = EntityUtils.toString(entity);
+      return content;
     } catch(Exception e) {
       e.printStackTrace();
       return null;
