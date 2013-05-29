@@ -5,6 +5,9 @@ import java.util.Map;
 
 import im.grusis.mkb.connection.core.MkbCore;
 import im.grusis.mkb.connection.core.model.basic.PassportLogin;
+import im.grusis.mkb.connection.core.model.basic.UserInfo;
+import im.grusis.mkb.connection.core.model.response.GameDataFactory;
+import im.grusis.mkb.connection.core.model.response.UserInfoResponse;
 import im.grusis.mkb.connection.passport.PassportHelper;
 import im.grusis.mkb.connection.passport.model.basic.LoginInformation;
 import im.grusis.mkb.connection.passport.model.request.LoginRequest;
@@ -49,6 +52,11 @@ public class ManualAccessService extends MkbService {
     MkbCore core = new MkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp(), httpClient);
     coreMap.put(username, core);
     return core.doPassportLogin();
+  }
+
+  public UserInfo getUserInfo(String username) {
+    String responseString = doAction(username, "user.php", "GetUserInfo", null);
+    return GameDataFactory.getGameData(responseString, UserInfoResponse.class).getData();
   }
 
 }

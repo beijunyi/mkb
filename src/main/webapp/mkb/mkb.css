@@ -15,3 +15,8 @@ textarea {
 .manual .monitor textarea {
   height: 756px;
 }
+
+table a {
+  padding-left: 5px;
+  padding-right: 5px;
+}

@@ -8,8 +8,7 @@ package im.grusis.mkb.connection.core.model.basic;
 public class GameData<T>  {
   private int status;
   private T data;
-
-
+  private Version version;
 
   public int getStatus() {
     return status;
@@ -25,5 +24,13 @@ public class GameData<T>  {
 
   public void setData(T data) {
     this.data = data;
+  }
+
+  public Version getVersion() {
+    return version;
+  }
+
+  public void setVersion(Version version) {
+    this.version = version;
   }
 }

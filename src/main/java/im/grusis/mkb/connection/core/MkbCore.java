@@ -42,13 +42,15 @@ public class MkbCore {
 
   public String doAction(String service, String action, Map<String, String> params) {
     String url = host + service + "?do=" + action;
-    List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-    Set<Map.Entry<String, String>> entrySet = params.entrySet();
-    for(Map.Entry<String, String> entry : entrySet) {
-      nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
-    }
     HttpPost post = new HttpPost(url);
-    post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+    if(params != null) {
+      List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+      Set<Map.Entry<String, String>> entrySet = params.entrySet();
+      for(Map.Entry<String, String> entry : entrySet) {
+        nvps.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+      }
+      post.setEntity(new UrlEncodedFormEntity(nvps, Consts.UTF_8));
+    }
     try {
       HttpResponse response = httpClient.execute(post);
       BasicResponseHandler handler = new BasicResponseHandler();
