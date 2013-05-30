@@ -15,6 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -24,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public class MkbCore {
+  private static final Logger Log = LoggerFactory.getLogger(MkbCore.class);
+
 
   @Autowired MkbEmulator emulator;
 
@@ -90,6 +94,7 @@ public class MkbCore {
       HttpResponse response = httpClient.execute(post);
       HttpEntity entity = response.getEntity();
       String content = EntityUtils.toString(entity);
+      Log.info("Received response for {}?do={}:\n\t{}", service, action, content.replaceAll("\n", "\n\t"));
       return content;
     } catch(Exception e) {
       e.printStackTrace();

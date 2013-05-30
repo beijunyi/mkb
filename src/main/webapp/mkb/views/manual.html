@@ -7,12 +7,14 @@
           <form class='form-horizontal'>
             <div class='control-group'>
               <label class='control-label' for='username'>Username</label>
+
               <div class='controls'>
                 <input type='text' ng-model='manual.username' id='username' placeholder='Username'>
               </div>
             </div>
             <div class='control-group'>
               <label class='control-label' for='password'>Password</label>
+
               <div class='controls'>
                 <input type='password' ng-model='manual.password' id='password' placeholder='Password'>
               </div>
@@ -22,7 +24,8 @@
                 <label class='checkbox'>
                   <input type='checkbox'> Remember me
                 </label>
-                <button type='submit' ng-disabled='!manual.username || !manual.password' class='btn' ng-click='manual.login()'>Sign in</button>
+                <button type='submit' ng-disabled='!manual.username || !manual.password' class='btn' ng-click='manual.login()'>Sign in
+                </button>
               </div>
             </div>
           </form>
@@ -99,14 +102,28 @@
           <label>
             <textarea></textarea>
           </label>
-          <div class='modal-body'>
+
+          <div>
             <form class='form-inline'>
               {{manual.host || 'http://host/'}}
               <label for="service"></label><input type='text' ng-model='manual.service' id='service' placeholder='PHP Service Provider'>
               ?do=
               <label for="action"></label><input type='text' ng-model='manual.action' id='action' placeholder='Action'>
-              <button class='btn btn-success' ng-disabled='!manual.service || !manual.action' ng-click='manual.doAction()'>Go</button>
+              <button class='btn btn-success' ng-disabled='!manual.service || !manual.action' ng-click='manual.doAction()'>Go
+              </button>
             </form>
+          </div>
+          <div>
+            <form class='form-inline'>
+              <label for="key"></label><input type='text' ng-model='manual.key' id='key' placeholder='Key'>
+              <label for="value"></label><input type='text' ng-model='manual.value' id='value' placeholder='Value'>
+              <button class='btn btn-primaryd' ng-disabled='!manual.key || !manual.value || manual.params[manual.key]' ng-click='manual.addProperty()'>Add
+              </button>
+            </form>
+
+          </div>
+          <div>
+            <a ng-repeat="key in manual.paramKeys" class="btn btn-info btn-mini property-btn" ng-click='manual.removeProperty(key)'>{{key}}:{{manual.params[key]}}</a>
           </div>
         </div>
       </div>
@@ -119,7 +136,9 @@
     <div class='container'>
       <div class='nav-collapse'>
         <ul class='nav'>
-          <li><button class='btn btn-mini btn-warning'><i class='icon-arrow-up'></i></button></li>
+          <li>
+            <button class='btn btn-mini btn-warning'><i class='icon-arrow-up'></i></button>
+          </li>
           <li><a>Maze</a></li>
           <li><a>Mission</a></li>
           <li><a>Shop</a></li>
@@ -139,29 +158,29 @@
 </div>
 
 <!--<div id='directRequest' class='modal hide fade' tabindex='-1' role='dialog'>-->
-  <!--<div class='modal-header'>-->
-    <!--<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>-->
-    <!--<h3>Direct Request</h3>-->
-  <!--</div>-->
-  <!--<div class='modal-body'>-->
-    <!--<form class='form-horizontal'>-->
-      <!--<div class='control-group'>-->
-        <!--<label class='control-label' for='service'>Service</label>-->
-        <!--<div class='controls'>-->
-          <!--<input type='text' ng-model='manual.service' id='service' placeholder='PHP Service Provider'>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class='control-group'>-->
-        <!--<label class='control-label' for='action'>Action</label>-->
-        <!--<div class='controls'>-->
-          <!--<input type='text' ng-model='manual.action' id='action' placeholder='Action'>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<div class='alert alert-block' ng-show='manual.service && manual.action'>URL: {{manual.host}}{{manual.service}}?do={{manual.action}}</div>-->
-    <!--</form>-->
-  <!--</div>-->
-  <!--<div class='modal-footer'>-->
-    <!--<button class='btn' data-dismiss='modal' aria-hidden='true'>Close</button>-->
-    <!--<button class='btn btn-primary' ng-click='manual.doAction()'>Perform</button>-->
-  <!--</div>-->
+<!--<div class='modal-header'>-->
+<!--<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>-->
+<!--<h3>Direct Request</h3>-->
+<!--</div>-->
+<!--<div class='modal-body'>-->
+<!--<form class='form-horizontal'>-->
+<!--<div class='control-group'>-->
+<!--<label class='control-label' for='service'>Service</label>-->
+<!--<div class='controls'>-->
+<!--<input type='text' ng-model='manual.service' id='service' placeholder='PHP Service Provider'>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class='control-group'>-->
+<!--<label class='control-label' for='action'>Action</label>-->
+<!--<div class='controls'>-->
+<!--<input type='text' ng-model='manual.action' id='action' placeholder='Action'>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class='alert alert-block' ng-show='manual.service && manual.action'>URL: {{manual.host}}{{manual.service}}?do={{manual.action}}</div>-->
+<!--</form>-->
+<!--</div>-->
+<!--<div class='modal-footer'>-->
+<!--<button class='btn' data-dismiss='modal' aria-hidden='true'>Close</button>-->
+<!--<button class='btn btn-primary' ng-click='manual.doAction()'>Perform</button>-->
+<!--</div>-->
 <!--</div>-->

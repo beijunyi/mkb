@@ -23,7 +23,12 @@ app.controller('ManualAccessCtrl', function($scope, ManualAccessService) {
 
     service: '',
     action: '',
+    key: '',
+    value: '',
+    paramKeys: [],
     params: {},
+
+
 
     latestUserInfo: null,
 
@@ -36,6 +41,22 @@ app.controller('ManualAccessCtrl', function($scope, ManualAccessService) {
       ManualAccessService.doAction(me.username, me.service, me.action, me.params, function(obj) {
         me.displayResponse(obj);
       });
+    },
+
+    addProperty: function() {
+      var me = $scope.manual;
+      me.paramKeys.push(me.key);
+      me.params[me.key] = me.value;
+      me.key = '';
+      me.value = '';
+    },
+
+    removeProperty: function(key) {
+      var me = $scope.manual;
+      me.paramKeys = $.grep(me.paramKeys, function(value) {
+        return value != key;
+      });
+      delete me.params[key]
     },
 
     login: function() {

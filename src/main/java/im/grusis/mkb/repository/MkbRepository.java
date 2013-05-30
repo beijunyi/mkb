@@ -22,21 +22,18 @@ public abstract class MkbRepository<T> {
   private static final String FileSuffix = ".mkb";
 
   protected Gson gson = new Gson();
-  protected String repoFolder;
+
+  protected String repositoryDirectory;
   protected String separator;
 
-  protected String childFolder;
-
   protected MkbRepository(String childFolder) {
-    this.childFolder = childFolder;
     String userHomeDirectory = System.getProperty(UserHome);
-    String mkbRepositoryDirectory = userHomeDirectory + '/' + MkbRepositoryDirectoryName;
-    File repo = new File(mkbRepositoryDirectory);
+    repositoryDirectory = userHomeDirectory + '\\' + MkbRepositoryDirectoryName + '\\' + childFolder;
+    File repo = new File(repositoryDirectory);
     if(repo.isFile() || !repo.exists() && !repo.mkdirs()) {
-      Log.error("Cannot create repository in {}.", mkbRepositoryDirectory);
+      Log.error("Cannot create repository in {}.", repositoryDirectory);
       System.exit(1);
     }
-    repoFolder = repo.getAbsolutePath();
     separator = System.getProperty(LineSeparator);
     if(separator == null || separator.isEmpty()) {
       separator = "\n";
@@ -44,7 +41,7 @@ public abstract class MkbRepository<T> {
   }
 
   protected void write(String index, Object obj, boolean overwrite) {
-    String fileName = repoFolder + '/' + childFolder + '/' + index;
+    String fileName = repositoryDirectory + '\\' + index;
     File file = new File(fileName + FileSuffix);
     int count = 1;
     while(file.exists()) {
@@ -76,7 +73,7 @@ public abstract class MkbRepository<T> {
   }
 
   public T read(String index, Class<T> clazz) {
-    String fileName = repoFolder + '/' + childFolder + '/' + index + FileSuffix;
+    String fileName = repositoryDirectory + '\\' + index + FileSuffix;
     File file = new File(fileName);
     if(!file.exists()) {
       Log.error("Cannot find file {}", fileName);
