@@ -11,7 +11,7 @@
   </context-param>
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>im.grusis.mkb.web.config.RuntimeConfig</param-value>
+    <param-value>im.grusis.mkb.config.RuntimeConfig</param-value>
   </context-param>
 
   <!-- RESTEASY CONFIGURATION -->
