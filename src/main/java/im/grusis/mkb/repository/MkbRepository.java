@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * Time: 15:13
  */
 
-public abstract class MkbRepository {
+public abstract class MkbRepository<T> {
 
   private static final Logger Log = LoggerFactory.getLogger(MkbRepository.class);
 
@@ -27,7 +27,8 @@ public abstract class MkbRepository {
 
   protected String childFolder;
 
-  protected MkbRepository() {
+  protected MkbRepository(String childFolder) {
+    this.childFolder = childFolder;
     String userHomeDirectory = System.getProperty(UserHome);
     String mkbRepositoryDirectory = userHomeDirectory + '/' + MkbRepositoryDirectoryName;
     File repo = new File(mkbRepositoryDirectory);
@@ -74,7 +75,7 @@ public abstract class MkbRepository {
     }
   }
 
-  public <T> T read(String index, Class<T> clazz) {
+  public T read(String index, Class<T> clazz) {
     String fileName = repoFolder + '/' + childFolder + '/' + index + FileSuffix;
     File file = new File(fileName);
     if(!file.exists()) {
