@@ -34,12 +34,7 @@ public class PassportHelper {
   private String token;
   private EncryptKeyResponse encryptKeyResponse;
 
-  public static <T extends ReturnTemplate> T request(PassportRequest<T> passportRequest, Class<T> clazz, DefaultHttpClient httpClient) {
-    PassportHelper helper = new PassportHelper(httpClient);
-    helper.requestEncryptKey();
-    helper.proposeCounterKey();
-    return helper.sendRequest(passportRequest, clazz);
-  }
+
 
   public PassportHelper(DefaultHttpClient httpClient) {
     this.httpClient = httpClient;

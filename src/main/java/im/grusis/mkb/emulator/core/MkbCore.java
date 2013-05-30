@@ -3,6 +3,7 @@ package im.grusis.mkb.emulator.core;
 import java.io.IOException;
 import java.util.*;
 
+import im.grusis.mkb.emulator.MkbEmulator;
 import im.grusis.mkb.emulator.core.model.basic.PassportLogin;
 import im.grusis.mkb.emulator.core.model.response.GameDataFactory;
 import im.grusis.mkb.emulator.core.model.response.PassportLoginResponse;
@@ -14,20 +15,24 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * User: Mothership
  * Date: 13-5-26
  * Time: 下午12:59
  */
+
 public class MkbCore {
 
-  public static String Platform = "ANDROID";
-  public static String Language = "ZH_CN";
-  public static String VersionClient = "1.2.0";
-  public static String VersionBuild = "2013-04-16%2012%3A46%3A54";
+  @Autowired MkbEmulator emulator;
 
   private DefaultHttpClient httpClient;
+
+  private String phpp;
+  private String phpl;
+  private String pvc;
+  private String pvb;
 
   private String host;
   private String username;
@@ -36,7 +41,8 @@ public class MkbCore {
   private String mac;
   private long time;
 
-  public MkbCore(String host, String username, long uid, String key, String mac, long time, DefaultHttpClient httpClient) {
+  public MkbCore(String host, String username, long uid, String key, String mac, long time,
+                  DefaultHttpClient httpClient, String phpp, String phpl, String pvc, String pvb) {
     this.host = host;
     this.username = username;
     this.uid = uid;
@@ -44,10 +50,14 @@ public class MkbCore {
     this.mac = mac;
     this.time = time;
     this.httpClient = httpClient;
+    this.phpp = phpp;
+    this.phpl = phpl;
+    this.pvc = pvc;
+    this.pvb = pvb;
   }
 
   public String doAction(String service, String action, Map<String, String> params) {
-    String url = host + service + "?do=" + action + "&phpp=" + Platform + "&phpl=" + Language + "&pvc=" + VersionClient + "&pvb=" + VersionBuild;
+    String url = host + service + "?do=" + action + "&phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
     HttpPost post = new HttpPost(url);
     if(params != null) {
       List<NameValuePair> nvps = new ArrayList<NameValuePair>();

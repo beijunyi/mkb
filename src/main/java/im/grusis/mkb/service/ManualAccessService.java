@@ -3,6 +3,7 @@ package im.grusis.mkb.service;
 import java.util.HashMap;
 import java.util.Map;
 
+import im.grusis.mkb.emulator.MkbEmulator;
 import im.grusis.mkb.emulator.core.MkbCore;
 import im.grusis.mkb.emulator.core.model.basic.PassportLogin;
 import im.grusis.mkb.emulator.core.model.basic.UserInfo;
@@ -27,8 +28,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ManualAccessService extends MkbService {
 
-  @Autowired
-  private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
+  @Autowired private MkbEmulator mkbEmulator;
 
   private Map<String, MkbCore> coreMap = new HashMap<String, MkbCore>();
 
@@ -38,7 +39,6 @@ public class ManualAccessService extends MkbService {
   }
 
   public PassportLogin login(String username, String password) {
-    DefaultHttpClient httpClient = new DefaultHttpClient();
     MkAccount account = accountRepository.getAccount(username);
     if(account == null) {
       account = new MkAccount();
@@ -47,9 +47,9 @@ public class ManualAccessService extends MkbService {
       account.setMac(MacAddressHelper.getMacAddress());
     }
     String mac = account.getMac();
-    LoginInformationResponse response = PassportHelper.request(new LoginRequest(username, password, mac), LoginInformationResponse.class, httpClient);
+    LoginInformationResponse response = mkbEmulator.passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class);
     LoginInformation li = response.getReturnObjs();
-    MkbCore core = new MkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp(), httpClient);
+    MkbCore core = mkbEmulator.getMkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp());
     coreMap.put(username, core);
     return core.doPassportLogin();
   }
