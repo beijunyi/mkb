@@ -1,7 +1,7 @@
 package im.grusis.mkb.internal;
 
-import im.grusis.mkb.emulator.core.model.basic.CardGroup;
-import im.grusis.mkb.emulator.core.model.basic.UserInfo;
+import im.grusis.mkb.emulator.emulator.core.model.basic.CardGroup;
+import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 
 /**
  * User: Mothership

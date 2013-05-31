@@ -1,6 +1,6 @@
 package im.grusis.mkb.config;
 
-import im.grusis.mkb.emulator.MkbEmulator;
+import im.grusis.mkb.emulator.emulator.MkbEmulator;
 import im.grusis.mkb.service.MkbService;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

@@ -1,7 +1,7 @@
 package im.grusis.mkb.repository;
 
-import im.grusis.mkb.emulator.core.model.basic.Rune;
-import im.grusis.mkb.emulator.core.model.basic.Runes;
+import im.grusis.mkb.emulator.emulator.core.model.basic.Rune;
+import im.grusis.mkb.emulator.emulator.core.model.basic.Runes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;

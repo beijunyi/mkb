@@ -1,7 +1,7 @@
 package im.grusis.mkb.repository;
 
-import im.grusis.mkb.emulator.core.model.basic.AllCard;
-import im.grusis.mkb.emulator.core.model.basic.Card;
+import im.grusis.mkb.emulator.emulator.core.model.basic.AllCard;
+import im.grusis.mkb.emulator.emulator.core.model.basic.Card;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;

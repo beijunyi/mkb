@@ -2,7 +2,7 @@ package im.grusis.mkb.service;
 
 import java.util.*;
 
-import im.grusis.mkb.emulator.core.model.basic.UserInfo;
+import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 import im.grusis.mkb.internal.MkAccount;
 import im.grusis.mkb.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
