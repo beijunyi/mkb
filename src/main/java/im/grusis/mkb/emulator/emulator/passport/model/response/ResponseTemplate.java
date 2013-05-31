@@ -75,4 +75,8 @@ public class ResponseTemplate {
   public String getOutput() {
     return output;
   }
+
+  public boolean badRequest() {
+    return errno != null && !errno.equals("0");
+  }
 }

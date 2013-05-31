@@ -33,4 +33,8 @@ public class ReturnTemplate<T> {
   public void setReturnObjs(T returnObjs) {
     this.returnObjs = returnObjs;
   }
+
+  public boolean badRequest() {
+    return returnCode != 0 && (returnMsg == null || !returnMsg.equals("No error."));
+  }
 }
