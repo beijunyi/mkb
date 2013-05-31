@@ -1,8 +1,5 @@
 package im.grusis.mkb.emulator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import im.grusis.mkb.emulator.core.MkbCore;
 import im.grusis.mkb.emulator.passport.PassportHelper;
 import im.grusis.mkb.emulator.passport.model.request.PassportRequest;
@@ -31,15 +28,15 @@ public class MkbEmulator {
 
   private ClientConnectionManager connectionManager = new PoolingClientConnectionManager();
   private DefaultHttpClient shared = new DefaultHttpClient(connectionManager);
-  private Map<String, DefaultHttpClient> httpClients = new HashMap<String, DefaultHttpClient>();
+//  private Map<String, DefaultHttpClient> httpClients = new HashMap<String, DefaultHttpClient>();
 
   private DefaultHttpClient getHttpClient(String username) {
-    DefaultHttpClient httpClient = httpClients.get(username);
-    if(httpClient == null) {
-      httpClient = new DefaultHttpClient(connectionManager);
-      httpClients.put(username, httpClient);
-    }
-    return httpClient;
+//    DefaultHttpClient httpClient = httpClients.get(username);
+//    if(httpClient == null) {
+//      httpClient = new DefaultHttpClient(connectionManager);
+//      httpClients.put(username, httpClient);
+//    }
+    return shared;
   }
 
   public MkbCore getMkbCore(String host, String username, long uid, String key, String mac, long time) {

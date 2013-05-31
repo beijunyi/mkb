@@ -27,7 +27,7 @@ public class EncryptKeyResponse {
     if(keylenMatcher.find()) keylen = Integer.parseInt(keylenMatcher.group(1));
     Matcher urlMatcher = Pattern.compile(UrlPattern).matcher(responseString);
     if(urlMatcher.find()) url = urlMatcher.group(1);
-    if(url.contains(";")) {
+    if(url != null && url.contains(";")) {
       int urlBreakIndex = url.indexOf(";");
       String tail = url.substring(urlBreakIndex);
       url = url.substring(0, urlBreakIndex);

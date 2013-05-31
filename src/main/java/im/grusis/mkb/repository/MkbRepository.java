@@ -1,6 +1,8 @@
 package im.grusis.mkb.repository;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -22,11 +24,13 @@ public abstract class MkbRepository<T> {
   private static final String FileSuffix = ".mkb";
 
   protected Gson gson = new Gson();
+  protected Class<T> clazz;
 
   protected String repositoryDirectory;
   protected String separator;
 
-  protected MkbRepository(String childFolder) {
+  protected MkbRepository(String childFolder, Class<T> clazz) {
+    this.clazz = clazz;
     String userHomeDirectory = System.getProperty(UserHome);
     repositoryDirectory = userHomeDirectory + '\\' + MkbRepositoryDirectoryName + '\\' + childFolder;
     File repo = new File(repositoryDirectory);
@@ -72,7 +76,7 @@ public abstract class MkbRepository<T> {
     }
   }
 
-  public T read(String index, Class<T> clazz) {
+  public T read(String index) {
     String fileName = repositoryDirectory + '\\' + index + FileSuffix;
     File file = new File(fileName);
     if(!file.exists()) {
@@ -93,6 +97,24 @@ public abstract class MkbRepository<T> {
       Log.error("Cannot read file {}", fileName);
       return null;
     }
+  }
+
+  public List<T> readAll() {
+    File folder = new File(repositoryDirectory);
+    String[] files = folder.list(new FilenameFilter() {
+      @Override
+      public boolean accept(File dir, String name) {
+        return name.endsWith(".mkb");
+      }
+    });
+    int dotBreak;
+    List<T> ret = new ArrayList<T>();
+    for(String file : files) {
+      dotBreak = file.indexOf(".");
+      T obj = read(file.substring(0, dotBreak));
+      ret.add(obj);
+    }
+    return ret;
   }
 
 }

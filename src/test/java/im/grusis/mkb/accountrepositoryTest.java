@@ -18,8 +18,6 @@ public class accountrepositoryTest {
     MkAccount account = new MkAccount();
     account.setUsername("abc");
     account.setPassword("123");
-    account.setInviteCode("gggggg");
-    account.setInviteCount(0);
     AccountRepository ar = new AccountRepository();
     ar.createOrUpdateAccount(account);
     MkAccount ab = new AccountRepository().getAccount("abc");

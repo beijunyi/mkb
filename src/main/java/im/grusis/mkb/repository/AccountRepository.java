@@ -16,11 +16,11 @@ public class AccountRepository extends MkbRepository<MkAccount> {
   private static final Logger Log = LoggerFactory.getLogger(AccountRepository.class);
 
   public AccountRepository() {
-    super("accounts");
+    super("accounts", MkAccount.class);
   }
 
   public MkAccount getAccount(String username) {
-    return read(username, MkAccount.class);
+    return read(username);
   }
 
   public void createOrUpdateAccount(MkAccount mkAccount) {
