@@ -1,6 +1,6 @@
 package im.grusis.mkb.repository;
 
-import im.grusis.mkb.internal.MkAccount;
+import im.grusis.mkb.internal.MkbAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -11,25 +11,29 @@ import org.springframework.stereotype.Repository;
  * Time: 下午10:03
  */
 @Repository
-public class AccountRepository extends MkbRepository<MkAccount> {
+public class AccountRepository extends MkbRepository<MkbAccount> {
 
   private static final Logger Log = LoggerFactory.getLogger(AccountRepository.class);
 
   public AccountRepository() {
-    super("accounts", MkAccount.class);
+    super("accounts", MkbAccount.class);
   }
 
-  public MkAccount getAccount(String username) {
+  public MkbAccount getAccount(String username) {
     return read(username);
   }
 
-  public void createOrUpdateAccount(MkAccount mkAccount) {
-    String index = mkAccount.getUsername();
+  public void deleteAccount(String username) {
+    remove(username);
+  }
+
+  public void createOrUpdateAccount(MkbAccount mkbAccount) {
+    String index = mkbAccount.getUsername();
     if(index == null || index.isEmpty()) {
       Log.error("Cannot create or update account with no username.");
       return;
     }
-    write(index, mkAccount, true);
+    write(index, mkbAccount, true);
   }
 
 }

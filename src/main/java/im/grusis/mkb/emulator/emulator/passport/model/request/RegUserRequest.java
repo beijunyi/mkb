@@ -1,15 +1,15 @@
 package im.grusis.mkb.emulator.emulator.passport.model.request;
 
-import im.grusis.mkb.emulator.emulator.passport.model.response.StringResponse;
+import im.grusis.mkb.emulator.emulator.passport.model.response.RegUserResponse;
 
 /**
  * User: Mothership
  * Date: 13-5-25
  * Time: 下午3:02
  */
-public class RegUserRequest extends PassportRequest<StringResponse> {
+public class RegUserRequest extends PassportRequest<RegUserResponse> {
 
-  public RegUserRequest(String username, String password, long serverId, String mac) {
+  public RegUserRequest(String username, String password, String mac, long serverId) {
     argMap.put("userName", username);
     argMap.put("email", "");
     argMap.put("userPassword", password);

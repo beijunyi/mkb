@@ -8,7 +8,7 @@ import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
  * Date: 13-5-27
  * Time: 下午10:04
  */
-public class MkAccount {
+public class MkbAccount {
   private String username;
   private String password;
   private String mac;

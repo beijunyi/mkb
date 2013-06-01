@@ -9,12 +9,7 @@ import im.grusis.mkb.emulator.emulator.core.model.basic.PassportLogin;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 import im.grusis.mkb.emulator.emulator.core.model.response.GameDataFactory;
 import im.grusis.mkb.emulator.emulator.core.model.response.UserInfoResponse;
-import im.grusis.mkb.emulator.emulator.passport.model.basic.LoginInformation;
-import im.grusis.mkb.emulator.emulator.passport.model.request.LoginRequest;
-import im.grusis.mkb.emulator.emulator.passport.model.response.LoginInformationResponse;
-import im.grusis.mkb.internal.MkAccount;
 import im.grusis.mkb.repository.AccountRepository;
-import im.grusis.mkb.util.MacAddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,23 +28,33 @@ public class ManualAccessService extends MkbService {
 
   public String doAction(String username, String service, String action, Map<String, String> params) {
     MkbCore core = coreMap.get(username);
-    return core.doAction(service, action, params);
+    try {
+      return core.doAction(service, action, params);
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   public PassportLogin login(String username, String password) {
-    MkAccount account = accountRepository.getAccount(username);
-    if(account == null) {
-      account = new MkAccount();
-      account.setUsername(username);
-      account.setPassword(password);
-      account.setMac(MacAddressHelper.getMacAddress());
-    }
-    String mac = account.getMac();
-    LoginInformationResponse response = mkbEmulator.passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class);
-    LoginInformation li = response.getReturnObjs();
-    MkbCore core = mkbEmulator.getMkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp());
-    coreMap.put(username, core);
-    return core.doPassportLogin();
+//    MkbAccount account = accountRepository.getAccount(username);
+//    if(account == null) {
+//      account = new MkbAccount();
+//      account.setUsername(username);
+//      account.setPassword(password);
+//      account.setMac(MacAddressHelper.getMacAddress());
+//    }
+//    String mac = account.getMac();
+//    LoginInformationResponse response = mkbEmulator.passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class);
+//    LoginInformation li = response.getReturnObjs();
+//    MkbCore core = mkbEmulator.getMkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), mac, li.getTimestamp());
+//    coreMap.put(username, core);
+//    try {
+//      return core.doPassportLogin();
+//    } catch(Exception e) {
+//      e.printStackTrace();
+//    }
+          return null;
   }
 
   public UserInfo getUserInfo(String username) {

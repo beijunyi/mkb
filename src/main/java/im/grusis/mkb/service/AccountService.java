@@ -1,9 +1,12 @@
 package im.grusis.mkb.service;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
-import im.grusis.mkb.internal.MkAccount;
+import im.grusis.mkb.internal.MkbAccount;
+import im.grusis.mkb.internal.StringMapSetArchive;
+import im.grusis.mkb.internal.StringSetArchive;
 import im.grusis.mkb.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,20 +20,23 @@ import org.springframework.stereotype.Service;
 public class AccountService {
   AccountRepository accountRepository;
 
-  private Map<String, MkAccount> macLookup = new LinkedHashMap<String, MkAccount>();
-  private Map<String, MkAccount> usernameLookup = new LinkedHashMap<String, MkAccount>();
-  private Map<String, MkAccount> nicknameLookup = new LinkedHashMap<String, MkAccount>();
+  private Map<String, MkbAccount> macLookup = new LinkedHashMap<String, MkbAccount>();
+  private Map<String, MkbAccount> usernameLookup = new LinkedHashMap<String, MkbAccount>();
+
+  private StringSetArchive usedUsername;
+  private StringMapSetArchive usedNickname;
 
   @Autowired
   public AccountService(AccountRepository accountRepository) {
     this.accountRepository = accountRepository;
-    List<MkAccount> accounts = accountRepository.readAll();
-    for(MkAccount account : accounts) {
+    List<MkbAccount> accounts = accountRepository.readAll();
+    for(MkbAccount account : accounts) {
       updateLookup(account);
     }
+
   }
 
-  private void updateLookup(MkAccount account) {
+  private void updateLookup(MkbAccount account) {
     String mac = account.getMac();
     if(mac != null) {
       macLookup.put(mac, account);
@@ -39,34 +45,24 @@ public class AccountService {
     if(username != null) {
       usernameLookup.put(username, account);
     }
-    UserInfo userInfo;
-    String nickname;
-    if((userInfo = account.getUserInfo()) != null) {
-      if((nickname = userInfo.getNickName()) != null) {
-        nicknameLookup.put(nickname, account);
-      }
-    }
   }
 
-  private void releaseMac(String mac) {
-    MkAccount account = macLookup.remove(mac);
-    account.setMac(null);
-    saveAccount(account);
+  private void deleteAccount(String username) {
+    MkbAccount account = usernameLookup.get(username);
+    macLookup.remove(account.getMac());
+    usernameLookup.remove(account.getUsername());
+    accountRepository.deleteAccount(username);
   }
 
-  public MkAccount findAccountByMac(String mac) {
+  public MkbAccount findAccountByMac(String mac) {
     return macLookup.get(mac);
   }
 
-  public MkAccount findAccountByUsername(String username) {
+  public MkbAccount findAccountByUsername(String username) {
     return usernameLookup.get(username);
   }
 
-  public MkAccount findAccountByNickname(String nickname) {
-    return nicknameLookup.get(nickname);
-  }
-
-  public void saveAccount(MkAccount account) {
+  public void saveAccount(MkbAccount account) {
     updateLookup(account);
     accountRepository.createOrUpdateAccount(account);
   }

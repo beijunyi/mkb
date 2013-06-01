@@ -3,10 +3,7 @@ package im.grusis.mkb.emulator.emulator.core;
 import java.io.IOException;
 import java.util.*;
 
-import im.grusis.mkb.emulator.emulator.MkbEmulator;
-import im.grusis.mkb.emulator.emulator.core.model.basic.PassportLogin;
-import im.grusis.mkb.emulator.emulator.core.model.response.GameDataFactory;
-import im.grusis.mkb.emulator.emulator.core.model.response.PassportLoginResponse;
+import im.grusis.mkb.exception.ServerNotAvailableException;
 import org.apache.http.*;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -17,7 +14,6 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * User: Mothership
@@ -28,39 +24,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MkbCore {
   private static final Logger Log = LoggerFactory.getLogger(MkbCore.class);
 
-
-  @Autowired MkbEmulator emulator;
-
-  private DefaultHttpClient httpClient;
-
   private String phpp;
   private String phpl;
   private String pvc;
   private String pvb;
 
   private String host;
-  private String username;
-  private long uid;
-  private String key;
-  private String mac;
-  private long time;
+  private DefaultHttpClient dedicateHttpClient;
 
-  public MkbCore(String host, String username, long uid, String key, String mac, long time,
-                  DefaultHttpClient httpClient, String phpp, String phpl, String pvc, String pvb) {
+  public MkbCore(String host, DefaultHttpClient dedicateHttpClient, String phpp, String phpl, String pvc, String pvb) {
     this.host = host;
-    this.username = username;
-    this.uid = uid;
-    this.key = key;
-    this.mac = mac;
-    this.time = time;
-    this.httpClient = httpClient;
+    this.dedicateHttpClient = dedicateHttpClient;
     this.phpp = phpp;
     this.phpl = phpl;
     this.pvc = pvc;
     this.pvb = pvb;
   }
 
-  public String doAction(String service, String action, Map<String, String> params) {
+  public String doAction(String service, String action, Map<String, String> params) throws ServerNotAvailableException {
+    return doAction(service, action, params, dedicateHttpClient);
+  }
+
+  public String doAction(String service, String action, Map<String, String> params, DefaultHttpClient httpClient) throws ServerNotAvailableException {
     String url = host + service + "?do=" + action + "&phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
     HttpPost post = new HttpPost(url);
     if(params != null) {
@@ -94,6 +79,9 @@ public class MkbCore {
       HttpResponse response = httpClient.execute(post);
       HttpEntity entity = response.getEntity();
       String content = EntityUtils.toString(entity);
+      if(content.startsWith("<")) {
+        throw new ServerNotAvailableException();
+      }
       Log.info("Received response for {}?do={}:\n\t{}", service, action, content.replaceAll("\n", "\n\t"));
       return content;
     } catch(Exception e) {
@@ -102,16 +90,4 @@ public class MkbCore {
     }
   }
 
-  public PassportLogin doPassportLogin() {
-    Map<String, String> paramMap = new LinkedHashMap<String, String>();
-    paramMap.put("Devicetoken", "");
-    paramMap.put("time", Long.toString(time));
-    paramMap.put("key", key);
-    paramMap.put("Origin", "TTGM");
-    paramMap.put("Udid", mac);
-    paramMap.put("UserName", username);
-    paramMap.put("Password", Long.toString(uid));
-    String responseString = doAction("login.php", "PassportLogin", paramMap);
-    return GameDataFactory.getGameData(responseString, PassportLoginResponse.class).getData();
-  }
 }

@@ -1,11 +1,7 @@
 package im.grusis.mkb;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import im.grusis.mkb.config.RuntimeConfig;
 import im.grusis.mkb.emulator.emulator.MkbEmulator;
-import im.grusis.mkb.emulator.emulator.core.MkbCore;
 import im.grusis.mkb.util.MacAddressHelper;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testng.annotations.Test;
@@ -17,31 +13,43 @@ import org.testng.annotations.Test;
  */
 public class TEMP {
   @Test
-  public void T() {
+  public void T() throws Exception {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(RuntimeConfig.class);
     ctx.start();
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
+
+    String username = "mewtester22";
+    String password = "123456";
+    String invite = "45ekat";
+    String mac = MacAddressHelper.getMacAddress();
+    String nickname = "天使机器18";
+    emulator.webReg(username, password, mac, 331);
+    emulator.webLogin(username);
+    emulator.gamePassportLogin(username);
+    emulator.gameSetNickname(username, 1, invite, nickname);
+    emulator.gamePurchase(username, 3);
+    emulator.gameSkipTutorial(username, "1_21");
+    emulator.gameSkipTutorial(username, "2_10");
+    emulator.gameSkipTutorial(username, "2_17");
+
     ////    ServerInformationResponse serverInformationResponse = emulator.passportRequest(new ServerRequest(), ServerInformationResponse.class);
     //
-    String username = "mewtester9";
-    String password = "123456";
-    String invite = "45ejwe";
-    String mac = MacAddressHelper.getMacAddress();
-//    StringResponse sr = emulator.passportRequest(new RegUserRequest(username, password, 331, MacAddressHelper.getMacAddress()), StringResponse.class);
-//    LoginInformation li = emulator.passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class).getReturnObjs();
-//    MkbCore core = emulator.getMkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), MacAddressHelper.getMacAddress(), li.getTimestamp());
-    MkbCore core = emulator.getMkbCore("http://s6.mysticalcard.com/", username, 0, null, MacAddressHelper.getMacAddress(), 0);
-//    PassportLogin pl = core.doPassportLogin();
-//    Map<String, String> params = new LinkedHashMap<String, String>();
-//    params.put("Sex", "1");
-//    params.put("InviteCode", invite);
-//    params.put("NickName", "天使机器05");
-//    String da = core.doAction("user.php", "EditNickName", params);
 
-    Map<String, String> params2 = new LinkedHashMap<String, String>();
-    params2.put("GoodsId", "3");
-    String da2 = core.doAction("shop.php", "Buy", params2);
-
+    //    String mac = MacAddressHelper.getMacAddress();
+    //    StringResponse sr = emulator.passportRequest(new RegUserRequest(username, password, 331, MacAddressHelper.getMacAddress()), StringResponse.class);
+    //    LoginInformation li = emulator.passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class).getReturnObjs();
+    //    MkbCore core = emulator.getMkbCore(li.getGS_IP(), li.getUserName(), li.getU_ID(), li.getKey(), MacAddressHelper.getMacAddress(), li.getTimestamp());
+    ////    MkbCore core = emulator.getMkbCore("http://s6.mysticalcard.com/", username, 0, null, MacAddressHelper.getMacAddress(), 0);
+    //    PassportLogin pl = core.doPassportLogin();
+    //    Map<String, String> params = new LinkedHashMap<String, String>();
+    //    params.put("Sex", "1");
+    //    params.put("InviteCode", invite);
+    //    params.put("NickName", "天使机器05");
+    //    String da = core.doAction("user.php", "EditNickName", params);
+    //
+    //    Map<String, String> params2 = new LinkedHashMap<String, String>();
+    //    params2.put("GoodsId", "3");
+    //    String da2 = core.doAction("shop.php", "Buy", params2);
 
     //    File file = new File("e:\\rec");
     //    String[] a = file.list();

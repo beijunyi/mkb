@@ -34,8 +34,6 @@ public class PassportHelper {
   private String token;
   private EncryptKeyResponse encryptKeyResponse;
 
-
-
   public PassportHelper(DefaultHttpClient httpClient) {
     this.httpClient = httpClient;
     client = new Client();
@@ -43,10 +41,7 @@ public class PassportHelper {
   }
 
   public void requestEncryptKey() {
-    HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do" +
-                                "?muhe_id=" + token +
-                                "&muhe_encode=false" +
-                                "&muhe_encrypt=true");
+    HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token + "&muhe_encode=false&muhe_encrypt=true");
     try {
       HttpResponse response = httpClient.execute(get);
       BasicResponseHandler handler = new BasicResponseHandler();
@@ -61,10 +56,7 @@ public class PassportHelper {
   public boolean proposeCounterKey() {
     String key = encryptKeyResponse.getKey();
     String counterKey = client.generateKey(key);
-    HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do" +
-                                "?muhe_id=" + token +
-                                "&muhe_encode=false" +
-                                "&muhe_encrypt=" + counterKey);
+    HttpGet get = new HttpGet("http://pp.fantasytoyou.com/pp/userService.do?muhe_id=" + token + "&muhe_encode=false&muhe_encrypt=" + counterKey);
     try {
       HttpResponse response = httpClient.execute(get);
       BasicResponseHandler handler = new BasicResponseHandler();

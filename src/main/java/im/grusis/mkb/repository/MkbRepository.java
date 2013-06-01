@@ -42,7 +42,9 @@ public abstract class MkbRepository<T> {
     if(separator == null || separator.isEmpty()) {
       separator = "\n";
     }
+    Log.info("Created repository for {} in {}", clazz.getSimpleName(), repositoryDirectory);
   }
+
 
   protected void write(String index, Object obj, boolean overwrite) {
     String fileName = repositoryDirectory + '\\' + index;
@@ -74,9 +76,10 @@ public abstract class MkbRepository<T> {
     } catch(Exception e) {
       Log.error("Cannot write file {}", file.getAbsolutePath());
     }
+    Log.info("Finished writing file {}", file.getAbsolutePath());
   }
 
-  public T read(String index) {
+  public <Y extends T> Y read(String index, Class<Y> childClazz) {
     String fileName = repositoryDirectory + '\\' + index + FileSuffix;
     File file = new File(fileName);
     if(!file.exists()) {
@@ -92,11 +95,31 @@ public abstract class MkbRepository<T> {
         sb.append(line).append(separator);
       }
       String string = sb.toString();
-      return gson.fromJson(string, clazz);
+      Log.info("Finished reading file {}", file.getAbsolutePath());
+      fr.close();
+      return gson.fromJson(string, childClazz);
     } catch(Exception e) {
       Log.error("Cannot read file {}", fileName);
       return null;
     }
+  }
+
+  public T read(String index) {
+    return read(index, clazz);
+  }
+
+  public void remove(String index) {
+    String fileName = repositoryDirectory + '\\' + index + FileSuffix;
+    File file = new File(fileName);
+    if(!file.exists()) {
+      Log.error("Cannot remove file. {} does not exist.", fileName);
+      return;
+    }
+    if(!file.delete()) {
+      Log.error("Cannot delete file {}.", fileName);
+      return;
+    }
+    Log.info("File {} is deleted.", fileName);
   }
 
   public List<T> readAll() {
@@ -107,13 +130,19 @@ public abstract class MkbRepository<T> {
         return name.endsWith(".mkb");
       }
     });
+    Log.info("Found {} files in {}", files.length, repositoryDirectory);
     int dotBreak;
     List<T> ret = new ArrayList<T>();
+    int count = 0;
     for(String file : files) {
       dotBreak = file.indexOf(".");
       T obj = read(file.substring(0, dotBreak));
-      ret.add(obj);
+      if(obj != null) {
+        ret.add(obj);
+        count++;
+      }
     }
+    Log.info("Finished reading {}/{} files in {}", count, files.length, repositoryDirectory);
     return ret;
   }
 

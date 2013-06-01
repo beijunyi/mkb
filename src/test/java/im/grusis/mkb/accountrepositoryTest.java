@@ -1,6 +1,6 @@
 package im.grusis.mkb;
 
-import im.grusis.mkb.internal.MkAccount;
+import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.repository.AccountRepository;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.testng.Assert;
@@ -15,12 +15,12 @@ public class accountrepositoryTest {
 
   @Test
   public void readWriteTest() {
-    MkAccount account = new MkAccount();
+    MkbAccount account = new MkbAccount();
     account.setUsername("abc");
     account.setPassword("123");
     AccountRepository ar = new AccountRepository();
     ar.createOrUpdateAccount(account);
-    MkAccount ab = new AccountRepository().getAccount("abc");
+    MkbAccount ab = new AccountRepository().getAccount("abc");
     Assert.assertTrue(EqualsBuilder.reflectionEquals(ab, account));
   }
 }
