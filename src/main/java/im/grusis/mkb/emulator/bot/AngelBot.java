@@ -56,7 +56,7 @@ public class AngelBot extends Bot {
         emulator.gameSetNickname(username, sex, inviteCode, nickname);
         int cardId = emulator.gamePurchase(username, 3);
         Card card = emulator.gameGetCardDetail(username, cardId);
-        Log.info("{} {} obtained card {} {}", username, nickname, card.getCardId(), card.getCardName());
+        Log.info("{} {} obtained {} stars card {} {}", username, nickname, card.getColor(), card.getCardId(), card.getCardName());
         emulator.gameSkipTutorial(username, "1_21");
         emulator.gameSkipTutorial(username, "2_10");
         emulator.gameSkipTutorial(username, "2_17");
@@ -66,7 +66,7 @@ public class AngelBot extends Bot {
           emulator.gameAcceptRewards(prevUsername);
           cardId = emulator.gamePurchase(prevUsername, 3);
           card = emulator.gameGetCardDetail(prevUsername, cardId);
-          Log.info("{} {} obtained card {} {}", prevUsername, previous.getNickName(), card.getCardId(), card.getCardName());
+          Log.info("{} {} obtained {} stars card {} {}", prevUsername, previous.getNickName(), card.getColor(), card.getCardId(), card.getCardName());
         }
         previous = userInfo;
 
