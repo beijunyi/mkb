@@ -1,8 +1,7 @@
 package im.grusis.mkb;
 
 import im.grusis.mkb.config.RuntimeConfig;
-import im.grusis.mkb.emulator.emulator.MkbEmulator;
-import im.grusis.mkb.util.MacAddressHelper;
+import im.grusis.mkb.emulator.bot.BotManager;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.testng.annotations.Test;
 
@@ -16,21 +15,25 @@ public class TEMP {
   public void T() throws Exception {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(RuntimeConfig.class);
     ctx.start();
-    MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 
-    String username = "mewtester22";
-    String password = "123456";
-    String invite = "45ekat";
-    String mac = MacAddressHelper.getMacAddress();
-    String nickname = "天使机器18";
-    emulator.webReg(username, password, mac, 331);
-    emulator.webLogin(username);
-    emulator.gamePassportLogin(username);
-    emulator.gameSetNickname(username, 1, invite, nickname);
-    emulator.gamePurchase(username, 3);
-    emulator.gameSkipTutorial(username, "1_21");
-    emulator.gameSkipTutorial(username, "2_10");
-    emulator.gameSkipTutorial(username, "2_17");
+    BotManager bm = ctx.getBean(BotManager.class);
+    bm.angelBot("mkbangel", "使徒", 1, 331, "45ekat");
+
+//    MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
+//
+//    String username = "mewtester23";
+//    String password = "123456";
+//    String invite = "45ekat";
+//    String mac = MacAddressHelper.getMacAddress();
+//    String nickname = "天使机器19";
+//    emulator.webReg(username, password, mac, 331);
+//    emulator.webLogin(username);
+//    emulator.gamePassportLogin(username);
+//    emulator.gameSetNickname(username, 1, invite, nickname);
+//    emulator.gamePurchase(username, 3);
+//    emulator.gameSkipTutorial(username, "1_21");
+//    emulator.gameSkipTutorial(username, "2_10");
+//    emulator.gameSkipTutorial(username, "2_17");
 
     ////    ServerInformationResponse serverInformationResponse = emulator.passportRequest(new ServerRequest(), ServerInformationResponse.class);
     //

@@ -13,9 +13,9 @@ public class Card {
   private int Race;
   private int Attack;
   private int Wait;
-  private int Skill;
-  private int LockSkill1;
-  private int LockSkill2;
+  private String Skill;
+  private String LockSkill1;
+  private String LockSkill2;
   private int ImageId;
   private int FullImageId;
   private int Price;
@@ -90,27 +90,27 @@ public class Card {
     Wait = wait;
   }
 
-  public int getSkill() {
+  public String getSkill() {
     return Skill;
   }
 
-  public void setSkill(int skill) {
+  public void setSkill(String skill) {
     Skill = skill;
   }
 
-  public int getLockSkill1() {
+  public String getLockSkill1() {
     return LockSkill1;
   }
 
-  public void setLockSkill1(int lockSkill1) {
+  public void setLockSkill1(String lockSkill1) {
     LockSkill1 = lockSkill1;
   }
 
-  public int getLockSkill2() {
+  public String getLockSkill2() {
     return LockSkill2;
   }
 
-  public void setLockSkill2(int lockSkill2) {
+  public void setLockSkill2(String lockSkill2) {
     LockSkill2 = lockSkill2;
   }
 

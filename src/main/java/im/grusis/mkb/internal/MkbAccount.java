@@ -12,6 +12,8 @@ public class MkbAccount {
   private String username;
   private String password;
   private String mac;
+  private String inviteCode;
+  private int inviteCount = 0;
 
   private UserInfo userInfo;
   private CardGroup cardGroup;
@@ -39,6 +41,22 @@ public class MkbAccount {
 
   public void setMac(String mac) {
     this.mac = mac;
+  }
+
+  public String getInviteCode() {
+    return inviteCode;
+  }
+
+  public void setInviteCode(String inviteCode) {
+    this.inviteCode = inviteCode;
+  }
+
+  public int getInviteCount() {
+    return inviteCount;
+  }
+
+  public void setInviteCount(int inviteCount) {
+    this.inviteCount = inviteCount;
   }
 
   public UserInfo getUserInfo() {

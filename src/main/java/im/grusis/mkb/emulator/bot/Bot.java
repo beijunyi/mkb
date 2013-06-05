@@ -5,5 +5,5 @@ package im.grusis.mkb.emulator.bot;
  * Date: 13-5-31
  * Time: 上午12:28
  */
-public abstract class Bot {
+public abstract class Bot implements Runnable {
 }

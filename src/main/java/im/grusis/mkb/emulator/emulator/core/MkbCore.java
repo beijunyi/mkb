@@ -82,7 +82,7 @@ public class MkbCore {
       if(content.startsWith("<")) {
         throw new ServerNotAvailableException();
       }
-      Log.info("Received response for {}?do={}:\n\t{}", service, action, content.replaceAll("\n", "\n\t"));
+      Log.debug("Received response for {}?do={}:\n\t{}", service, action, content.replaceAll("\n", "\n\t"));
       return content;
     } catch(Exception e) {
       e.printStackTrace();

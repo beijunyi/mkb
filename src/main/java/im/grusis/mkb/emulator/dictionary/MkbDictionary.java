@@ -1,7 +1,5 @@
 package im.grusis.mkb.emulator.dictionary;
 
-import java.util.Collection;
-
 /**
  * User: beij
  * Date: 31/05/13
@@ -9,9 +7,10 @@ import java.util.Collection;
  */
 public abstract class MkbDictionary {
 
-  protected Collection<String> usedInstances;
+  public static final int MaxNicknameLength = 7;
+  public static final int MaxUsernameLength = 10;
 
-  public abstract String getAlias();
+  public abstract void init();
 
   public abstract boolean hasNext();
 
@@ -19,11 +18,4 @@ public abstract class MkbDictionary {
 
   public abstract int tailSize();
 
-  public Collection<String> getUsedInstances() {
-    return usedInstances;
-  }
-
-  public void setUsedInstances(Collection<String> usedInstances) {
-    this.usedInstances = usedInstances;
-  }
 }

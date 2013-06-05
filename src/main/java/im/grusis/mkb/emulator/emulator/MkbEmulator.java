@@ -3,7 +3,7 @@ package im.grusis.mkb.emulator.emulator;
 import java.util.*;
 
 import im.grusis.mkb.emulator.emulator.core.MkbCore;
-import im.grusis.mkb.emulator.emulator.core.model.basic.PassportLogin;
+import im.grusis.mkb.emulator.emulator.core.model.basic.*;
 import im.grusis.mkb.emulator.emulator.core.model.response.*;
 import im.grusis.mkb.emulator.emulator.passport.PassportHelper;
 import im.grusis.mkb.emulator.emulator.passport.model.basic.LoginInformation;
@@ -15,6 +15,7 @@ import im.grusis.mkb.exception.UnknownErrorException;
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.service.AccountService;
 import im.grusis.mkb.service.ArchiveService;
+import im.grusis.mkb.service.AssetsService;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -44,6 +45,7 @@ public class MkbEmulator {
 
   @Autowired AccountService accountService;
   @Autowired ArchiveService archiveService;
+  @Autowired AssetsService assetsService;
 
   private ClientConnectionManager connectionManager = new PoolingClientConnectionManager();
   private DefaultHttpClient shared = new DefaultHttpClient(connectionManager);
@@ -127,7 +129,7 @@ public class MkbEmulator {
     RegUserResponse resp = passportRequest(new RegUserRequest(username, password, mac, serverId), RegUserResponse.class);
     if(resp.badRequest()) {
       if(resp.duplicateUsername()) {
-        Log.error("Cannot register account. Username {} is already in use");
+        Log.error("Cannot register account. Username {} is already in use", username);
         archiveService.addUsername(username);
         return false;
       }
@@ -243,6 +245,106 @@ public class MkbEmulator {
       throw new UnknownErrorException();
     }
     return true;
+  }
+
+  public boolean gameAcceptRewards(String username) throws ServerNotAvailableException, UnknownErrorException {
+    String responseString = gameDoAction(username, "user.php", "AwardSalary", null);
+    UserSalaryResponse response = GameDataFactory.getGameData(responseString, UserSalaryResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    return true;
+  }
+
+  public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException {
+    Card card = assetsService.findCard(cardId);
+    if(card == null) {
+      String responseString = gameDoAction(username, "card.php", "GetAllCard", null);
+      AllCardResponse response = GameDataFactory.getGameData(responseString, AllCardResponse.class);
+      if(response.badRequest()) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+      AllCard cards = response.getData();
+      assetsService.saveAssets(cards);
+      card = assetsService.findCard(cardId);
+      if(card == null) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+    }
+    return card;
+  }
+
+  public Rune gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException {
+    Rune rune = assetsService.findRune(runeId);
+    if(rune == null) {
+      String responseString = gameDoAction(username, "rune.php", "GetAllRune", null);
+      AllRuneResponse response = GameDataFactory.getGameData(responseString, AllRuneResponse.class);
+      if(response.badRequest()) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+      Runes runes = response.getData();
+      assetsService.saveAssets(runes);
+      rune = assetsService.findRune(runeId);
+      if(rune == null) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+    }
+    return rune;
+  }
+
+  public Skill gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException {
+    Skill skill = assetsService.findSkill(skillId);
+    if(skill == null) {
+      String responseString = gameDoAction(username, "card.php", "GetAllSkill", null);
+      AllSkillResponse response = GameDataFactory.getGameData(responseString, AllSkillResponse.class);
+      if(response.badRequest()) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+      AllSkill skills = response.getData();
+      assetsService.saveAssets(skills);
+      skill = assetsService.findSkill(skillId);
+      if(skill == null) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+    }
+    return skill;
+  }
+
+  public UserInfo gameGetUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException {
+    String responseString = gameDoAction(username, "user.php", "GetUserinfo", null);
+    UserInfoResponse response = GameDataFactory.getGameData(responseString, UserInfoResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    UserInfo result = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    account.setUserInfo(result);
+    account.setInviteCode(result.getInviteCode());
+    account.setInviteCount(result.getInviteNum());
+    accountService.saveAccount(account);
+    return result;
+  }
+
+  public CardGroup gameGetCardGroup(String username) throws ServerNotAvailableException, UnknownErrorException {
+    String responseString = gameDoAction(username, "card.php", "GetCardGroup", null);
+    CardGroupResponse response = GameDataFactory.getGameData(responseString, CardGroupResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    CardGroup result = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    account.setCardGroup(result);
+    accountService.saveAccount(account);
+    return result;
   }
 
 }

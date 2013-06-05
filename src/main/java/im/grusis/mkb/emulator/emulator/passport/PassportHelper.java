@@ -46,7 +46,7 @@ public class PassportHelper {
       HttpResponse response = httpClient.execute(get);
       BasicResponseHandler handler = new BasicResponseHandler();
       String responseString = handler.handleResponse(response);
-      Log.info("Received response for encrypt key request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
+      Log.debug("Received response for encrypt key request {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
       encryptKeyResponse = new EncryptKeyResponse(responseString);
     } catch(Exception e) {
       Log.error("Cannot request encrypt key", e);
@@ -61,7 +61,7 @@ public class PassportHelper {
       HttpResponse response = httpClient.execute(get);
       BasicResponseHandler handler = new BasicResponseHandler();
       String responseString = handler.handleResponse(response);
-      Log.info("Received response for counter key proposal {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
+      Log.debug("Received response for counter key proposal {}:\n\t{}", token, responseString.replaceAll("\n", "\n\t"));
       return true;
     } catch(Exception e) {
       Log.error("Cannot propose counter key", e);
@@ -85,7 +85,7 @@ public class PassportHelper {
 
       BasicResponseHandler handler = new BasicResponseHandler();
       String responseString = handler.handleResponse(response);
-      Log.info("Received response for {} {}:\n\t{}", token, passportRequest.getClass().getSimpleName(), responseString.replaceAll("\n", "\n\t"));
+      Log.debug("Received response for {} {}:\n\t{}", token, passportRequest.getClass().getSimpleName(), responseString.replaceAll("\n", "\n\t"));
 
       return ResponseFactory.getResponse(responseString, client.getKey(), clazz);
     } catch(Exception e) {

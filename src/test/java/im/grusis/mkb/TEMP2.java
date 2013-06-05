@@ -1,11 +1,8 @@
 package im.grusis.mkb;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import im.grusis.mkb.config.RuntimeConfig;
+import im.grusis.mkb.emulator.bot.BotManager;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * User: Mothership
@@ -16,25 +13,11 @@ public class TEMP2 {
 
 //  @Test
   public void t() {
-    final ClientConnectionManager ccm = new PoolingClientConnectionManager();
-    for(int i = 0; i < 100; i++) {
-      new Thread(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            DefaultHttpClient hc = new DefaultHttpClient(ccm);
-            HttpGet get = new HttpGet("http://www.google.com");
-            HttpResponse response = hc.execute(get);
-            BasicResponseHandler handler = new BasicResponseHandler();
-            String responseString = handler.handleResponse(response);
-            System.out.println(responseString);
-          } catch(Exception e) {
-            e.printStackTrace();
-          }
-        }
-      }).start();
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(RuntimeConfig.class);
+    ctx.start();
 
-    }
+    BotManager bm = ctx.getBean(BotManager.class);
+    bm.angelBot("mkbangel", "使徒", 1, 331, "45ekat");
 
     System.currentTimeMillis();
   }

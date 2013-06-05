@@ -76,7 +76,7 @@ public abstract class MkbRepository<T> {
     } catch(Exception e) {
       Log.error("Cannot write file {}", file.getAbsolutePath());
     }
-    Log.info("Finished writing file {}", file.getAbsolutePath());
+    Log.debug("Finished writing file {}", file.getAbsolutePath());
   }
 
   public <Y extends T> Y read(String index, Class<Y> childClazz) {

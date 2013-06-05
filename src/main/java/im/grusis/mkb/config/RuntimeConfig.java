@@ -1,7 +1,8 @@
 package im.grusis.mkb.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * Time: 22:58
  */
 @Configuration
-@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class})
+@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class})
 public class RuntimeConfig {
 
   @Bean

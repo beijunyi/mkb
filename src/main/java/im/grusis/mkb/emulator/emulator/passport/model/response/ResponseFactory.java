@@ -16,7 +16,7 @@ public class ResponseFactory {
   public static <T extends ReturnTemplate> T getResponse(String str, String key, Class<T> clazz) {
     try {
       String result = new ResponseTemplate(str, key).getResult();
-      Log.info("Parsing response string {}\ninto {}", result, clazz.getSimpleName());
+      Log.debug("Parsing response string {} into {}", result, clazz.getSimpleName());
       return new Gson().fromJson(result, clazz);
     } catch(Exception e) {
       e.printStackTrace();
