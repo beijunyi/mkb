@@ -79,7 +79,7 @@ public class MkbCore {
       HttpResponse response = httpClient.execute(post);
       HttpEntity entity = response.getEntity();
       String content = EntityUtils.toString(entity);
-      if(content.startsWith("<")) {
+      if(content == null || content.startsWith("<")) {
         throw new ServerNotAvailableException();
       }
       Log.debug("Received response for {}?do={}:\n\t{}", service, action, content.replaceAll("\n", "\n\t"));

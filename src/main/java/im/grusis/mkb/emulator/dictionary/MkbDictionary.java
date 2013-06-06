@@ -8,7 +8,7 @@ package im.grusis.mkb.emulator.dictionary;
 public abstract class MkbDictionary {
 
   public static final int MaxNicknameLength = 7;
-  public static final int MaxUsernameLength = 10;
+  public static final int MaxUsernameLength = 15;
 
   public abstract void init();
 

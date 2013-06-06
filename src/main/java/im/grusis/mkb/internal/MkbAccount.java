@@ -16,7 +16,9 @@ public class MkbAccount {
   private int inviteCount = 0;
 
   private UserInfo userInfo;
+  private long userInfoUpdate;
   private CardGroup cardGroup;
+  private long cardGroupUpdate;
 
 
   public String getUsername() {
@@ -73,5 +75,21 @@ public class MkbAccount {
 
   public void setCardGroup(CardGroup cardGroup) {
     this.cardGroup = cardGroup;
+  }
+
+  public long getUserInfoUpdate() {
+    return userInfoUpdate;
+  }
+
+  public void setUserInfoUpdate(long userInfoUpdate) {
+    this.userInfoUpdate = userInfoUpdate;
+  }
+
+  public long getCardGroupUpdate() {
+    return cardGroupUpdate;
+  }
+
+  public void setCardGroupUpdate(long cardGroupUpdate) {
+    this.cardGroupUpdate = cardGroupUpdate;
   }
 }

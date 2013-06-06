@@ -53,7 +53,9 @@ public class AngelBot extends Bot {
         if(!emulator.webReg(username, password, mac, serverId)) continue;
         emulator.webLogin(username);
         emulator.gamePassportLogin(username);
-        emulator.gameSetNickname(username, sex, inviteCode, nickname);
+        while(!emulator.gameSetNickname(username, sex, inviteCode, nickname) && nicknameDict.hasNext()) {
+          nickname = nicknameDict.next();
+        }
         int cardId = emulator.gamePurchase(username, 3);
         Card card = emulator.gameGetCardDetail(username, cardId);
         Log.info("{} {} obtained {} stars card {} {}", username, nickname, card.getColor(), card.getCardId(), card.getCardName());
@@ -71,7 +73,7 @@ public class AngelBot extends Bot {
         previous = userInfo;
 
       } catch(Exception e) {
-        Log.error("*** UNKNOWN ERROR *** {}", e);
+        Log.error("*** UNKNOWN ERROR ***", e);
       }
 
     }

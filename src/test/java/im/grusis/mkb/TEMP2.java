@@ -17,7 +17,7 @@ public class TEMP2 {
     ctx.start();
 
     BotManager bm = ctx.getBean(BotManager.class);
-    bm.angelBot("mkbangel", "使徒", 1, 331, "45ekat");
+    bm.angelBot("mkbzealot", "狂徒", 1, 331, "45ekat");
 
     System.currentTimeMillis();
   }
