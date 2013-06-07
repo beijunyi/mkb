@@ -25,8 +25,8 @@ public class AssetsService {
   private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
   private Map<Integer, Rune> runeLookup = new LinkedHashMap<Integer, Rune>();
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
-  private Map<Integer, MapScene> mapSceneLookup = new LinkedHashMap<Integer, MapScene>();
-  private Map<Integer, MapStageDetail> mapStageLookup = new LinkedHashMap<Integer, MapScene>();
+  private Map<Integer, MapStage> mapStageLookup = new LinkedHashMap<Integer, MapStage>();
+  private Map<Integer, MapStageDetail> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDetail>();
 
   @PostConstruct
   public void prepareLookups() {
@@ -37,7 +37,7 @@ public class AssetsService {
     SkillAssets skillAssets = assetsRepository.getAssets(SkillAssets.AssetName, SkillAssets.class);
     updateSkillLookup(skillAssets);
     MapStageAssets mapStageAssets = assetsRepository.getAssets(MapStageAssets.AssetName, MapStageAssets.class);
-    updateSkillLookup(mapStageAssets);
+    updateMapStageLookup(mapStageAssets);
   }
 
   public void updateCardLookup(CardAssets cardAssets) {
@@ -76,14 +76,18 @@ public class AssetsService {
     }
   }
 
-  public void updateSkillLookup(MapStageAssets mapStageAssets) {
+  public void updateMapStageLookup(MapStageAssets mapStageAssets) {
     if(mapStageAssets == null) {
       return;
     }
-    mapSceneLookup.clear();
+    mapStageLookup.clear();
+    mapStageDetailLookup.clear();
     MapStageAll mapStages = mapStageAssets.getAsset();
-    for(MapScene scene : mapStages) {
-      mapSceneLookup.put(scene.getMapStageId(), scene);
+    for(MapStage stage : mapStages) {
+      mapStageLookup.put(stage.getMapStageId(), stage);
+      for(MapStageDetail detail : stage.getMapStageDetails()) {
+        mapStageDetailLookup.put(detail.getMapStageDetailId(), detail);
+      }
     }
   }
 
@@ -97,6 +101,14 @@ public class AssetsService {
 
   public Skill findSkill(int id) {
     return skillLookup.get(id);
+  }
+
+  public MapStage findMapStage(int id) {
+    return mapStageLookup.get(id);
+  }
+
+  public MapStageDetail findMapStageDetail(int id) {
+    return mapStageDetailLookup.get(id);
   }
 
   public void saveAssets(AllCard cards) {
@@ -118,5 +130,12 @@ public class AssetsService {
     skillAssets.setAsset(skills);
     assetsRepository.createOrUpdateAssets(skillAssets);
     updateSkillLookup(skillAssets);
+  }
+
+  public void saveAssets(MapStageAll stages) {
+    MapStageAssets mapStageAssets = new MapStageAssets();
+    mapStageAssets.setAsset(stages);
+    assetsRepository.createOrUpdateAssets(mapStageAssets);
+    updateMapStageLookup(mapStageAssets);
   }
 }

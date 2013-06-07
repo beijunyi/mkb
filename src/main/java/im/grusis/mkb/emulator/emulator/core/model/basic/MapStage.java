@@ -7,7 +7,7 @@ import java.util.List;
  * Date: 13-6-7
  * Time: 下午10:06
  */
-public class MapScene {
+public class MapStage {
  private  int MapStageId;
  private  String Name;
  private  int Count;

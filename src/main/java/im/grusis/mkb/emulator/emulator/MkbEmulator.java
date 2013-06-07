@@ -326,24 +326,44 @@ public class MkbEmulator {
     return skill;
   }
 
-  public MapStageDetail gameGetMapStageDetail(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException {
-    Skill skill = assetsService.findSkill(skillId);
-    if(skill == null) {
-      String responseString = gameDoAction(username, "card.php", "GetAllSkill", null);
-      AllSkillResponse response = GameDataFactory.getGameData(responseString, AllSkillResponse.class);
+  public MapStage gameGetMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException {
+    MapStage mapStage = assetsService.findMapStage(stageId);
+    if(mapStage == null) {
+      String responseString = gameDoAction(username, "mapstage.php", "GetMapStageALL", null);
+      MapStageAllResponse response = GameDataFactory.getGameData(responseString, MapStageAllResponse.class);
       if(response.badRequest()) {
         Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
-      AllSkill skills = response.getData();
-      assetsService.saveAssets(skills);
-      skill = assetsService.findSkill(skillId);
-      if(skill == null) {
+      MapStageAll mapStages = response.getData();
+      assetsService.saveAssets(mapStages);
+      mapStage = assetsService.findMapStage(stageId);
+      if(mapStage == null) {
         Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
-    return skill;
+    return mapStage;
+  }
+
+  public MapStageDetail gameGetMapStageDetail(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+    MapStageDetail mapStageDetail = assetsService.findMapStageDetail(stageDetailId);
+    if(mapStageDetail == null) {
+      String responseString = gameDoAction(username, "mapstage.php", "GetMapStageALL", null);
+      MapStageAllResponse response = GameDataFactory.getGameData(responseString, MapStageAllResponse.class);
+      if(response.badRequest()) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+      MapStageAll mapStages = response.getData();
+      assetsService.saveAssets(mapStages);
+      mapStageDetail = assetsService.findMapStageDetail(stageDetailId);
+      if(mapStageDetail == null) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+    }
+    return mapStageDetail;
   }
 
   public UserInfo gameGetUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException {
@@ -392,7 +412,7 @@ public class MkbEmulator {
 
   public UserMapStages gameGetUserMapStage(String username) throws ServerNotAvailableException, UnknownErrorException {
     String responseString = gameDoAction(username, "mapstage.php", "GetUserMapStages", null);
-    UserMapStagesResponse response = GameDataFactory.getGameData(responseString, UserMapStagesResponse);
+    UserMapStagesResponse response = GameDataFactory.getGameData(responseString, UserMapStagesResponse.class);
     if(response.badRequest()) {
       Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
