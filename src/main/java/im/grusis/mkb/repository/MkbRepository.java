@@ -95,7 +95,7 @@ public abstract class MkbRepository<T> {
         sb.append(line).append(separator);
       }
       String string = sb.toString();
-      Log.info("Finished reading file {}", file.getAbsolutePath());
+      Log.debug("Finished reading file {}", file.getAbsolutePath());
       fr.close();
       return gson.fromJson(string, childClazz);
     } catch(Exception e) {
@@ -108,18 +108,31 @@ public abstract class MkbRepository<T> {
     return read(index, clazz);
   }
 
-  public void remove(String index) {
+  public void remove(String index, boolean backup) {
     String fileName = repositoryDirectory + '\\' + index + FileSuffix;
     File file = new File(fileName);
     if(!file.exists()) {
-      Log.error("Cannot remove file. {} does not exist.", fileName);
+      Log.error("Cannot remove file. File {} does not exist.", fileName);
       return;
     }
-    if(!file.delete()) {
-      Log.error("Cannot delete file {}.", fileName);
-      return;
+    if(!backup) {
+      if(!file.delete()) {
+        Log.error("Cannot delete file {}.", fileName);
+        return;
+      }
+      Log.debug("File {} is deleted.", fileName);
+    } else {
+      File backupFile = new File(fileName + ".old");
+      if(backupFile.exists() && !backupFile.delete()) {
+        Log.error("Cannot delete backup file {}", backupFile.getAbsolutePath());
+        return;
+      }
+      if(!file.renameTo(backupFile)) {
+        Log.error("Cannot rename file {} into {}", fileName, backupFile.getAbsolutePath());
+      } else {
+        Log.debug("File {} is renamed into {}.", fileName, backupFile.getAbsolutePath());
+      }
     }
-    Log.info("File {} is deleted.", fileName);
   }
 
   public List<T> readAll() {

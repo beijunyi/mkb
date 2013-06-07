@@ -121,6 +121,15 @@ public class MkbEmulator {
       archiveService.addUsername(username);
       TemporaryProfile token = new TemporaryProfile(ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp(), System.currentTimeMillis());
       profiles.put(username, token);
+      MkbAccount account = accountService.findAccountByUsername(username);
+      if(account == null) {
+        account = new MkbAccount();
+        account.setUsername(username);
+        account.setPassword(password);
+        account.setMac(mac);
+        accountService.saveAccount(account);
+        archiveService.addUsername(username);
+      }
     }
     return ret;
   }

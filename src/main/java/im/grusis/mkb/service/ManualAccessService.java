@@ -7,9 +7,10 @@ import im.grusis.mkb.emulator.emulator.MkbEmulator;
 import im.grusis.mkb.emulator.emulator.core.MkbCore;
 import im.grusis.mkb.emulator.emulator.core.model.basic.PassportLogin;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
-import im.grusis.mkb.emulator.emulator.core.model.response.GameDataFactory;
-import im.grusis.mkb.emulator.emulator.core.model.response.UserInfoResponse;
+import im.grusis.mkb.exception.ServerNotAvailableException;
+import im.grusis.mkb.exception.UnknownErrorException;
 import im.grusis.mkb.repository.AccountRepository;
+import im.grusis.mkb.util.MacAddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +27,13 @@ public class ManualAccessService extends MkbService {
 
   private Map<String, MkbCore> coreMap = new HashMap<String, MkbCore>();
 
-  public String doAction(String username, String service, String action, Map<String, String> params) {
-    MkbCore core = coreMap.get(username);
-    try {
-      return core.doAction(service, action, params);
-    } catch(Exception e) {
-      e.printStackTrace();
-      return null;
-    }
+  public String doAction(String username, String service, String action, Map<String, String> params) throws ServerNotAvailableException, UnknownErrorException {
+    return mkbEmulator.gameDoAction(username, service, action, params);
   }
 
-  public PassportLogin login(String username, String password) {
+  public PassportLogin login(String username, String password) throws ServerNotAvailableException, UnknownErrorException {
+    mkbEmulator.webLogin(username, password, MacAddressHelper.getMacAddress());
+    return mkbEmulator.gamePassportLogin(username);
 //    MkbAccount account = accountRepository.getAccount(username);
 //    if(account == null) {
 //      account = new MkbAccount();
@@ -54,12 +51,13 @@ public class ManualAccessService extends MkbService {
 //    } catch(Exception e) {
 //      e.printStackTrace();
 //    }
-          return null;
+//          return null;
   }
 
-  public UserInfo getUserInfo(String username) {
-    String responseString = doAction(username, "user.php", "GetUserInfo", null);
-    return GameDataFactory.getGameData(responseString, UserInfoResponse.class).getData();
+  public UserInfo getUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException{
+    return mkbEmulator.gameGetUserInfo(username);
+//    String responseString = doAction(username, "user.php", "GetUserInfo", null);
+//    return GameDataFactory.getGameData(responseString, UserInfoResponse.class).getData();
   }
 
 }

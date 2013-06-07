@@ -23,8 +23,8 @@ public class AccountRepository extends MkbRepository<MkbAccount> {
     return read(username);
   }
 
-  public void deleteAccount(String username) {
-    remove(username);
+  public void deleteAccount(String username, boolean backup) {
+    remove(username, backup);
   }
 
   public void createOrUpdateAccount(MkbAccount mkbAccount) {

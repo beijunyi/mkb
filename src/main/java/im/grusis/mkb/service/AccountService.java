@@ -4,7 +4,7 @@ import java.util.*;
 
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.repository.AccountRepository;
-import im.grusis.mkb.service.filters.AccountFilter;
+import im.grusis.mkb.internal.filters.AccountFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +41,10 @@ public class AccountService {
     }
   }
 
-  private void deleteAccount(String username) {
-    MkbAccount account = usernameLookup.get(username);
+  private void deleteAccount(boolean backup, MkbAccount account) {
     macLookup.remove(account.getMac());
     usernameLookup.remove(account.getUsername());
-    accountRepository.deleteAccount(username);
+    accountRepository.deleteAccount(account.getUsername(), backup);
   }
 
   public MkbAccount findAccountByMac(String mac) {
@@ -61,25 +60,41 @@ public class AccountService {
     accountRepository.createOrUpdateAccount(account);
   }
 
-  public MkbAccount findFirst(AccountFilter filter) {
+  public MkbAccount findFirst(boolean survivor, AccountFilter... filters) {
     Collection<MkbAccount> accounts = usernameLookup.values();
     for(MkbAccount account : accounts) {
-      if(filter.accept(account)) {
+      if(survivor == MkbAccount.matches(account, filters)) {
         return account;
       }
     }
     return null;
   }
 
-  public Collection<MkbAccount> findAll(AccountFilter filter) {
+  public Collection<MkbAccount> findAll(boolean survivor, AccountFilter... filters) {
     Collection<MkbAccount> accounts = usernameLookup.values();
     Collection<MkbAccount> ret = new LinkedHashSet<MkbAccount>();
     for(MkbAccount account : accounts) {
-      if(filter.accept(account)) {
+      if(survivor == MkbAccount.matches(account, filters)) {
         ret.add(account);
       }
     }
     return ret;
+  }
+
+  public int clearUnqualified(boolean backup, AccountFilter... filters) {
+    Collection<MkbAccount> accounts = findAll(false, filters);
+    int count = 0;
+    for(MkbAccount account : accounts) {
+      deleteAccount(backup, account);
+      count++;
+    }
+    return count;
+  }
+
+  public void clear(boolean backup, Collection<MkbAccount> accounts) {
+    for(MkbAccount account : accounts) {
+      deleteAccount(backup, account);
+    }
   }
 
   public void finishInvite(String invitor) {
