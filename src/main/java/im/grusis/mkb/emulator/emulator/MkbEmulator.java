@@ -424,4 +424,97 @@ public class MkbEmulator {
     return result;
   }
 
+  private void processBattleResult(String username, Battle result) {
+    BattleExtData ext = result.getExtData();
+    if(ext != null) {
+      MkbAccount account = accountService.findAccountByUsername(username);
+      BattleExtData.User user = ext.getUser();
+      if(user != null) {
+        UserInfo userInfo = account.getUserInfo();
+        if(userInfo == null) {
+          userInfo = new UserInfo();
+          account.setUserInfo(userInfo);
+        }
+        int level = user.getLevel();
+        long exp = user.getExp();
+        long prevExp = user.getNextExp();
+        long nextExp = user.getNextExp();
+        if(level > 0) userInfo.setLevel(level);
+        if(exp > 0) userInfo.setExp(exp);
+        if(prevExp > 0) userInfo.setPrevExp(prevExp);
+        if(nextExp > 0) userInfo.setNextExp(nextExp);
+      }
+      accountService.saveAccount(account);
+    }
+  }
+
+  public Battle gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
+    params.put("isManual", Integer.toString(0));
+    String responseString = gameDoAction(username, "mapstage.php", "EditUserMapStages", params);
+    BattleResponse response = GameDataFactory.getGameData(responseString, BattleResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    Battle result = response.getData();
+    processBattleResult(username, result);
+    return result;
+  }
+
+  public Battle gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("manual", Integer.toString(0));
+    params.put("MapStageId", Integer.toString(mapStageId));
+    params.put("Layer", Integer.toString(layer));
+    params.put("ItemIndex", Integer.toString(itemIndex));
+    String responseString = gameDoAction(username, "maze.php", "Battle", params);
+    BattleResponse response = GameDataFactory.getGameData(responseString, BattleResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    Battle result = response.getData();
+    processBattleResult(username, result);
+    return result;
+  }
+
+  public MazeInfo gameGetMazeLayer(String username, int mapStageId, int layer) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("MapStageId", Integer.toString(mapStageId));
+    params.put("Layer", Integer.toString(layer));
+    String responseString = gameDoAction(username, "maze.php", "Info", params);
+    MazeInfoResponse response = GameDataFactory.getGameData(responseString, MazeInfoResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public MazeShow gameGetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("MapStageId", Integer.toString(mapStageId));
+    String responseString = gameDoAction(username, "maze.php", "Show", params);
+    MazeShowResponse response = GameDataFactory.getGameData(responseString, MazeShowResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("MapStageId", Integer.toString(mapStageId));
+    String responseString = gameDoAction(username, "mapstage.php", "AwardClear", params);
+    AwardClearResponse response = GameDataFactory.getGameData(responseString, AwardClearResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    return true;
+  }
+
 }
