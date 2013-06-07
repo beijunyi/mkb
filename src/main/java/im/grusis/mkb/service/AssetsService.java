@@ -4,10 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
-import im.grusis.mkb.internal.CardAssets;
-import im.grusis.mkb.internal.RuneAssets;
-import im.grusis.mkb.internal.SkillAssets;
+import im.grusis.mkb.internal.*;
 import im.grusis.mkb.repository.AssetsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,21 +20,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class AssetsService {
 
-  private AssetsRepository assetsRepository;
+  @Autowired private AssetsRepository assetsRepository;
 
   private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
   private Map<Integer, Rune> runeLookup = new LinkedHashMap<Integer, Rune>();
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
+  private Map<Integer, MapScene> mapSceneLookup = new LinkedHashMap<Integer, MapScene>();
+  private Map<Integer, MapStageDetail> mapStageLookup = new LinkedHashMap<Integer, MapScene>();
 
-  @Autowired
-  public AssetsService(AssetsRepository assetsRepository) {
-    this.assetsRepository = assetsRepository;
+  @PostConstruct
+  public void prepareLookups() {
     CardAssets cardAssets = assetsRepository.getAssets(CardAssets.AssetName, CardAssets.class);
     updateCardLookup(cardAssets);
     RuneAssets runeAssets = assetsRepository.getAssets(RuneAssets.AssetName, RuneAssets.class);
     updateRuneLookup(runeAssets);
     SkillAssets skillAssets = assetsRepository.getAssets(SkillAssets.AssetName, SkillAssets.class);
     updateSkillLookup(skillAssets);
+    MapStageAssets mapStageAssets = assetsRepository.getAssets(MapStageAssets.AssetName, MapStageAssets.class);
+    updateSkillLookup(mapStageAssets);
   }
 
   public void updateCardLookup(CardAssets cardAssets) {
@@ -70,6 +73,17 @@ public class AssetsService {
     List<Skill> skillList = skills.getSkills();
     for(Skill skill : skillList) {
       skillLookup.put(skill.getSkillId(), skill);
+    }
+  }
+
+  public void updateSkillLookup(MapStageAssets mapStageAssets) {
+    if(mapStageAssets == null) {
+      return;
+    }
+    mapSceneLookup.clear();
+    MapStageAll mapStages = mapStageAssets.getAsset();
+    for(MapScene scene : mapStages) {
+      mapSceneLookup.put(scene.getMapStageId(), scene);
     }
   }
 

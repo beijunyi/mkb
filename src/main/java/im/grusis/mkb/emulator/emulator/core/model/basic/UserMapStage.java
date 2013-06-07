@@ -5,7 +5,7 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Date: 13-6-6
  * Time: 下午10:29
  */
-public class MapStage {
+public class UserMapStage {
   private long Uid;
   private int MapStageDetailId;
   private int Type;

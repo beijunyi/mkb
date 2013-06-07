@@ -9,7 +9,7 @@ import im.grusis.mkb.emulator.emulator.core.model.basic.AllSkill;
  */
 public class SkillAssets extends MkbAssets<AllSkill> {
 
-  public static final String AssetName = "assets";
+  public static final String AssetName = "skills";
 
   public SkillAssets() {
     super(AssetName);

@@ -326,6 +326,26 @@ public class MkbEmulator {
     return skill;
   }
 
+  public MapStageDetail gameGetMapStageDetail(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException {
+    Skill skill = assetsService.findSkill(skillId);
+    if(skill == null) {
+      String responseString = gameDoAction(username, "card.php", "GetAllSkill", null);
+      AllSkillResponse response = GameDataFactory.getGameData(responseString, AllSkillResponse.class);
+      if(response.badRequest()) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+      AllSkill skills = response.getData();
+      assetsService.saveAssets(skills);
+      skill = assetsService.findSkill(skillId);
+      if(skill == null) {
+        Log.error("*** UNKNOWN ERROR *** {}", responseString);
+        throw new UnknownErrorException();
+      }
+    }
+    return skill;
+  }
+
   public UserInfo gameGetUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException {
     String responseString = gameDoAction(username, "user.php", "GetUserinfo", null);
     UserInfoResponse response = GameDataFactory.getGameData(responseString, UserInfoResponse.class);
@@ -342,6 +362,20 @@ public class MkbEmulator {
     return result;
   }
 
+  public UserCards gameGetUserCards(String username) throws ServerNotAvailableException, UnknownErrorException {
+    String responseString = gameDoAction(username, "card.php", "GetUserCards", null);
+    UserCardsResponse response = GameDataFactory.getGameData(responseString, UserCardsResponse.class);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    UserCards result = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    account.setUserCards(result);
+    accountService.saveAccount(account);
+    return result;
+  }
+
   public CardGroup gameGetCardGroup(String username) throws ServerNotAvailableException, UnknownErrorException {
     String responseString = gameDoAction(username, "card.php", "GetCardGroup", null);
     CardGroupResponse response = GameDataFactory.getGameData(responseString, CardGroupResponse.class);
@@ -352,6 +386,20 @@ public class MkbEmulator {
     CardGroup result = response.getData();
     MkbAccount account = accountService.findAccountByUsername(username);
     account.setCardGroup(result);
+    accountService.saveAccount(account);
+    return result;
+  }
+
+  public UserMapStages gameGetUserMapStage(String username) throws ServerNotAvailableException, UnknownErrorException {
+    String responseString = gameDoAction(username, "mapstage.php", "GetUserMapStages", null);
+    UserMapStagesResponse response = GameDataFactory.getGameData(responseString, UserMapStagesResponse);
+    if(response.badRequest()) {
+      Log.error("*** UNKNOWN ERROR *** {}", responseString);
+      throw new UnknownErrorException();
+    }
+    UserMapStages result = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    account.setUserMapStages(result);
     accountService.saveAccount(account);
     return result;
   }

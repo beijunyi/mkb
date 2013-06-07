@@ -11,7 +11,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  * Time: 22:58
  */
 @Configuration
-@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class})
+@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class, EcoSystemConfig.class})
 public class RuntimeConfig {
 
   @Bean

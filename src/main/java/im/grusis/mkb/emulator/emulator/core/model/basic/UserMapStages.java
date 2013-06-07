@@ -7,5 +7,5 @@ import java.util.LinkedHashMap;
  * Date: 13-6-6
  * Time: 下午10:29
  */
-public class UserMapStages extends LinkedHashMap<Integer, MapStage> {
+public class UserMapStages extends LinkedHashMap<Integer, UserMapStage> {
 }
