@@ -23,6 +23,7 @@ public class TEMP2 {
   }
 
   public static void main(String args[]) {
-    new TEMP2().t();
+//    new TEMP2().t();
+    System.currentTimeMillis();
   }
 }

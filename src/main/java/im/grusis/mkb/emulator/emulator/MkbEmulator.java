@@ -424,11 +424,19 @@ public class MkbEmulator {
     return result;
   }
 
-  private void processBattleResult(String username, Battle result) {
-    BattleExtData ext = result.getExtData();
+  private void processBattleMapResult(String username, BattleMap result) {
+    BattleMapExtData ext = result.getExtData();
     if(ext != null) {
       MkbAccount account = accountService.findAccountByUsername(username);
-      BattleExtData.User user = ext.getUser();
+      accountService.saveAccount(account);
+    }
+  }
+
+  private void processBattleMazeResult(String username, BattleMaze result) {
+    BattleMazeExtData ext = result.getExtData();
+    if(ext != null) {
+      MkbAccount account = accountService.findAccountByUsername(username);
+      BattleMazeExtData.User user = ext.getUser();
       if(user != null) {
         UserInfo userInfo = account.getUserInfo();
         if(userInfo == null) {
@@ -448,35 +456,35 @@ public class MkbEmulator {
     }
   }
 
-  public Battle gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public BattleMap gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     params.put("isManual", Integer.toString(0));
     String responseString = gameDoAction(username, "mapstage.php", "EditUserMapStages", params);
-    BattleResponse response = GameDataFactory.getGameData(responseString, BattleResponse.class);
+    BattleMapResponse response = GameDataFactory.getGameData(responseString, BattleMapResponse.class);
     if(response.badRequest()) {
       Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
-    Battle result = response.getData();
-    processBattleResult(username, result);
+    BattleMap result = response.getData();
+    processBattleMapResult(username, result);
     return result;
   }
 
-  public Battle gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException {
+  public BattleMaze gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("manual", Integer.toString(0));
     params.put("MapStageId", Integer.toString(mapStageId));
     params.put("Layer", Integer.toString(layer));
     params.put("ItemIndex", Integer.toString(itemIndex));
     String responseString = gameDoAction(username, "maze.php", "Battle", params);
-    BattleResponse response = GameDataFactory.getGameData(responseString, BattleResponse.class);
+    BattleMazeResponse response = GameDataFactory.getGameData(responseString, BattleMazeResponse.class);
     if(response.badRequest()) {
       Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
-    Battle result = response.getData();
-    processBattleResult(username, result);
+    BattleMaze result = response.getData();
+    processBattleMazeResult(username, result);
     return result;
   }
 

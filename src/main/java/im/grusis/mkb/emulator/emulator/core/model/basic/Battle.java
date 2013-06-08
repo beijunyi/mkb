@@ -7,10 +7,10 @@ import java.util.List;
  * Date: 13-6-7
  * Time: 下午10:24
  */
-public class Battle {
+public abstract class Battle<T extends BattleExtData> {
   private String BattleId;
   private int Win;
-  private BattleExtData ExtData;
+  private T ExtData;
   private String[] prepare;
   private Player AttackPlayer;
   private Player DefendPlayer;
@@ -32,11 +32,11 @@ public class Battle {
     Win = win;
   }
 
-  public BattleExtData getExtData() {
+  public T getExtData() {
     return ExtData;
   }
 
-  public void setExtData(BattleExtData extData) {
+  public void setExtData(T extData) {
     ExtData = extData;
   }
 
