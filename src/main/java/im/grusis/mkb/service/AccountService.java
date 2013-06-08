@@ -4,7 +4,7 @@ import java.util.*;
 
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.repository.AccountRepository;
-import im.grusis.mkb.internal.filters.AccountFilter;
+import im.grusis.mkb.internal.accountFilter.AccountFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,35 +60,25 @@ public class AccountService {
     accountRepository.createOrUpdateAccount(account);
   }
 
-  public MkbAccount findFirst(boolean survivor, AccountFilter... filters) {
+  public MkbAccount findFirst(AccountFilter filter) {
     Collection<MkbAccount> accounts = usernameLookup.values();
     for(MkbAccount account : accounts) {
-      if(survivor == MkbAccount.matches(account, filters)) {
-        return account;
-      }
+     if(filter.accept(account)) {
+       return account;
+     }
     }
     return null;
   }
 
-  public Collection<MkbAccount> findAll(boolean survivor, AccountFilter... filters) {
+  public Collection<MkbAccount> findAll(AccountFilter filter) {
     Collection<MkbAccount> accounts = usernameLookup.values();
     Collection<MkbAccount> ret = new LinkedHashSet<MkbAccount>();
     for(MkbAccount account : accounts) {
-      if(survivor == MkbAccount.matches(account, filters)) {
+      if(filter.accept(account)) {
         ret.add(account);
       }
     }
     return ret;
-  }
-
-  public int clearUnqualified(boolean backup, AccountFilter... filters) {
-    Collection<MkbAccount> accounts = findAll(false, filters);
-    int count = 0;
-    for(MkbAccount account : accounts) {
-      deleteAccount(backup, account);
-      count++;
-    }
-    return count;
   }
 
   public void clear(boolean backup, Collection<MkbAccount> accounts) {

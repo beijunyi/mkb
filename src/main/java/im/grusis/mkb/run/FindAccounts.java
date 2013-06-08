@@ -1,10 +1,6 @@
 package im.grusis.mkb.run;
 
-import java.util.Collection;
-
 import im.grusis.mkb.config.RuntimeConfig;
-import im.grusis.mkb.internal.MkbAccount;
-import im.grusis.mkb.internal.filters.CardQualityFilter;
 import im.grusis.mkb.service.AccountService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -20,9 +16,5 @@ public class FindAccounts {
     ctx.start();
 
     AccountService as = ctx.getBean(AccountService.class);
-    Collection<MkbAccount> accounts = as.findAll(true, new CardQualityFilter(4, 2));
-    for(MkbAccount account : accounts) {
-//      System.out.println(account.getUserInfo() + "")
-    }
   }
 }

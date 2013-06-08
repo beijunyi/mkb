@@ -1,7 +1,6 @@
 package im.grusis.mkb.internal;
 
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
-import im.grusis.mkb.internal.filters.AccountFilter;
 
 /**
  * User: Mothership
@@ -23,16 +22,6 @@ public class MkbAccount {
   private long cardGroupUpdate;
   private UserMapStages userMapStages;
   private long userMapStagesUpdate;
-
-  public static boolean matches(MkbAccount account, AccountFilter... filters) {
-    for(AccountFilter filter : filters) {
-      if(!filter.accept(account)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
 
   public String getUsername() {
     return username;

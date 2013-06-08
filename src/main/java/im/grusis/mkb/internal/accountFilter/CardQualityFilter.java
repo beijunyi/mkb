@@ -1,4 +1,4 @@
-package im.grusis.mkb.internal.filters;
+package im.grusis.mkb.internal.accountFilter;
 
 import im.grusis.mkb.emulator.emulator.core.model.basic.CardGroup;
 import im.grusis.mkb.internal.MkbAccount;
@@ -8,13 +8,13 @@ import im.grusis.mkb.internal.MkbAccount;
  * Date: 13-6-5
  * Time: 下午8:59
  */
-public class HasCardFilter implements AccountFilter {
+public class CardQualityFilter implements AccountFilter {
 
-  private int cardId;
+  private int minQuality;
   private int minQuantity;
 
-  public HasCardFilter(int cardId, int minQuantity) {
-    this.cardId = cardId;
+  public CardQualityFilter(int minQuality, int minQuantity) {
+    this.minQuality = minQuality;
     this.minQuantity = minQuantity;
   }
 
