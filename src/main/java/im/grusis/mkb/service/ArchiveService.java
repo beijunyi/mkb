@@ -2,6 +2,8 @@ package im.grusis.mkb.service;
 
 import java.util.*;
 
+import javax.annotation.PostConstruct;
+
 import im.grusis.mkb.internal.StringMapSetArchive;
 import im.grusis.mkb.internal.StringSetArchive;
 import im.grusis.mkb.repository.ArchiveRepository;
@@ -19,15 +21,13 @@ public class ArchiveService {
   private static final String UsernameArchiveName = "username";
   private static final String NicknameArchiveName = "nickname";
 
-  private ArchiveRepository archiveRepository;
+  @Autowired private ArchiveRepository archiveRepository;
 
   private StringSetArchive usernameArchive;
   private StringMapSetArchive nicknameArchive;
 
-
-  @Autowired
-  public ArchiveService(ArchiveRepository archiveRepository) {
-    this.archiveRepository = archiveRepository;
+  @PostConstruct
+  public void init() {
     usernameArchive = archiveRepository.getArchive(UsernameArchiveName, StringSetArchive.class);
     if(usernameArchive == null) {
       usernameArchive = new StringSetArchive(UsernameArchiveName, new LinkedHashSet<String>());

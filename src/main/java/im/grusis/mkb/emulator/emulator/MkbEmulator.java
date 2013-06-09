@@ -119,7 +119,7 @@ public class MkbEmulator {
     LoginInformation ret = loginInformation.getReturnObjs();
     if(!loginInformation.badRequest()) {
       archiveService.addUsername(username);
-      TemporaryProfile token = new TemporaryProfile(ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp(), System.currentTimeMillis());
+      TemporaryProfile token = new TemporaryProfile(ret.getGS_NAME(), ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp(), System.currentTimeMillis());
       profiles.put(username, token);
       MkbAccount account = accountService.findAccountByUsername(username);
       if(account == null) {
@@ -127,6 +127,7 @@ public class MkbEmulator {
         account.setUsername(username);
         account.setPassword(password);
         account.setMac(mac);
+        account.setServer(ret.getGS_NAME());
         accountService.saveAccount(account);
         archiveService.addUsername(username);
       }
@@ -168,7 +169,16 @@ public class MkbEmulator {
     return core.doAction(service, action, paramMap);
   }
 
-  public PassportLogin gamePassportLogin(String username) throws ServerNotAvailableException, UnknownErrorException {
+  public<T extends GameData> T gameDoAction(String username, String service, String action, Map<String, String> paramMap, Class<T> clazz) throws ServerNotAvailableException {
+    String responseString = gameDoAction(username, service, action, paramMap);
+    T response = GameDataFactory.getGameData(responseString, clazz);
+    if(response.badRequest()) {
+      Log.error("*** ERROR *** {}", responseString);
+    }
+    return response;
+  }
+
+  public PassportLogin gamePassportLogin(String username) throws ServerNotAvailableException {
     TemporaryProfile profile = profiles.get(username);
     if(profile == null) {
       Log.error("Cannot do passport login. {} does not have a temporary profile", username);
@@ -182,12 +192,8 @@ public class MkbEmulator {
     paramMap.put("Udid", profile.getMac());
     paramMap.put("UserName", username);
     paramMap.put("Password", Long.toString(profile.getUid()));
-    String responseString = gameDoAction(username, "login.php", "PassportLogin", paramMap);
-    PassportLoginResponse response = GameDataFactory.getGameData(responseString, PassportLoginResponse.class);
-    if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
-      throw new UnknownErrorException();
-    }
+    PassportLoginResponse response = gameDoAction(username, "login.php", "PassportLogin", paramMap, PassportLoginResponse.class);
+
     return response.getData();
   }
 
@@ -196,32 +202,31 @@ public class MkbEmulator {
     paramMap.put("Sex", Integer.toString(sex));
     paramMap.put("InviteCode", inviteCode);
     paramMap.put("NickName", nickname);
-    String responseString = gameDoAction(username, "user.php", "EditNickName", paramMap);
-    EditNickNameResponse response = GameDataFactory.getGameData(responseString, EditNickNameResponse.class);
+    EditNickNameResponse response = gameDoAction(username, "user.php", "EditNickName", paramMap, EditNickNameResponse.class);
+    TemporaryProfile profile = profiles.get(username);
     if(response.badRequest()) {
       if(response.duplicateNickName()) {
         Log.error("Cannot set nickname for {}. {} is already in use", username, nickname);
+        archiveService.addNickname(profile.getServerName(), nickname);
       } else if(response.tooLong()) {
         Log.error("Cannot set nickname for {}. {} has too many characters", username, nickname);
       } else {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
       return false;
     }
+    archiveService.addNickname(profile.getServerName(), nickname);
     return true;
   }
 
   public int gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("GoodsId", Integer.toString(goodsId));
-    String responseString = gameDoAction(username, "shop.php", "Buy", paramMap);
-    BuyResponse response = GameDataFactory.getGameData(responseString, BuyResponse.class);
+    BuyResponse response = gameDoAction(username, "shop.php", "Buy", paramMap, BuyResponse.class);
     if(response.badRequest()) {
       if(response.noCurrency()) {
         Log.error("Cannot purchase goods {}. {} does not have enough currency", goodsId, username);
       } else {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
       return -1;
@@ -232,14 +237,12 @@ public class MkbEmulator {
   public boolean gameSkipTutorial(String username, String stage) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("FreshStep", stage);
-    String responseString = gameDoAction(username, "user.php", "EditFresh", paramMap);
-    EditFreshResponse response = GameDataFactory.getGameData(responseString, EditFreshResponse.class);
+    EditFreshResponse response = gameDoAction(username, "user.php", "EditFresh", paramMap, EditFreshResponse.class);
     if(response.badRequest()) {
       if(response.alreadyFinished()) {
         Log.error("Cannot skip tutorial. {} has already finished tutorial stage {}", username, stage);
         return false;
       } else {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
@@ -247,79 +250,81 @@ public class MkbEmulator {
   }
 
   public boolean gameGetRewards(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "user.php", "GetUserSalary", null);
-    UserSalaryResponse response = GameDataFactory.getGameData(responseString, UserSalaryResponse.class);
+    UserSalaryResponse response = gameDoAction(username, "user.php", "GetUserSalary", null, UserSalaryResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     return true;
   }
 
   public boolean gameAcceptRewards(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "user.php", "AwardSalary", null);
-    UserSalaryResponse response = GameDataFactory.getGameData(responseString, UserSalaryResponse.class);
+    UserSalaryResponse response = gameDoAction(username, "user.php", "AwardSalary", null, UserSalaryResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     return true;
   }
 
+  public AllCard gameGetCards(String username) throws ServerNotAvailableException, UnknownErrorException {
+    AllCardResponse response = gameDoAction(username, "card.php", "GetAllCard", null, AllCardResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    AllCard cards = response.getData();
+    assetsService.saveAssets(cards);
+    return cards;
+  }
+
   public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException {
     Card card = assetsService.findCard(cardId);
     if(card == null) {
-      String responseString = gameDoAction(username, "card.php", "GetAllCard", null);
-      AllCardResponse response = GameDataFactory.getGameData(responseString, AllCardResponse.class);
-      if(response.badRequest()) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
-        throw new UnknownErrorException();
-      }
-      AllCard cards = response.getData();
-      assetsService.saveAssets(cards);
+      gameGetCards(username);
       card = assetsService.findCard(cardId);
       if(card == null) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
     return card;
   }
 
+  public Runes gameGetRunes(String username) throws ServerNotAvailableException, UnknownErrorException {
+    AllRuneResponse response = gameDoAction(username, "rune.php", "GetAllRune", null, AllRuneResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    Runes runes = response.getData();
+    assetsService.saveAssets(runes);
+    return runes;
+  }
+
   public Rune gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException {
     Rune rune = assetsService.findRune(runeId);
     if(rune == null) {
-      String responseString = gameDoAction(username, "rune.php", "GetAllRune", null);
-      AllRuneResponse response = GameDataFactory.getGameData(responseString, AllRuneResponse.class);
-      if(response.badRequest()) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
-        throw new UnknownErrorException();
-      }
-      Runes runes = response.getData();
-      assetsService.saveAssets(runes);
+      gameGetRunes(username);
       rune = assetsService.findRune(runeId);
       if(rune == null) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
     return rune;
   }
 
+  public AllSkill gameGetSkills(String username) throws ServerNotAvailableException, UnknownErrorException {
+    AllSkillResponse response = gameDoAction(username, "card.php", "GetAllSkill", null, AllSkillResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    AllSkill skills = response.getData();
+    assetsService.saveAssets(skills);
+    return skills;
+  }
+
   public Skill gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException {
     Skill skill = assetsService.findSkill(skillId);
     if(skill == null) {
-      String responseString = gameDoAction(username, "card.php", "GetAllSkill", null);
-      AllSkillResponse response = GameDataFactory.getGameData(responseString, AllSkillResponse.class);
-      if(response.badRequest()) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
-        throw new UnknownErrorException();
-      }
-      AllSkill skills = response.getData();
-      assetsService.saveAssets(skills);
+      gameGetSkills(username);
       skill = assetsService.findSkill(skillId);
       if(skill == null) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
@@ -329,17 +334,14 @@ public class MkbEmulator {
   public MapStage gameGetMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException {
     MapStage mapStage = assetsService.findMapStage(stageId);
     if(mapStage == null) {
-      String responseString = gameDoAction(username, "mapstage.php", "GetMapStageALL", null);
-      MapStageAllResponse response = GameDataFactory.getGameData(responseString, MapStageAllResponse.class);
+      MapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageAllResponse.class);
       if(response.badRequest()) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
       MapStageAll mapStages = response.getData();
       assetsService.saveAssets(mapStages);
       mapStage = assetsService.findMapStage(stageId);
       if(mapStage == null) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
@@ -349,17 +351,14 @@ public class MkbEmulator {
   public MapStageDetail gameGetMapStageDetail(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException {
     MapStageDetail mapStageDetail = assetsService.findMapStageDetail(stageDetailId);
     if(mapStageDetail == null) {
-      String responseString = gameDoAction(username, "mapstage.php", "GetMapStageALL", null);
-      MapStageAllResponse response = GameDataFactory.getGameData(responseString, MapStageAllResponse.class);
+      MapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageAllResponse.class);
       if(response.badRequest()) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
       MapStageAll mapStages = response.getData();
       assetsService.saveAssets(mapStages);
       mapStageDetail = assetsService.findMapStageDetail(stageDetailId);
       if(mapStageDetail == null) {
-        Log.error("*** UNKNOWN ERROR *** {}", responseString);
         throw new UnknownErrorException();
       }
     }
@@ -367,10 +366,8 @@ public class MkbEmulator {
   }
 
   public UserInfo gameGetUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "user.php", "GetUserinfo", null);
-    UserInfoResponse response = GameDataFactory.getGameData(responseString, UserInfoResponse.class);
+    UserInfoResponse response = gameDoAction(username, "user.php", "GetUserinfo", null, UserInfoResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     UserInfo result = response.getData();
@@ -379,14 +376,13 @@ public class MkbEmulator {
     account.setInviteCode(result.getInviteCode());
     account.setInviteCount(result.getInviteNum());
     accountService.saveAccount(account);
+    archiveService.addNickname(profiles.get(username).getServerName(), result.getNickName());
     return result;
   }
 
   public UserCards gameGetUserCards(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "card.php", "GetUserCards", null);
-    UserCardsResponse response = GameDataFactory.getGameData(responseString, UserCardsResponse.class);
+    UserCardsResponse response = gameDoAction(username, "card.php", "GetUserCards", null, UserCardsResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     UserCards result = response.getData();
@@ -397,10 +393,8 @@ public class MkbEmulator {
   }
 
   public CardGroup gameGetCardGroup(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "card.php", "GetCardGroup", null);
-    CardGroupResponse response = GameDataFactory.getGameData(responseString, CardGroupResponse.class);
+    CardGroupResponse response = gameDoAction(username, "card.php", "GetCardGroup", null, CardGroupResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     CardGroup result = response.getData();
@@ -411,10 +405,8 @@ public class MkbEmulator {
   }
 
   public UserMapStages gameGetUserMapStage(String username) throws ServerNotAvailableException, UnknownErrorException {
-    String responseString = gameDoAction(username, "mapstage.php", "GetUserMapStages", null);
-    UserMapStagesResponse response = GameDataFactory.getGameData(responseString, UserMapStagesResponse.class);
+    UserMapStagesResponse response = gameDoAction(username, "mapstage.php", "GetUserMapStages", null, UserMapStagesResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     UserMapStages result = response.getData();
@@ -432,26 +424,24 @@ public class MkbEmulator {
     }
   }
 
-  private void processBattleMazeResult(String username, BattleMaze result) {
+  private void processBattleMazeResult(String username, BattleMaze result, int mapStageId) {
     BattleMazeExtData ext = result.getExtData();
     if(ext != null) {
       MkbAccount account = accountService.findAccountByUsername(username);
       BattleMazeExtData.User user = ext.getUser();
-      if(user != null) {
-        UserInfo userInfo = account.getUserInfo();
-        if(userInfo == null) {
-          userInfo = new UserInfo();
-          account.setUserInfo(userInfo);
-        }
-        int level = user.getLevel();
-        long exp = user.getExp();
-        long prevExp = user.getNextExp();
-        long nextExp = user.getNextExp();
-        if(level > 0) userInfo.setLevel(level);
-        if(exp > 0) userInfo.setExp(exp);
-        if(prevExp > 0) userInfo.setPrevExp(prevExp);
-        if(nextExp > 0) userInfo.setNextExp(nextExp);
-      }
+      account.setLevel(user.getLevel());
+      account.addExp(user.getExp());
+
+      BattleMazeExtData.Clear clear = ext.getClear();
+      account.addGold(clear.getCoins());
+      if(clear.getCardId() > 0) account.addNewCard(clear.getCardId());
+      if(clear.getIsClear() > 0) account.clearMaze(mapStageId);
+      account.addGold(clear.getCoins());
+
+      BattleMazeExtData.Award award = ext.getAward();
+      if(award.getCardId() > 0) account.addNewCard(award.getCardId());
+      account.addGold(award.getCoins());
+      account.addExp(award.getExp());
       accountService.saveAccount(account);
     }
   }
@@ -460,10 +450,8 @@ public class MkbEmulator {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     params.put("isManual", Integer.toString(0));
-    String responseString = gameDoAction(username, "mapstage.php", "EditUserMapStages", params);
-    BattleMapResponse response = GameDataFactory.getGameData(responseString, BattleMapResponse.class);
+    BattleMapResponse response = gameDoAction(username, "mapstage.php", "EditUserMapStages", params, BattleMapResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     BattleMap result = response.getData();
@@ -477,14 +465,12 @@ public class MkbEmulator {
     params.put("MapStageId", Integer.toString(mapStageId));
     params.put("Layer", Integer.toString(layer));
     params.put("ItemIndex", Integer.toString(itemIndex));
-    String responseString = gameDoAction(username, "maze.php", "Battle", params);
-    BattleMazeResponse response = GameDataFactory.getGameData(responseString, BattleMazeResponse.class);
+    BattleMazeResponse response = gameDoAction(username, "maze.php", "Battle", params, BattleMazeResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     BattleMaze result = response.getData();
-    processBattleMazeResult(username, result);
+    processBattleMazeResult(username, result, mapStageId);
     return result;
   }
 
@@ -492,10 +478,8 @@ public class MkbEmulator {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     params.put("Layer", Integer.toString(layer));
-    String responseString = gameDoAction(username, "maze.php", "Info", params);
-    MazeInfoResponse response = GameDataFactory.getGameData(responseString, MazeInfoResponse.class);
+    MazeInfoResponse response = gameDoAction(username, "maze.php", "Info", params, MazeInfoResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     return response.getData();
@@ -504,10 +488,8 @@ public class MkbEmulator {
   public MazeShow gameGetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
-    String responseString = gameDoAction(username, "maze.php", "Show", params);
-    MazeShowResponse response = GameDataFactory.getGameData(responseString, MazeShowResponse.class);
+    MazeShowResponse response = gameDoAction(username, "maze.php", "Show", params, MazeShowResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     return response.getData();
@@ -516,13 +498,36 @@ public class MkbEmulator {
   public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
-    String responseString = gameDoAction(username, "mapstage.php", "AwardClear", params);
-    AwardClearResponse response = GameDataFactory.getGameData(responseString, AwardClearResponse.class);
+    AwardClearResponse response = gameDoAction(username, "mapstage.php", "AwardClear", params, AwardClearResponse.class);
     if(response.badRequest()) {
-      Log.error("*** UNKNOWN ERROR *** {}", responseString);
       throw new UnknownErrorException();
     }
     return true;
   }
 
+  public Explore gameExplore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
+    ExploreResponse response = gameDoAction(username, "mapstage.php", "Explore", params, ExploreResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public Thieves gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException {
+    ThievesResponse response = gameDoAction(username, "arena.php", "GetThieves", null, ThievesResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public GoodsList gameGetGoods(String username) throws ServerNotAvailableException, UnknownErrorException {
+    GoodsResponse response = gameDoAction(username, "shop.php", "GetGoods", null, GoodsResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
 }

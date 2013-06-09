@@ -1,5 +1,7 @@
 package im.grusis.mkb.emulator.emulator.core.model.basic;
 
+import java.util.List;
+
 /**
  * User: Mothership
  * Date: 13-5-27
@@ -16,6 +18,7 @@ public class GameData<T>  {
   private T data;
   private int type;
   private Version version;
+  private List<AchievementInfo> AchievementInfos;
 
   public int getStatus() {
     return status;
@@ -55,6 +58,14 @@ public class GameData<T>  {
 
   public void setType(int type) {
     this.type = type;
+  }
+
+  public List<AchievementInfo> getAchievementInfos() {
+    return AchievementInfos;
+  }
+
+  public void setAchievementInfos(List<AchievementInfo> achievementInfos) {
+    AchievementInfos = achievementInfos;
   }
 
   public boolean badRequest() {

@@ -6,6 +6,7 @@ package im.grusis.mkb.emulator.emulator;
  * Time: 上午12:34
  */
 public class TemporaryProfile {
+  private String serverName;
   private String host;
   private String username;
   private String password;
@@ -15,7 +16,8 @@ public class TemporaryProfile {
   private long time;
   private long lastAccess;
 
-  public TemporaryProfile(String host, String username, String password, long uid, String mac, String key, long time, long lastAccess) {
+  public TemporaryProfile(String serverName, String host, String username, String password, long uid, String mac, String key, long time, long lastAccess) {
+    this.serverName = serverName;
     this.host = host;
     this.username = username;
     this.password = password;
@@ -24,6 +26,14 @@ public class TemporaryProfile {
     this.key = key;
     this.time = time;
     this.lastAccess = lastAccess;
+  }
+
+  public String getServerName() {
+    return serverName;
+  }
+
+  public void setServerName(String serverName) {
+    this.serverName = serverName;
   }
 
   public String getUsername() {

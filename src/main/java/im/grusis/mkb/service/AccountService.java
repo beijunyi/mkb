@@ -2,6 +2,8 @@ package im.grusis.mkb.service;
 
 import java.util.*;
 
+import javax.annotation.PostConstruct;
+
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.repository.AccountRepository;
 import im.grusis.mkb.internal.accountFilter.AccountFilter;
@@ -15,19 +17,18 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AccountService {
-  AccountRepository accountRepository;
+  @Autowired AccountRepository accountRepository;
+  @Autowired ArchiveService archiveService;
 
   private Map<String, MkbAccount> macLookup = new LinkedHashMap<String, MkbAccount>();
   private Map<String, MkbAccount> usernameLookup = new LinkedHashMap<String, MkbAccount>();
 
-  @Autowired
-  public AccountService(AccountRepository accountRepository) {
-    this.accountRepository = accountRepository;
+  @PostConstruct
+  public void init() {
     List<MkbAccount> accounts = accountRepository.readAll();
     for(MkbAccount account : accounts) {
       updateLookup(account);
     }
-
   }
 
   private void updateLookup(MkbAccount account) {
@@ -38,6 +39,7 @@ public class AccountService {
     String username = account.getUsername();
     if(username != null) {
       usernameLookup.put(username, account);
+      archiveService.addUsername(account.getUsername());
     }
   }
 
