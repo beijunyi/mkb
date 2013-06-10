@@ -1,7 +1,6 @@
 package im.grusis.mkb.emulator.emulator.core.model.response;
 
 import com.google.gson.Gson;
-import im.grusis.mkb.emulator.emulator.core.model.basic.GameData;
 
 /**
  * User: Mothership

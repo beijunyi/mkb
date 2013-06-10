@@ -62,7 +62,7 @@ public class AngelBot extends Bot {
         emulator.gameSkipTutorial(username, "1_21");
         emulator.gameSkipTutorial(username, "2_10");
         emulator.gameSkipTutorial(username, "2_17");
-        UserInfo userInfo = emulator.gameGetUserInfo(username);
+        UserInfo userInfo = emulator.gameGetUserInfo(username, false);
         if(previous != null) {
           String prevUsername = previous.getUserName();
           emulator.gameAcceptRewards(prevUsername);

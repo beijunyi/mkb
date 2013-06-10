@@ -1,8 +1,6 @@
 package im.grusis.mkb.internal;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
 
@@ -24,9 +22,10 @@ public class MkbAccount {
   private long exp;
   private long diamond;
   private int ticket;
+  private int energy;
   private List<Integer> newCards;
-  private List<Integer> chips;
-
+  private Set<Integer> currentChips;
+  private Map<Integer, Integer> mapStageProgress;
   private Map<Integer, Long> mazeClearTimes;
 
   private UserInfo userInfo;
@@ -37,6 +36,8 @@ public class MkbAccount {
   private long cardGroupUpdate;
   private UserMapStages userMapStages;
   private long userMapStagesUpdate;
+  private UserChip userChip;
+  private long userChipUpdate;
 
   public String getUsername() {
     return username;
@@ -97,6 +98,7 @@ public class MkbAccount {
     exp = userInfo.getExp();
     diamond = userInfo.getCash();
     ticket = userInfo.getTicket();
+    energy = userInfo.getEnergy();
     this.userInfoUpdate = System.currentTimeMillis();
   }
 
@@ -123,6 +125,15 @@ public class MkbAccount {
 
   public void setUserMapStages(UserMapStages userMapStages) {
     this.userMapStages = userMapStages;
+    if(mapStageProgress == null) {
+      mapStageProgress = new TreeMap<Integer, Integer>();
+    } else {
+      mapStageProgress.clear();
+    }
+    Collection<UserMapStage> stages = userMapStages.values();
+    for(UserMapStage stage : stages) {
+      mapStageProgress.put(stage.getMapStageId(), stage.getFinishedStage());
+    }
     this.userMapStagesUpdate = System.currentTimeMillis();
   }
 
@@ -136,13 +147,43 @@ public class MkbAccount {
 
   public void setUserCards(UserCards userCards) {
     this.userCards = userCards;
-    newCards.clear();
+    if(newCards == null) {
+      newCards = new ArrayList<Integer>();
+    } else {
+      newCards.clear();
+    }
     this.userCardsUpdate = System.currentTimeMillis();
   }
 
   public long getUserCardsUpdate() {
     return userCardsUpdate;
   }
+
+
+  public UserChip getUserChip() {
+    return userChip;
+  }
+
+  public void setUserChip(UserChip userChip) {
+    this.userChip = userChip;
+    if(currentChips == null) {
+      currentChips = new TreeSet<Integer>();
+    } else {
+      currentChips.clear();
+    }
+    Collection<Chip> chips = userChip.values();
+    for(Chip chip : chips) {
+      if(chip.getNum() > 0) {
+        currentChips.add(chip.getId());
+      }
+    }
+    this.userChipUpdate = System.currentTimeMillis();
+  }
+
+  public long getUserChipUpdate() {
+    return userChipUpdate;
+  }
+
 
   public int getLevel() {
     return level;
@@ -236,5 +277,25 @@ public class MkbAccount {
 
   public void addNewCard(int cardId) {
     newCards.add(cardId);
+  }
+
+  public Set<Integer> getCurrentChips() {
+    return currentChips;
+  }
+
+  public Map<Integer, Integer> getMapStageProgress() {
+    return mapStageProgress;
+  }
+
+  public void useEnergy(int amount) {
+    energy -= amount;
+  }
+
+  public int getEnergy() {
+    return energy;
+  }
+
+  public void setEnergy(int energy) {
+    this.energy = energy;
   }
 }

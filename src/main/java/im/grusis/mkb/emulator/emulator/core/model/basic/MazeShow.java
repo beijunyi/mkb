@@ -12,6 +12,14 @@ public class MazeShow {
   private int FreeReset;
   private int ResetCash;
 
+  public boolean clear() {
+    return Clear != 0;
+  }
+
+  public boolean freeReset() {
+    return FreeReset != 0;
+  }
+
   public String getName() {
     return Name;
   }

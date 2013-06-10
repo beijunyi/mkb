@@ -8,8 +8,9 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
 public class UserMapStage {
   private long Uid;
   private int MapStageDetailId;
-  private int Type;
+  private int Type; // 1 = normal, 2 = boss, 0 = secret, 3 = tower
   private int MapStageId;
+  private int FinishedStage;
   private String LastFinishedTime;
   private int CounterAttackTime;
 
@@ -59,5 +60,13 @@ public class UserMapStage {
 
   public void setCounterAttackTime(int counterAttackTime) {
     CounterAttackTime = counterAttackTime;
+  }
+
+  public int getFinishedStage() {
+    return FinishedStage;
+  }
+
+  public void setFinishedStage(int finishedStage) {
+    FinishedStage = finishedStage;
   }
 }

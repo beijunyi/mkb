@@ -8,6 +8,11 @@ import java.util.List;
  * Time: 下午9:47
  */
 public class MapStageDetail {
+  public static final int NormalLevel = 1;
+  public static final int BossLevel = 2;
+  public static final int SecretLevel = 0;
+  public static final int MazeLevel = 3;
+
   private int MapStageDetailId;
   private String Name;
   private int Type;

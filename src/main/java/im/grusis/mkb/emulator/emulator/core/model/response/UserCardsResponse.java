@@ -1,6 +1,5 @@
 package im.grusis.mkb.emulator.emulator.core.model.response;
 
-import im.grusis.mkb.emulator.emulator.core.model.basic.GameData;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserCards;
 
 /**

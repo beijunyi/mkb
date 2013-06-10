@@ -56,7 +56,8 @@ app.controller('ManualAccessCtrl', function($scope, ManualAccessService) {
       me.paramKeys = $.grep(me.paramKeys, function(value) {
         return value != key;
       });
-      delete me.params[key]
+      delete me.params[key];
+      me.key = key;
     },
 
     login: function() {

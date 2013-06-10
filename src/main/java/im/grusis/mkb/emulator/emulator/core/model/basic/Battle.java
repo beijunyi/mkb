@@ -7,7 +7,11 @@ import java.util.List;
  * Date: 13-6-7
  * Time: 下午10:24
  */
-public abstract class Battle<T extends BattleExtData> {
+public abstract class Battle<T extends BattleExtData> extends EnergyUser {
+  public static final int BattleWin = 1;
+  public static final int BattleLost = 2;
+  public static final int BattleResultPending = 0;
+
   private String BattleId;
   private int Win;
   private T ExtData;
@@ -15,6 +19,18 @@ public abstract class Battle<T extends BattleExtData> {
   private Player AttackPlayer;
   private Player DefendPlayer;
   private List<BattleRound> Battle;
+
+  public boolean win() {
+    return Win == BattleWin;
+  }
+
+  public boolean lost() {
+    return Win == BattleLost;
+  }
+
+  public boolean requireManualControl() {
+    return Win == BattleResultPending;
+  }
 
   public String getBattleId() {
     return BattleId;

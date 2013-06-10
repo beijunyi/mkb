@@ -1,7 +1,6 @@
 package im.grusis.mkb.emulator.emulator.core.model.response;
 
 import im.grusis.mkb.emulator.emulator.core.model.basic.AllSkill;
-import im.grusis.mkb.emulator.emulator.core.model.basic.GameData;
 
 /**
  * User: Mothership

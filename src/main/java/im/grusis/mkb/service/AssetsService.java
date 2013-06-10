@@ -22,6 +22,11 @@ public class AssetsService {
 
   @Autowired private AssetsRepository assetsRepository;
 
+  private AllCard cards;
+  private Runes runes;
+  private AllSkill skills;
+  private MapStageAll stages;
+
   private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
   private Map<Integer, Rune> runeLookup = new LinkedHashMap<Integer, Rune>();
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
@@ -112,6 +117,7 @@ public class AssetsService {
   }
 
   public void saveAssets(AllCard cards) {
+    this.cards = cards;
     CardAssets cardAssets = new CardAssets();
     cardAssets.setAsset(cards);
     assetsRepository.createOrUpdateAssets(cardAssets);
@@ -119,6 +125,7 @@ public class AssetsService {
   }
 
   public void saveAssets(Runes runes) {
+    this.runes = runes;
     RuneAssets runeAssets = new RuneAssets();
     runeAssets.setAsset(runes);
     assetsRepository.createOrUpdateAssets(runeAssets);
@@ -126,6 +133,7 @@ public class AssetsService {
   }
 
   public void saveAssets(AllSkill skills) {
+    this.skills = skills;
     SkillAssets skillAssets = new SkillAssets();
     skillAssets.setAsset(skills);
     assetsRepository.createOrUpdateAssets(skillAssets);
@@ -133,9 +141,26 @@ public class AssetsService {
   }
 
   public void saveAssets(MapStageAll stages) {
+    this.stages = stages;
     MapStageAssets mapStageAssets = new MapStageAssets();
     mapStageAssets.setAsset(stages);
     assetsRepository.createOrUpdateAssets(mapStageAssets);
     updateMapStageLookup(mapStageAssets);
+  }
+
+  public AllCard getCards() {
+    return cards;
+  }
+
+  public Runes getRunes() {
+    return runes;
+  }
+
+  public AllSkill getSkills() {
+    return skills;
+  }
+
+  public MapStageAll getStages() {
+    return stages;
   }
 }

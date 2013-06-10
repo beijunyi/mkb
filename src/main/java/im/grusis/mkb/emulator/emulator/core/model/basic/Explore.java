@@ -5,7 +5,7 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Date: 13-6-9
  * Time: 上午12:18
  */
-public class Explore {
+public class Explore extends EnergyUser {
   private String[] Bonus; // Exp_*, Coins_*, Card_*, Chip_*
   private int UserLevel;
   private long Exp;

@@ -1,6 +1,9 @@
-package im.grusis.mkb.emulator.emulator.core.model.basic;
+package im.grusis.mkb.emulator.emulator.core.model.response;
 
 import java.util.List;
+
+import im.grusis.mkb.emulator.emulator.core.model.basic.AchievementInfo;
+import im.grusis.mkb.emulator.emulator.core.model.basic.Version;
 
 /**
  * User: Mothership
@@ -11,14 +14,13 @@ public class GameData<T>  {
 
   public static final String BadRequestString = "错误"; // 输入错误,请重新输入!
   public static final String DisconnectedString = "断开";  // 网络链接已断开 请重新登录
-  public static final String NoEnergyString = "行动力不足"; // 行动力不足!每10分钟可恢复1点!您也可以使用晶钻购买行动力哦!
 
-  private int status;
-  private String message;
-  private T data;
-  private int type;
-  private Version version;
-  private List<AchievementInfo> AchievementInfos;
+  protected int status;
+  protected String message;
+  protected T data;
+  protected int type;
+  protected Version version;
+  protected List<AchievementInfo> AchievementInfos;
 
   public int getStatus() {
     return status;
@@ -76,7 +78,4 @@ public class GameData<T>  {
     return message != null && message.contains(DisconnectedString);
   }
 
-  public boolean noEnergy() {
-    return type == 4 || (message != null && message.contains(NoEnergyString));
-  }
 }

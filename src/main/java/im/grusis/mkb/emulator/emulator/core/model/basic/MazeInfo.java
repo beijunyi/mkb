@@ -1,11 +1,21 @@
 package im.grusis.mkb.emulator.emulator.core.model.basic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * User: Mothership
  * Date: 13-6-7
  * Time: 下午11:07
  */
 public class MazeInfo {
+
+  public static final int Monster = 3;
+  public static final int DownStair = 4;
+  public static final int UpStair = 5;
+  public static final int Box = 2;
+  public static final int Empty = 1;
+
   private String Name;
   private int BoxNum;
   private int MonsterNum;
@@ -14,6 +24,34 @@ public class MazeInfo {
   private int Layer;
   private int TotalLayer;
   private MazeMap Map;
+
+  public List<Integer> getEnemyIndices() {
+    int[] items = Map.getItems();
+    int upstairIndex = -1;
+    List<Integer> ret = new ArrayList<Integer>();
+    int len = items.length;
+    int item;
+    for(int i = 0; i < len; i++) {
+      item = items[i];
+      switch(item) {
+        case Monster:
+        case Box:
+          ret.add(i);
+          break;
+        case UpStair:
+          upstairIndex = i;
+          break;
+      }
+    }
+    if(upstairIndex > 0) {
+      ret.add(upstairIndex);
+    }
+    return ret;
+  }
+
+  public boolean upstairBlockerCleared() {
+    return Map.isIsFinish();
+  }
 
   public String getName() {
     return Name;
