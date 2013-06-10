@@ -31,23 +31,39 @@ public class ManualAccessController extends MkbController {
 
   @GET
   @Path("/do/{service}")
-  public Response doAction(@PathParam("service") String service, @QueryParam("username") String username, @QueryParam("do") String action, @QueryParam("params") String params) throws ServerNotAvailableException, UnknownErrorException {
-    Type type = new TypeToken<Map<String, String>>() {
-    }.getType();
-    Map<String, String> paramMap = new Gson().fromJson(params, type);
-    return Response.ok(manualAccessService.doAction(username, service, action, paramMap)).build();
+  public Response doAction(@PathParam("service") String service, @QueryParam("username") String username, @QueryParam("do") String action, @QueryParam("params") String params) {
+    try {
+      Type type = new TypeToken<Map<String, String>>() {
+      }.getType();
+      Map<String, String> paramMap = new Gson().fromJson(params, type);
+      return Response.ok(manualAccessService.doAction(username, service, action, paramMap)).build();
+    } catch(Exception e) {
+      Log.error("Cannot perform action {}?do={} for ", service, action, username);
+      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+    }
+
   }
 
   @GET
   @Path("/login")
-  public Response login(@QueryParam("username") String username, @QueryParam("password") String password) throws ServerNotAvailableException, UnknownErrorException {
-    return Response.ok(manualAccessService.login(username, password)).build();
+  public Response login(@QueryParam("username") String username, @QueryParam("password") String password) {
+    try {
+      return Response.ok(manualAccessService.login(username, password)).build();
+    } catch(Exception e) {
+      Log.error("Cannot perform login for {}", username);
+      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+    }
   }
 
   @GET
   @Path("/getUserInfo")
   public Response getUserInfo(@QueryParam("username") String username) throws ServerNotAvailableException, UnknownErrorException {
-    return Response.ok(manualAccessService.getUserInfo(username)).build();
+    try {
+      return Response.ok(manualAccessService.getUserInfo(username)).build();
+    } catch(Exception e) {
+      Log.error("Cannot perform getUserInfo for {}", username);
+      return Response.status(Response.Status.BAD_REQUEST).entity(e).build();
+    }
   }
 
 }

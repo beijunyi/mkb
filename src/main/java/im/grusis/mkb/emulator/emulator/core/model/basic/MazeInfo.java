@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class MazeInfo {
 
+  public static final int EnergyExpend = 2;
+
   public static final int Monster = 3;
   public static final int DownStair = 4;
   public static final int UpStair = 5;
@@ -43,7 +45,7 @@ public class MazeInfo {
           break;
       }
     }
-    if(upstairIndex > 0) {
+    if(upstairIndex > 0 && !upstairBlockerCleared()) {
       ret.add(upstairIndex);
     }
     return ret;

@@ -9,6 +9,7 @@ import im.grusis.mkb.emulator.emulator.core.model.basic.PassportLogin;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 import im.grusis.mkb.exception.ServerNotAvailableException;
 import im.grusis.mkb.exception.UnknownErrorException;
+import im.grusis.mkb.exception.WrongCredentialException;
 import im.grusis.mkb.repository.AccountRepository;
 import im.grusis.mkb.util.MacAddressHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,11 @@ public class ManualAccessService extends MkbService {
 
   private Map<String, MkbCore> coreMap = new HashMap<String, MkbCore>();
 
-  public String doAction(String username, String service, String action, Map<String, String> params) throws ServerNotAvailableException, UnknownErrorException {
+  public String doAction(String username, String service, String action, Map<String, String> params) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     return mkbEmulator.gameDoAction(username, service, action, params);
   }
 
-  public PassportLogin login(String username, String password) throws ServerNotAvailableException, UnknownErrorException {
+  public PassportLogin login(String username, String password) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     mkbEmulator.webLogin(username, password, MacAddressHelper.getMacAddress());
     return mkbEmulator.gamePassportLogin(username);
 //    MkbAccount account = accountRepository.getAccount(username);
@@ -54,7 +55,7 @@ public class ManualAccessService extends MkbService {
 //          return null;
   }
 
-  public UserInfo getUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException{
+  public UserInfo getUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException{
     return mkbEmulator.gameGetUserInfo(username, true);
 //    String responseString = doAction(username, "user.php", "GetUserInfo", null);
 //    return GameDataFactory.getGameData(responseString, UserInfoResponse.class).getData();

@@ -14,9 +14,8 @@ public class TemporaryProfile {
   private String mac;
   private String key;
   private long time;
-  private long lastAccess;
 
-  public TemporaryProfile(String serverName, String host, String username, String password, long uid, String mac, String key, long time, long lastAccess) {
+  public TemporaryProfile(String serverName, String host, String username, String password, long uid, String mac, String key, long time) {
     this.serverName = serverName;
     this.host = host;
     this.username = username;
@@ -25,7 +24,6 @@ public class TemporaryProfile {
     this.mac = mac;
     this.key = key;
     this.time = time;
-    this.lastAccess = lastAccess;
   }
 
   public String getServerName() {
@@ -76,13 +74,6 @@ public class TemporaryProfile {
     this.time = time;
   }
 
-  public long getLastAccess() {
-    return lastAccess;
-  }
-
-  public void setLastAccess(long lastAccess) {
-    this.lastAccess = lastAccess;
-  }
 
   public long getUid() {
     return uid;
@@ -99,4 +90,6 @@ public class TemporaryProfile {
   public void setHost(String host) {
     this.host = host;
   }
+
+
 }

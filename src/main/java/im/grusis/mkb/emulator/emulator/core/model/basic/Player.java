@@ -18,6 +18,78 @@ public class Player {
   private List<BattleRune> Runes;
   private int RemainHP;
 
+  public long getUid() {
+    return Uid;
+  }
+
+  public void setUid(long uid) {
+    Uid = uid;
+  }
+
+  public String getNickName() {
+    return NickName;
+  }
+
+  public void setNickName(String nickName) {
+    NickName = nickName;
+  }
+
+  public int getAvatar() {
+    return Avatar;
+  }
+
+  public void setAvatar(int avatar) {
+    Avatar = avatar;
+  }
+
+  public int getSex() {
+    return Sex;
+  }
+
+  public void setSex(int sex) {
+    Sex = sex;
+  }
+
+  public int getLevel() {
+    return Level;
+  }
+
+  public void setLevel(int level) {
+    Level = level;
+  }
+
+  public int getHP() {
+    return HP;
+  }
+
+  public void setHP(int HP) {
+    this.HP = HP;
+  }
+
+  public List<BattleCard> getCards() {
+    return Cards;
+  }
+
+  public void setCards(List<BattleCard> cards) {
+    Cards = cards;
+  }
+
+  public List<BattleRune> getRunes() {
+    return Runes;
+  }
+
+  public void setRunes(List<BattleRune> runes) {
+    Runes = runes;
+  }
+
+  public int getRemainHP() {
+    return RemainHP;
+  }
+
+  public void setRemainHP(int remainHP) {
+    RemainHP = remainHP;
+  }
+
   public class BattleCard {
     private String UUID;
     private int CardId;

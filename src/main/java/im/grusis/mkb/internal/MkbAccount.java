@@ -2,6 +2,7 @@ package im.grusis.mkb.internal;
 
 import java.util.*;
 
+import im.grusis.mkb.emulator.emulator.TemporaryProfile;
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
 
 /**
@@ -13,6 +14,7 @@ public class MkbAccount {
   private String username;
   private String password;
   private String mac;
+  private String nickname;
   private String inviteCode;
   private int inviteCount = 0;
   private String server;
@@ -27,6 +29,9 @@ public class MkbAccount {
   private Set<Integer> currentChips;
   private Map<Integer, Integer> mapStageProgress;
   private Map<Integer, Long> mazeClearTimes;
+
+  private TemporaryProfile profile;
+  private long lastAction;
 
   private UserInfo userInfo;
   private long userInfoUpdate;
@@ -61,6 +66,14 @@ public class MkbAccount {
 
   public void setMac(String mac) {
     this.mac = mac;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
   }
 
   public String getInviteCode() {
@@ -99,6 +112,8 @@ public class MkbAccount {
     diamond = userInfo.getCash();
     ticket = userInfo.getTicket();
     energy = userInfo.getEnergy();
+    nickname = userInfo.getNickName();
+    inviteCode = userInfo.getInviteCode();
     this.userInfoUpdate = System.currentTimeMillis();
   }
 
@@ -276,7 +291,17 @@ public class MkbAccount {
   }
 
   public void addNewCard(int cardId) {
+    if(newCards == null) {
+      newCards = new ArrayList<Integer>();
+    }
     newCards.add(cardId);
+  }
+
+  public void addNewChip(int chip) {
+    if(currentChips == null) {
+      currentChips = new TreeSet<Integer>();
+    }
+    currentChips.add(chip);
   }
 
   public Set<Integer> getCurrentChips() {
@@ -297,5 +322,38 @@ public class MkbAccount {
 
   public void setEnergy(int energy) {
     this.energy = energy;
+  }
+
+  public TemporaryProfile getProfile() {
+    return profile;
+  }
+
+  public void setProfile(TemporaryProfile profile) {
+    this.profile = profile;
+  }
+
+  public void updateLastAction() {
+    setLastAction(System.currentTimeMillis());
+  }
+
+  public long getLastAction() {
+    return lastAction;
+  }
+
+  public void setLastAction(long lastAction) {
+    this.lastAction = lastAction;
+  }
+
+  public void conquerMapStage(int mapStageDetailId) {
+    if(mapStageProgress == null) {
+      mapStageProgress = new LinkedHashMap<Integer, Integer>();
+    }
+    Integer currentProgress = mapStageProgress.get(mapStageDetailId);
+    if(currentProgress == null) {
+      currentProgress = 1;
+    } else {
+      currentProgress++;
+    }
+    mapStageProgress.put(mapStageDetailId, currentProgress);
   }
 }

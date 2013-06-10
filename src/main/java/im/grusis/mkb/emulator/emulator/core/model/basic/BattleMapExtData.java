@@ -5,7 +5,7 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Date: 13-6-7
  * Time: 下午10:25
  */
-public class BattleMapExtData extends BattleExtData{
+public class BattleMapExtData extends BattleExtData {
 
 
   private Integer StarUp;

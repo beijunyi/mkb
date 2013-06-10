@@ -12,6 +12,7 @@ import im.grusis.mkb.emulator.emulator.passport.model.request.*;
 import im.grusis.mkb.emulator.emulator.passport.model.response.*;
 import im.grusis.mkb.exception.ServerNotAvailableException;
 import im.grusis.mkb.exception.UnknownErrorException;
+import im.grusis.mkb.exception.WrongCredentialException;
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.service.AccountService;
 import im.grusis.mkb.service.ArchiveService;
@@ -38,7 +39,6 @@ public class MkbEmulator {
 
   private static final Logger Log = LoggerFactory.getLogger(MkbEmulator.class);
 
-  public static final int MazeEnergyExpend = 2;
 
   @Value("${platform}") private String platform;
   @Value("${language}") private String language;
@@ -70,13 +70,23 @@ public class MkbEmulator {
     return httpClient;
   }
 
-  public MkbCore getMkbCore(String username) {
+  public MkbCore getMkbCore(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbCore core = cores.get(username);
     if(core == null) {
       TemporaryProfile profile = profiles.get(username);
       if(profile == null) {
-        Log.error("Cannot create core. {} does not have a temporary profile", username);
-        return null;
+        Log.info("Cannot create core. {} does not have a temporary profile. Now try to find history profile from database", username);
+        MkbAccount account = accountService.findAccountByUsername(username);
+        if(account == null) {
+          Log.error("Cannot find any history record for account {}. Please login with username and password at least once", username);
+          throw new WrongCredentialException();
+        }
+        profile = account.getProfile();
+        if(profile == null) {
+          Log.error("Cannot find history profile for account {}. Now try to do web login", username);
+          profile = webLogin(username);
+        }
+        gamePassportLogin(username);
       }
       core = new MkbCore(profile.getHost(), getHttpClient(username), platform, language, versionClient, versionBuild);
       cores.put(username, core);
@@ -91,34 +101,35 @@ public class MkbEmulator {
     return helper.sendRequest(passportRequest, clazz);
   }
 
-  public LoginInformation webLogin(String username) {
+  public TemporaryProfile webLogin(String username) throws WrongCredentialException{
     MkbAccount account = accountService.findAccountByUsername(username);
     if(account == null) {
-      Log.error("Cannot login account {}. There is no record in the database of this account.", username);
-      return null;
+      Log.error("Cannot login account {}. There is no credential record in the database for this account.", username);
+      throw new WrongCredentialException();
     }
     return webLogin(username, account.getPassword(), account.getMac());
   }
 
-  public LoginInformation webLogin(String username, String password, String mac) {
+  public TemporaryProfile webLogin(String username, String password, String mac) throws WrongCredentialException {
+    Log.debug("Starting web login for account {}", username);
     if(username == null) {
       Log.error("Cannot login account without a username");
       return null;
     }
     if(password == null) {
-      Log.error("Cannot login account {} without a password", password);
+      Log.error("Cannot login account {} without a password", username);
       return null;
     }
     if(mac == null) {
-      Log.error("Cannot login account {} without a MAC address", mac);
+      Log.error("Cannot login account {} without a MAC address", username);
       return null;
     }
     LoginInformationResponse loginInformation = passportRequest(new LoginRequest(username, password, mac), LoginInformationResponse.class);
     LoginInformation ret = loginInformation.getReturnObjs();
     if(!loginInformation.badRequest()) {
       archiveService.addUsername(username);
-      TemporaryProfile token = new TemporaryProfile(ret.getGS_NAME(), ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp(), System.currentTimeMillis());
-      profiles.put(username, token);
+      TemporaryProfile profile = new TemporaryProfile(ret.getGS_NAME(), ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp());
+      profiles.put(username, profile);
       MkbAccount account = accountService.findAccountByUsername(username);
       if(account == null) {
         account = new MkbAccount();
@@ -126,11 +137,14 @@ public class MkbEmulator {
         account.setPassword(password);
         account.setMac(mac);
         account.setServer(ret.getGS_NAME());
-        accountService.saveAccount(account);
         archiveService.addUsername(username);
       }
+      account.setProfile(profile);
+      accountService.saveAccount(account);
+      return profile;
     }
-    return ret;
+    Log.error("Cannot login account {}. Please check credential.", username);
+    throw new WrongCredentialException();
   }
 
   public boolean webReg(String username, String password, String mac, long serverId) throws UnknownErrorException {
@@ -160,32 +174,56 @@ public class MkbEmulator {
     return passportRequest(new ServerRequest(), ServerInformationResponse.class).getReturnObjs();
   }
 
-  public String gameDoAction(String username, String service, String action, Map<String, String> paramMap) throws ServerNotAvailableException {
-    TemporaryProfile profile = profiles.get(username);
-    if(profile == null) {
-      Log.error("Cannot perform {}/{}. {} does not have a temporary profile", service, action, username);
-      return null;
-    }
-    profile.setLastAccess(System.currentTimeMillis());
+  public String gameDoAction(String username, String service, String action, Map<String, String> paramMap) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+//    TemporaryProfile profile = profiles.get(username);
+//    if(profile == null) {
+//      Log.debug("Cannot perform {}/do={}. {} does not have a temporary profile", service, action, username);
+//      MkbAccount account = accountService.findAccountByUsername(username);
+//      if(account != null) {
+//        Log.debug("Credential record for account {} is found. Now try login", username);
+//        gamePassportLogin(username);
+//        s
+//      }
+//      return null;
+//    }
+//    profile.setLastAccess(System.currentTimeMillis());
+
     MkbCore core = getMkbCore(username);
-    return core.doAction(service, action, paramMap);
+    String result = core.doAction(service, action, paramMap);
+    accountService.findAccountByUsername(username).updateLastAction();
+    return result;
   }
 
-  public<T extends GameData> T gameDoAction(String username, String service, String action, Map<String, String> paramMap, Class<T> clazz) throws ServerNotAvailableException {
+  public<T extends GameData> T gameDoAction(String username, String service, String action, Map<String, String> paramMap, Class<T> clazz) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     String responseString = gameDoAction(username, service, action, paramMap);
     T response = GameDataFactory.getGameData(responseString, clazz);
     if(response.badRequest()) {
+      if(response.disconnected()) {
+        Log.debug("Previous session is no longer valid. Now try passport login", username);
+        gamePassportLogin(username);
+        return gameDoAction(username, service, action, paramMap, clazz);
+      }
       Log.error("*** ERROR *** {}", responseString);
     }
     return response;
   }
 
-  public PassportLogin gamePassportLogin(String username) throws ServerNotAvailableException {
+  public PassportLogin gamePassportLogin(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Log.debug("Starting passport login for account {}", username);
     TemporaryProfile profile = profiles.get(username);
     if(profile == null) {
-      Log.error("Cannot do passport login. {} does not have a temporary profile", username);
-      return null;
+      Log.debug("Cannot do passport login. {} does not have a temporary profile", username);
+      MkbAccount account = accountService.findAccountByUsername(username);
+      profile = account.getProfile();
+      if(profile != null) {
+        Log.debug("Login profile for account {} is found. Now continue passport login", username);
+        profiles.put(username, profile);
+      } else {
+        Log.debug("Login profile for account {} is not found. Now try web login", username);
+        profile = webLogin(username);
+      }
     }
+    Log.debug("Obtained temporary profile for account {} as login token", username);
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("Devicetoken", "");
     paramMap.put("time", Long.toString(profile.getTime()));
@@ -195,14 +233,19 @@ public class MkbEmulator {
     paramMap.put("UserName", username);
     paramMap.put("Password", Long.toString(profile.getUid()));
     PassportLoginResponse response = gameDoAction(username, "login.php", "PassportLogin", paramMap, PassportLoginResponse.class);
-
+    if(response.badRequest()) {
+      Log.info("Passport login for account {} has failed. Now try web login", username);
+      webLogin(username);
+      return gamePassportLogin(username);
+    }
+    gameGetUserInfo(username, true);
     return response.getData();
   }
 
-  public boolean gameSetNickname(String username, int sex, String inviteCode, String nickname) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameSetNickname(String username, int sex, String inviteCode, String nickname) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     TemporaryProfile profile = profiles.get(username);
     if(archiveService.existNickname(profile.getServerName(), nickname)) {
-      Log.debug("Cannot set nickname for {}. {} is already in use", username, nickname);
+      Log.debug("Cannot set nickname for account {}. {} is already in use", username, nickname);
       return false;
     }
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
@@ -212,10 +255,10 @@ public class MkbEmulator {
     EditNickNameResponse response = gameDoAction(username, "user.php", "EditNickName", paramMap, EditNickNameResponse.class);
     if(response.badRequest()) {
       if(response.duplicateNickName()) {
-        Log.debug("Cannot set nickname for {}. {} is already in use", username, nickname);
+        Log.debug("Cannot set nickname for account {}. Desired nickname {} is already in use", username, nickname);
         archiveService.addNickname(profile.getServerName(), nickname);
       } else if(response.tooLong()) {
-        Log.error("Cannot set nickname for {}. {} has too many characters", username, nickname);
+        Log.error("Cannot set nickname for account {}. Desired nickname {} has too many characters", username, nickname);
       } else {
         throw new UnknownErrorException();
       }
@@ -225,7 +268,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public int gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException {
+  public int gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("GoodsId", Integer.toString(goodsId));
     BuyResponse response = gameDoAction(username, "shop.php", "Buy", paramMap, BuyResponse.class);
@@ -240,7 +283,7 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public boolean gameSkipTutorial(String username, String stage) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameSkipTutorial(String username, String stage) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("FreshStep", stage);
     EditFreshResponse response = gameDoAction(username, "user.php", "EditFresh", paramMap, EditFreshResponse.class);
@@ -255,7 +298,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public boolean gameGetRewards(String username) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameGetRewards(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserSalaryResponse response = gameDoAction(username, "user.php", "GetUserSalary", null, UserSalaryResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -263,7 +306,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public boolean gameAcceptRewards(String username) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameAcceptRewards(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserSalaryResponse response = gameDoAction(username, "user.php", "AwardSalary", null, UserSalaryResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -271,7 +314,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public AllCard gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public AllCard gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     AllCard cards;
     if(refresh || (cards = assetsService.getCards()) == null) {
       AllCardResponse response = gameDoAction(username, "card.php", "GetAllCard", null, AllCardResponse.class);
@@ -285,7 +328,7 @@ public class MkbEmulator {
     return cards;
   }
 
-  public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException {
+  public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Card card = assetsService.findCard(cardId);
     if(card == null) {
       gameGetCards(username, true);
@@ -297,7 +340,7 @@ public class MkbEmulator {
     return card;
   }
 
-  public Runes gameGetRunes(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public Runes gameGetRunes(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Runes runes;
     if(refresh || (runes = assetsService.getRunes()) == null) {
       AllRuneResponse response = gameDoAction(username, "rune.php", "GetAllRune", null, AllRuneResponse.class);
@@ -310,7 +353,7 @@ public class MkbEmulator {
     return runes;
   }
 
-  public Rune gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException {
+  public Rune gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Rune rune = assetsService.findRune(runeId);
     if(rune == null) {
       gameGetRunes(username, true);
@@ -322,7 +365,7 @@ public class MkbEmulator {
     return rune;
   }
 
-  public AllSkill gameGetSkills(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public AllSkill gameGetSkills(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     AllSkill skills;
     if(refresh || (skills = assetsService.getSkills()) == null) {
       AllSkillResponse response = gameDoAction(username, "card.php", "GetAllSkill", null, AllSkillResponse.class);
@@ -335,7 +378,7 @@ public class MkbEmulator {
     return skills;
   }
 
-  public Skill gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException {
+  public Skill gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Skill skill = assetsService.findSkill(skillId);
     if(skill == null) {
       gameGetSkills(username, true);
@@ -347,7 +390,7 @@ public class MkbEmulator {
     return skill;
   }
 
-  public MapStageAll gameGetMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public MapStageAll gameGetMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStageAll stages;
     if(refresh || (stages = assetsService.getStages()) == null) {
       MapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageAllResponse.class);
@@ -360,7 +403,7 @@ public class MkbEmulator {
     return stages;
   }
 
-  public MapStage gameGetMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException {
+  public MapStage gameGetMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStage mapStage = assetsService.findMapStage(stageId);
     if(mapStage == null) {
       gameGetMapStages(username, true);
@@ -372,7 +415,7 @@ public class MkbEmulator {
     return mapStage;
   }
 
-  public MapStageDetail gameGetMapStageDetail(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public MapStageDetail gameGetMapStageDetail(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStageDetail mapStageDetail = assetsService.findMapStageDetail(stageDetailId);
     if(mapStageDetail == null) {
       MapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageAllResponse.class);
@@ -389,7 +432,7 @@ public class MkbEmulator {
     return mapStageDetail;
   }
 
-  public UserInfo gameGetUserInfo(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public UserInfo gameGetUserInfo(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     UserInfo userInfo;
     if(refresh || (userInfo = account.getUserInfo()) == null) {
@@ -399,7 +442,6 @@ public class MkbEmulator {
       }
       userInfo = response.getData();
       account.setUserInfo(userInfo);
-      account.setInviteCode(userInfo.getInviteCode());
       account.setInviteCount(userInfo.getInviteNum());
       accountService.saveAccount(account);
       archiveService.addNickname(profiles.get(username).getServerName(), userInfo.getNickName());
@@ -407,7 +449,7 @@ public class MkbEmulator {
     return userInfo;
   }
 
-  public UserCards gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public UserCards gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     UserCards cards;
     if(refresh || (cards = account.getUserCards()) == null) {
@@ -422,7 +464,7 @@ public class MkbEmulator {
     return cards;
   }
 
-  public CardGroup gameGetCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public CardGroup gameGetCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     CardGroup cardGroup;
     if(refresh || (cardGroup = account.getCardGroup()) == null) {
@@ -437,7 +479,7 @@ public class MkbEmulator {
     return cardGroup;
   }
 
-  public UserMapStages gameGetUserMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public UserMapStages gameGetUserMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     UserMapStages stages;
     if(refresh || (stages = account.getUserMapStages()) == null) {
@@ -453,12 +495,12 @@ public class MkbEmulator {
     return stages;
   }
 
-  public UserMapStage gameGetUserMapStage(String username, int userMapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public UserMapStage gameGetUserMapStage(String username, int userMapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserMapStages stages = gameGetUserMapStages(username, false);
     return stages.get(userMapStageDetailId);
   }
 
-  public UserChip gameGetUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException {
+  public UserChip gameGetUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     UserChip userChip;
     if(refresh || (userChip = account.getUserChip()) == null) {
@@ -473,9 +515,19 @@ public class MkbEmulator {
     return userChip;
   }
 
-  private void processBattleMapResult(MkbAccount account, BattleMap result) {
+  private void processBonus(MkbAccount account, String... bonus) {
+
+  }
+
+  private void processBattleMapResult(MkbAccount account, BattleMap result, int mapStageDetailId) {
     BattleMapExtData ext = result.getExtData();
     if(ext != null) {
+      account.setLevel(ext.getUserLevel());
+      if(ext.getStarUp() > 0) {
+        account.conquerMapStage(mapStageDetailId);
+      }
+      processBonus(account, ext.getBonus());
+      processBonus(account, ext.getFirstBonusWin());
     }
   }
 
@@ -499,7 +551,7 @@ public class MkbEmulator {
     }
   }
 
-  public Level gameFindLevel(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public Level gameFindLevel(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStageDetail stage = gameGetMapStageDetail(username, mapStageDetailId);
     UserMapStage userStage = gameGetUserMapStage(username, mapStageDetailId);
     List<Level> levels = stage.getLevels();
@@ -510,7 +562,7 @@ public class MkbEmulator {
     return levels.get(finished);
   }
 
-  public BattleMap gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public BattleMap gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     params.put("isManual", Integer.toString(0));
@@ -524,11 +576,13 @@ public class MkbEmulator {
     MkbAccount account = accountService.findAccountByUsername(username);
     account.useEnergy(gameFindLevel(username, mapStageDetailId).getEnergyExpend());
     BattleMap result = response.getData();
-    processBattleMapResult(account, result);
+    processBattleMapResult(account, result, mapStageDetailId);
     return result;
   }
 
-  public BattleMaze gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException {
+  public BattleMaze gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    MkbAccount account = accountService.findAccountByUsername(username);
+    Log.debug("{} {} Starting maze battle against maze {}, layer {}, item {}", username, account.getNickname(), mapStageId, layer, itemIndex);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("manual", Integer.toString(0));
     params.put("MapStageId", Integer.toString(mapStageId));
@@ -539,16 +593,18 @@ public class MkbEmulator {
       if(response.noEnergy()) {
         return null;
       }
+      if(response.invalidMazeLayer()) {
+        return null;
+      }
       throw new UnknownErrorException();
     }
-    MkbAccount account = accountService.findAccountByUsername(username);
-    account.useEnergy(MazeEnergyExpend);
+    account.useEnergy(MazeInfo.EnergyExpend);
     BattleMaze result = response.getData();
     processBattleMazeResult(account, result, mapStageId);
     return result;
   }
 
-  public MazeInfo gameGetMazeLayer(String username, int mapStageId, int layer) throws ServerNotAvailableException, UnknownErrorException {
+  public MazeInfo gameGetMazeLayer(String username, int mapStageId, int layer) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     params.put("Layer", Integer.toString(layer));
@@ -559,7 +615,7 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public MazeShow gameGetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
+  public MazeShow gameGetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     MazeShowResponse response = gameDoAction(username, "maze.php", "Show", params, MazeShowResponse.class);
@@ -569,7 +625,7 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public boolean gameResetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameResetMaze(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     MazeResetResponse response = gameDoAction(username, "maze.php", "Reset", params, MazeResetResponse.class);
@@ -579,7 +635,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException {
+  public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     AwardClearResponse response = gameDoAction(username, "mapstage.php", "AwardClear", params, AwardClearResponse.class);
@@ -589,7 +645,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public Explore gameExplore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException {
+  public Explore gameExplore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     ExploreResponse response = gameDoAction(username, "mapstage.php", "Explore", params, ExploreResponse.class);
@@ -601,7 +657,7 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public Thieves gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException {
+  public Thieves gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     ThievesResponse response = gameDoAction(username, "arena.php", "GetThieves", null, ThievesResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -609,7 +665,7 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public GoodsList gameGetGoods(String username) throws ServerNotAvailableException, UnknownErrorException {
+  public GoodsList gameGetGoods(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     GoodsResponse response = gameDoAction(username, "shop.php", "GetGoods", null, GoodsResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();

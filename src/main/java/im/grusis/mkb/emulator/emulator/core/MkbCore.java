@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 import im.grusis.mkb.exception.ServerNotAvailableException;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.*;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -78,7 +79,7 @@ public class MkbCore {
       });
       HttpResponse response = httpClient.execute(post);
       HttpEntity entity = response.getEntity();
-      String content = EntityUtils.toString(entity);
+      String content = StringEscapeUtils.unescapeJava(EntityUtils.toString(entity));
       if(content == null || content.startsWith("<")) {
         throw new ServerNotAvailableException();
       }

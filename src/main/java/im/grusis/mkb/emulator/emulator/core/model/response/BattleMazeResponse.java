@@ -8,4 +8,9 @@ import im.grusis.mkb.emulator.emulator.core.model.basic.BattleMaze;
  * Time: 上午1:15
  */
 public class BattleMazeResponse extends BattleResponse<BattleMaze> {
+  public static final String InvalidMazeLayer = "迷宫尚未开启"; // 迷宫尚未开启.
+
+  public boolean invalidMazeLayer() {
+    return message != null && message.contains(InvalidMazeLayer);
+  }
 }
