@@ -95,7 +95,7 @@ public class AutomatedServiceEngine {
           if(battle.lost()) {
             count++;
             if(count > maxTry) {
-              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, maze.getName(), username, account.getNickname(), e, battle.getDefendPlayer().getNickName(), layer);
+              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, maze.getName(), username, account.getNickname(), e, battle.getDefendPlayer().getNickName(), currentLayer.getName());
               return false;
             }
           } else {

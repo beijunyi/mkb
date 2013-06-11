@@ -3,6 +3,7 @@ package im.grusis.mkb.config;
 import java.util.*;
 
 import im.grusis.mkb.eco.EcoSystemMaster;
+import im.grusis.mkb.util.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -41,12 +42,16 @@ public class EcoSystemConfig {
   @Bean
   public StarterConfigList getStarterConfig() {
     StarterConfigList starterConfigMap = new StarterConfigList();
-    int i = 0;
+    int i = 1;
     String key;
     while(env.containsProperty((key = StarterConfigPrefix + i))) {
       String cards = env.getProperty(key);
       String[] cardArray = cards.split(",");
-      starterConfigMap.add(new StarterConfig(cardArray));
+      List<Integer> cardIdList = new ArrayList<Integer>();
+      for(String card : cardArray) {
+        cardIdList.add(Integer.valueOf(card));
+      }
+      starterConfigMap.add(new StarterConfig(cardIdList));
       i++;
     }
     return starterConfigMap;
@@ -55,7 +60,7 @@ public class EcoSystemConfig {
   @Bean
   public CardConfigMap getCardConfigMap() {
     CardConfigMap cardConfigMap = new CardConfigMap();
-    int i = 0;
+    int i = 1;
     String key;
     while(env.containsProperty((key = CardConfigPrefix + i))) {
       int id = env.getProperty(key, Integer.class);
@@ -110,17 +115,8 @@ public class EcoSystemConfig {
       this.starterCards = starterCards;
     }
 
-    public StarterConfig(String[] cards) {
-      starterCards = new LinkedHashMap<Integer, Integer>();
-      for(String card : cards) {
-        int cardId = Integer.parseInt(card);
-        Integer count = starterCards.get(cardId);
-        if(count == null) {
-          starterCards.put(cardId, 1);
-        } else {
-          starterCards.put(cardId, count + 1);
-        }
-      }
+    public StarterConfig(List<Integer> cards) {
+      this(CollectionUtil.instanceCount(cards));
     }
 
     public Map<Integer, Integer> getStarterCards() {

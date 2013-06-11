@@ -175,19 +175,6 @@ public class MkbEmulator {
   }
 
   public String gameDoAction(String username, String service, String action, Map<String, String> paramMap) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-//    TemporaryProfile profile = profiles.get(username);
-//    if(profile == null) {
-//      Log.debug("Cannot perform {}/do={}. {} does not have a temporary profile", service, action, username);
-//      MkbAccount account = accountService.findAccountByUsername(username);
-//      if(account != null) {
-//        Log.debug("Credential record for account {} is found. Now try login", username);
-//        gamePassportLogin(username);
-//        s
-//      }
-//      return null;
-//    }
-//    profile.setLastAccess(System.currentTimeMillis());
-
     MkbCore core = getMkbCore(username);
     String result = core.doAction(service, action, paramMap);
     accountService.findAccountByUsername(username).updateLastAction();
@@ -329,6 +316,9 @@ public class MkbEmulator {
   }
 
   public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    if(cardId <= 0) {
+      Log.error("{} is an invalid card id. Card id must be positive integer", cardId);
+    }
     Card card = assetsService.findCard(cardId);
     if(card == null) {
       gameGetCards(username, true);
@@ -515,23 +505,43 @@ public class MkbEmulator {
     return userChip;
   }
 
-  private void processBonus(MkbAccount account, String... bonus) {
-
+  private void processBonus(MkbAccount account, String... bonuses) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    for(String bonus : bonuses) {
+      String[] pair = bonus.split("_");
+      String key = pair[0].toLowerCase();
+      int value = Integer.parseInt(pair[1]);
+      if(key.contains("exp")) {
+        account.addExp(value);
+        Log.info("Account {} {} has obtained {} exp", account.getUsername(), account.getNickname(), value);
+      } else if(key.contains("coin")) {
+        account.addGold(value);
+        Log.info("Account {} {} has obtained {} coins", account.getUsername(), account.getNickname(), value);
+      } else if(key.contains("card")) {
+        account.addNewCard(value);
+        Log.info("Account {} {} has obtained card {} {}", account.getUsername(), account.getNickname(), value, gameGetCardDetail(account.getUsername(), value).getCardName());
+      } else if(key.contains("chip")) {
+        account.addNewChip(value);
+        Log.info("Account {} {} has obtained chip {}", account.getUsername(), account.getNickname(), value);
+      } else {
+        Log.warn("Account {} {} has obtained unknown reward {}", account.getUsername(), account.getNickname(), bonus);
+      }
+    }
   }
 
-  private void processBattleMapResult(MkbAccount account, BattleMap result, int mapStageDetailId) {
+  private void processBattleMapResult(MkbAccount account, BattleMap result, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     BattleMapExtData ext = result.getExtData();
     if(ext != null) {
       account.setLevel(ext.getUserLevel());
       if(ext.getStarUp() > 0) {
         account.conquerMapStage(mapStageDetailId);
+        Log.info("Account {} {} has conquered new difficulty level at {} {}", account.getUsername(), account.getNickname(), mapStageDetailId, gameGetMapStageDetail(account.getUsername(), mapStageDetailId).getName());
       }
       processBonus(account, ext.getBonus());
       processBonus(account, ext.getFirstBonusWin());
     }
   }
 
-  private void processBattleMazeResult(MkbAccount account, BattleMaze result, int mapStageId) {
+  private void processBattleMazeResult(MkbAccount account, BattleMaze result, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     BattleMazeExtData ext = result.getExtData();
     if(ext != null) {
       BattleMazeExtData.User user = ext.getUser();
@@ -539,15 +549,31 @@ public class MkbEmulator {
       account.addExp(user.getExp());
 
       BattleMazeExtData.Clear clear = ext.getClear();
-      account.addGold(clear.getCoins());
-      if(clear.getCardId() > 0) account.addNewCard(clear.getCardId());
-      if(clear.getIsClear() > 0) account.clearMaze(mapStageId);
-      account.addGold(clear.getCoins());
+      if(clear.getIsClear() > 0) {
+        account.clearMaze(mapStageId);
+        int coins = clear.getCoins();
+        account.addGold(coins);
+        int card = clear.getCardId();
+        Log.info("Account {} {} has obtained {} coins and card {} {} as clear maze reward", account.getUsername(), account.getNickname(), coins, card, gameGetCardDetail(account.getUsername(), card).getCardName());
+      }
 
       BattleMazeExtData.Award award = ext.getAward();
-      if(award.getCardId() > 0) account.addNewCard(award.getCardId());
-      account.addGold(award.getCoins());
-      account.addExp(award.getExp());
+      int coins = award.getCoins();
+      int exp = award.getExp();
+      int card = award.getCardId();
+      account.addGold(coins);
+      account.addExp(exp);
+      if(card > 0) {
+        account.addNewCard(award.getCardId());
+        Log.info("Account {} {} has obtained {} coins {} exp and card {} {} as maze battle reward", account.getUsername(), account.getNickname(), coins, exp, card, gameGetCardDetail(account.getUsername(), card).getCardName());
+      } else {
+        Log.info("Account {} {} has obtained {} coins and {} exp as maze battle reward", account.getUsername(), account.getNickname(), coins, exp, card);
+      }
+      int chip = award.getChip();
+      if(chip > 0) {
+        account.addNewChip(chip);
+        Log.info("Account {} {} has obtained chip fragment {}", account.getUsername(), account.getNickname(), chip);
+      }
     }
   }
 
@@ -582,7 +608,7 @@ public class MkbEmulator {
 
   public BattleMaze gameMazeBattleAuto(String username, int mapStageId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    Log.debug("{} {} Starting maze battle against maze {}, layer {}, item {}", username, account.getNickname(), mapStageId, layer, itemIndex);
+    Log.debug("{} {} is starting maze battle against maze {}, layer {}, item {}", username, account.getNickname(), mapStageId, layer, itemIndex);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("manual", Integer.toString(0));
     params.put("MapStageId", Integer.toString(mapStageId));
@@ -667,6 +693,24 @@ public class MkbEmulator {
 
   public GoodsList gameGetGoods(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     GoodsResponse response = gameDoAction(username, "shop.php", "GetGoods", null, GoodsResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public Streng gameUpgradeCard(String username, long targetUserCardId, long... sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    StringBuilder sb = new StringBuilder();
+    for(long sourceId : sourceUserCardIds) {
+      if(sb.length() > 0) {
+        sb.append("_");
+      }
+      sb.append(sourceId);
+    }
+    params.put("UserCardId2", sb.toString());
+    params.put("UserCardId1", Long.toString(targetUserCardId));
+    StrengResponse response = gameDoAction(username, "streng.php", "Card", params, StrengResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }

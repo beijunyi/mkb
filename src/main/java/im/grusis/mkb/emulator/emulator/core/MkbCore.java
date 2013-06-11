@@ -3,6 +3,7 @@ package im.grusis.mkb.emulator.emulator.core;
 import java.io.IOException;
 import java.util.*;
 
+import com.google.gson.Gson;
 import im.grusis.mkb.exception.ServerNotAvailableException;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.*;
@@ -48,8 +49,10 @@ public class MkbCore {
 
   public String doAction(String service, String action, Map<String, String> params, DefaultHttpClient httpClient) throws ServerNotAvailableException {
     String url = host + service + "?do=" + action + "&phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
+    String paramJson = "";
     HttpPost post = new HttpPost(url);
     if(params != null) {
+      paramJson = new Gson().toJson(params);
       List<NameValuePair> nvps = new ArrayList<NameValuePair>();
       Set<Map.Entry<String, String>> entrySet = params.entrySet();
       for(Map.Entry<String, String> entry : entrySet) {
@@ -77,6 +80,7 @@ public class MkbCore {
         }
 
       });
+      Log.debug("Sending request {} {}", url, paramJson);
       HttpResponse response = httpClient.execute(post);
       HttpEntity entity = response.getEntity();
       String content = StringEscapeUtils.unescapeJava(EntityUtils.toString(entity));
