@@ -78,6 +78,7 @@ public class AutomatedServiceEngine {
         return false;
       }
       emulator.gameResetMaze(username, mapStageId);
+      maze = emulator.gameGetMaze(username, mapStageId);
     }
     int layer = maze.getLayer();
     MazeInfo currentLayer = emulator.gameGetMazeLayer(username, mapStageId, layer);
