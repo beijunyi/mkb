@@ -8,16 +8,16 @@ import java.util.List;
  * Time: 下午10:06
  */
 public class MapStage {
- private  int MapStageId;
- private  String Name;
- private  int Count;
- private  int EveryDayReward;
- private  int Rank;
- private  int MazeCount;
- private  int NeedStar;
- private  int Prev;
- private  int Next;
- private  List<MapStageDetail> MapStageDetails;
+ private int MapStageId;
+ private String Name;
+ private int Count;
+ private int EveryDayReward;
+ private int Rank;
+ private int MazeCount;
+ private int NeedStar;
+ private int Prev;
+ private int Next;
+ private List<MapStageDetail> MapStageDetails;
 
   public int getMapStageId() {
     return MapStageId;

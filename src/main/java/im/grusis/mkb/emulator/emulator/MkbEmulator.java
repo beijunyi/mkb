@@ -186,6 +186,9 @@ public class MkbEmulator {
     T response = GameDataFactory.getGameData(responseString, clazz);
     if(response.badRequest()) {
       if(response.disconnected()) {
+        if(action.equals("PassportLogin")) {
+          return response;
+        }
         Log.debug("Previous session is no longer valid. Now try passport login", username);
         gamePassportLogin(username);
         return gameDoAction(username, service, action, paramMap, clazz);
@@ -536,8 +539,14 @@ public class MkbEmulator {
         account.conquerMapStage(mapStageDetailId);
         Log.info("Account {} {} has conquered new difficulty level at {} {}", account.getUsername(), account.getNickname(), mapStageDetailId, gameGetMapStageDetail(account.getUsername(), mapStageDetailId).getName());
       }
-      processBonus(account, ext.getBonus());
-      processBonus(account, ext.getFirstBonusWin());
+      String[] bonuses = ext.getBonus();
+      if(bonuses != null) {
+        processBonus(account, bonuses);
+      }
+      String[] firstBonuses = ext.getFirstBonusWin();
+      if(firstBonuses != null) {
+        processBonus(account, firstBonuses);
+      }
     }
   }
 
@@ -717,12 +726,22 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public Friends gameGetFriends(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    FriendsResponse response = gameDoAction(username, "friend.php", "GetFriends", null, FriendsResponse.class);
-    if(response.badRequest()) {
-      throw new UnknownErrorException();
+  public Map<Long, Friend> gameGetFriends(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    MkbAccount account = accountService.findAccountByUsername(username);
+    Map<Long, Friend> friends;
+    if(refresh || (friends = account.getFriendMap()) == null) {
+      FriendsResponse response = gameDoAction(username, "friend.php", "GetFriends", null, FriendsResponse.class);
+      if(response.badRequest()) {
+        throw new UnknownErrorException();
+      }
+      friends = account.setFriends(response.getData());
+      accountService.saveAccount(account);
     }
-    return response.getData();
+    return friends;
+  }
+
+  public Friend gameGetFriend(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    return gameGetFriends(username, false).get(fid);
   }
 
   public FriendApplys gameGetFriendApplies(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
@@ -732,6 +751,7 @@ public class MkbEmulator {
     }
     return response.getData();
   }
+
 
   public boolean gameDisposeFriendApply(String username, long friendId, boolean accept) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
@@ -755,9 +775,64 @@ public class MkbEmulator {
     params.put("Fid", Long.toString(friendId));
     SendFEnergyResponse response = gameDoAction(username, "fenergy.php", "SendFEnergy", params, SendFEnergyResponse.class);
     if(response.badRequest()) {
+      if(response.energySendMax()) {
+        return false;
+      }
       throw new UnknownErrorException();
     }
     return true;
+  }
+
+  public boolean gameAcceptEnergy(String username, long friendId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("Fid", Long.toString(friendId));
+    GetFEnergyResponse response = gameDoAction(username, "fenergy.php", "GetFEnergy", params, GetFEnergyResponse.class);
+    if(response.badRequest()) {
+      if(response.energyGetMax()) {
+        return false;
+      }
+      throw new UnknownErrorException();
+    }
+    MkbAccount account = accountService.findAccountByUsername(username);
+    account.acceptEnergyFrom(friendId);
+    accountService.saveAccount(account);
+    return true;
+  }
+
+  public Tech gameGetLegionTechs(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    TechResponse response = gameDoAction(username, "legion.php", "GetTech", null, TechResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public Legions gameGetLegions(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    LegionsResponse response = gameDoAction(username, "legion.php", "GetLegions", null, LegionsResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    MkbAccount account = accountService.findAccountByUsername(username);
+    Legions legions = response.getData();
+    account.setLegion(legions.getMyLegion());
+    return legions;
+  }
+
+  public Legion gameGetMyLegion(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    MkbAccount account = accountService.findAccountByUsername(username);
+    Legion legion;
+    if(refresh || (legion = account.getLegion()) == null) {
+      legion = gameGetLegions(username).getMyLegion();
+    }
+    return legion;
+  }
+
+  public Members gameGetLegionMembers(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    MembersResponse response = gameDoAction(username, "legion.php", "GetMember", null, MembersResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
   }
 
 }

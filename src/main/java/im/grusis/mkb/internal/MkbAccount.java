@@ -15,6 +15,7 @@ public class MkbAccount {
   private String password;
   private String mac;
   private String nickname;
+  private long uid;
   private String inviteCode;
   private int inviteCount = 0;
   private String server;
@@ -29,6 +30,7 @@ public class MkbAccount {
   private Set<Integer> currentChips;
   private Map<Integer, Integer> mapStageProgress;
   private Map<Integer, Long> mazeClearTimes;
+  private Map<Long, Integer> energyRecord;
 
   private TemporaryProfile profile;
   private long lastAction;
@@ -43,6 +45,10 @@ public class MkbAccount {
   private long userMapStagesUpdate;
   private UserChip userChip;
   private long userChipUpdate;
+  private Map<Long, Friend> friendMap;
+  private long friendsUpdate;
+  private Legion legion;
+  private long legionUpdate;
 
   public String getUsername() {
     return username;
@@ -92,6 +98,14 @@ public class MkbAccount {
     this.inviteCount = inviteCount;
   }
 
+  public long getUid() {
+    return uid;
+  }
+
+  public void setUid(long uid) {
+    this.uid = uid;
+  }
+
   public String getServer() {
     return server;
   }
@@ -114,6 +128,7 @@ public class MkbAccount {
     energy = userInfo.getEnergy();
     nickname = userInfo.getNickName();
     inviteCode = userInfo.getInviteCode();
+    uid = userInfo.getUid();
     this.userInfoUpdate = System.currentTimeMillis();
   }
 
@@ -355,5 +370,78 @@ public class MkbAccount {
       currentProgress++;
     }
     mapStageProgress.put(mapStageDetailId, currentProgress);
+  }
+
+  public Map<Long, Integer> getEnergyRecord() {
+    return energyRecord;
+  }
+
+  public void setEnergyRecord(Map<Long, Integer> energyRecord) {
+    this.energyRecord = energyRecord;
+  }
+
+  public void acceptEnergyFrom(long fid) {
+    if(energyRecord == null) {
+      energyRecord = new LinkedHashMap<Long, Integer>();
+    }
+    Integer count = energyRecord.get(fid);
+    if(count == null) {
+      count = 1;
+    } else {
+      count++;
+    }
+    energyRecord.put(fid, count);
+  }
+
+  public Map<Long, Friend> getFriendMap() {
+    return friendMap;
+  }
+
+  public long getFriendsUpdate() {
+    return friendsUpdate;
+  }
+
+  public Map<Long, Friend> setFriends(Friends friends) {
+    if(friendMap == null) {
+      friendMap = new LinkedHashMap<Long, Friend>();
+    } else {
+      friendMap.clear();
+    }
+    for(Friend friend : friends.getFriends()) {
+      friendMap.put(friend.getUid(), friend);
+    }
+    friendsUpdate = System.currentTimeMillis();
+    return friendMap;
+  }
+
+  public Friend getFriend(long fid) {
+    return friendMap.get(fid);
+  }
+
+  public List<Long> getEnergySenderList() {
+    if(energyRecord == null) {
+      return Collections.emptyList();
+    }
+    List<Long> keys = new ArrayList<Long>(energyRecord.keySet());
+    Collections.sort(keys, new Comparator<Long>() {
+      @Override
+      public int compare(Long o1, Long o2) {
+        return energyRecord.get(o2).compareTo(energyRecord.get(o1));
+      }
+    });
+    return keys;
+  }
+
+  public void setLegion(Legion legion) {
+    this.legion = legion;
+    legionUpdate = System.currentTimeMillis();
+  }
+
+  public Legion getLegion() {
+    return legion;
+  }
+
+  public long getLegionUpdate() {
+    return legionUpdate;
   }
 }

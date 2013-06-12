@@ -36,7 +36,12 @@ public class ManualAccessController extends MkbController {
       Type type = new TypeToken<Map<String, String>>() {
       }.getType();
       Map<String, String> paramMap = new Gson().fromJson(params, type);
-      return Response.ok(manualAccessService.doAction(username, service, action, paramMap)).build();
+      String responseString = manualAccessService.doAction(username, service, action, paramMap);
+      try {
+        return Response.ok(new Gson().fromJson(responseString, Object.class)).build();
+      } catch(Exception e) {
+        return Response.ok(responseString).build();
+      }
     } catch(Exception e) {
       Log.error("Cannot perform action {}?do={} for ", service, action, username);
       return Response.status(Response.Status.BAD_REQUEST).entity(e).build();

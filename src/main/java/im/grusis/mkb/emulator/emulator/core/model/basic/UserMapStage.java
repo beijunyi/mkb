@@ -12,7 +12,7 @@ public class UserMapStage {
   private int MapStageId;
   private int FinishedStage;
   private String LastFinishedTime;
-  private int CounterAttackTime;
+  private long CounterAttackTime;
 
   public long getUid() {
     return Uid;
@@ -54,11 +54,11 @@ public class UserMapStage {
     LastFinishedTime = lastFinishedTime;
   }
 
-  public int getCounterAttackTime() {
+  public long getCounterAttackTime() {
     return CounterAttackTime;
   }
 
-  public void setCounterAttackTime(int counterAttackTime) {
+  public void setCounterAttackTime(long counterAttackTime) {
     CounterAttackTime = counterAttackTime;
   }
 

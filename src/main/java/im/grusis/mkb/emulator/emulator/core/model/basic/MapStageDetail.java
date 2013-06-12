@@ -23,7 +23,7 @@ public class MapStageDetail {
   private int Next;
   private int NextBranch;
   private String FightName;
-  private int FightImg;
+  private String FightImg;
   private List<Dialogue> Dialogue;
   private List<Dialogue> DialogueAfter;
   private List<Level> Levels;
@@ -108,11 +108,11 @@ public class MapStageDetail {
     FightName = fightName;
   }
 
-  public int getFightImg() {
+  public String getFightImg() {
     return FightImg;
   }
 
-  public void setFightImg(int fightImg) {
+  public void setFightImg(String fightImg) {
     FightImg = fightImg;
   }
 
