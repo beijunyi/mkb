@@ -717,4 +717,47 @@ public class MkbEmulator {
     return response.getData();
   }
 
+  public Friends gameGetFriends(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    FriendsResponse response = gameDoAction(username, "friend.php", "GetFriends", null, FriendsResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public FriendApplys gameGetFriendApplies(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    FriendApplysResponse response = gameDoAction(username, "friend.php", "GetFriendApplys", null, FriendApplysResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData();
+  }
+
+  public boolean gameDisposeFriendApply(String username, long friendId, boolean accept) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    String type;
+    if(accept) {
+      type = "agree";
+    } else {
+      type = "reject";
+    }
+    params.put("type", type);
+    params.put("Fid", Long.toString(friendId));
+    DisposeFriendApplyResponse response = gameDoAction(username, "friend.php", "DisposeFriendApply", params, DisposeFriendApplyResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return true;
+  }
+
+  public boolean gameSendEnergy(String username, long friendId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("Fid", Long.toString(friendId));
+    SendFEnergyResponse response = gameDoAction(username, "fenergy.php", "SendFEnergy", params, SendFEnergyResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return true;
+  }
+
 }

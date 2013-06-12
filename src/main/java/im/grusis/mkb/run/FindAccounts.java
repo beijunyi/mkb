@@ -3,6 +3,7 @@ package im.grusis.mkb.run;
 import im.grusis.mkb.config.RuntimeConfig;
 import im.grusis.mkb.emulator.emulator.AutomatedServiceEngine;
 import im.grusis.mkb.emulator.emulator.MkbEmulator;
+import im.grusis.mkb.util.MacAddressHelper;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -22,7 +23,9 @@ public class FindAccounts {
 
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
-    emulator.gameGetUserInfo("urnmso90377", true);
-    ase.clearMaze("urnmso90377", 7, 2, 0);
+//    emulator.webLogin("urnmso90377", "mewhome123", MacAddressHelper.getMacAddress());
+//    emulator.gamePassportLogin("urnmso90377");
+//    emulator.gameGetUserInfo("urnmso90377", true);
+    ase.clearMaze("urnmso90377", 8, 2, 0);
   }
 }
