@@ -391,6 +391,7 @@ public class MkbAccount {
       count++;
     }
     energyRecord.put(fid, count);
+    energy++;
   }
 
   public Map<Long, Friend> getFriendMap() {

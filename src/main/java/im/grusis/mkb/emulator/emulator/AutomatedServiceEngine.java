@@ -140,9 +140,9 @@ public class AutomatedServiceEngine {
       }
     }
     MkbAccount account = accountService.findAccountByUsername(username);
-    List<Long> senderList = account.getEnergySenderList();
+    List<Long> sendList = account.getEnergySenderList();
     boolean max = false;
-    for(long fid : senderList) {
+    for(long fid : sendList) {
       if(emulator.gameGetFriend(username, fid).getFEnergySend() != 0) {
         if(!emulator.gameSendEnergy(username, fid)) {
           max = true;

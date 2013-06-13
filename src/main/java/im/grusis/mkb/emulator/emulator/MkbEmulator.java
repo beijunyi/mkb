@@ -770,22 +770,26 @@ public class MkbEmulator {
     return true;
   }
 
-  public boolean gameSendEnergy(String username, long friendId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean gameSendEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
-    params.put("Fid", Long.toString(friendId));
+    params.put("Fid", Long.toString(fid));
     SendFEnergyResponse response = gameDoAction(username, "fenergy.php", "SendFEnergy", params, SendFEnergyResponse.class);
     if(response.badRequest()) {
       if(response.energySendMax()) {
         return false;
       }
+      if(response.energyAlreadySent()) {
+        return false;
+      }
       throw new UnknownErrorException();
     }
+    gameGetFriend(username, fid).setFEnergySend(0);
     return true;
   }
 
-  public boolean gameAcceptEnergy(String username, long friendId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean gameAcceptEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
-    params.put("Fid", Long.toString(friendId));
+    params.put("Fid", Long.toString(fid));
     GetFEnergyResponse response = gameDoAction(username, "fenergy.php", "GetFEnergy", params, GetFEnergyResponse.class);
     if(response.badRequest()) {
       if(response.energyGetMax()) {
@@ -793,8 +797,9 @@ public class MkbEmulator {
       }
       throw new UnknownErrorException();
     }
+    gameGetFriend(username, fid).setFEnergySurplus(0);
     MkbAccount account = accountService.findAccountByUsername(username);
-    account.acceptEnergyFrom(friendId);
+    account.acceptEnergyFrom(fid);
     accountService.saveAccount(account);
     return true;
   }
