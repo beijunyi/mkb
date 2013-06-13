@@ -27,7 +27,13 @@ public class FindAccounts {
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 //    emulator.webLogin("tug100", "mewhome123", MacAddressHelper.getMacAddress());
 //    emulator.gameGetUserInfo(username, true);
-    ase.clearCounterAttacks(username, 5);
-//    ase.clearMaze("tug100", 8, 2, 0);
+//    ase.clearCounterAttacks(username, 5);
+    ase.clearMaze(username,8, 2, 0);
+    ase.clearMaze(username,7, 2, 0);
+    ase.clearMaze(username,6, 2, 0);
+    ase.collectAndSendEnergy(username, true, true);
+    ase.clearMaze(username,8, 2, 0);
+    ase.clearMaze(username,7, 2, 0);
+    ase.clearMaze(username,6, 2, 0);
   }
 }

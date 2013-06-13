@@ -155,9 +155,11 @@ public class AutomatedServiceEngine {
     }
     if(toSameLegion) {
       for(long fid : sameLegion) {
-        if(!emulator.gameSendEnergy(username, fid)) {
-          max = true;
-          break;
+        if(emulator.gameGetFriend(username, fid).getFEnergySend() != 0) {
+          if(!emulator.gameSendEnergy(username, fid)) {
+            max = true;
+            break;
+          }
         }
       }
     }
