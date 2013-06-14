@@ -7,14 +7,18 @@ import org.springframework.core.env.Environment;
  * Date: 13-6-13
  * Time: 下午11:11
  */
-public class CommonProfile extends EcoProfile<CommonProfile> {
+public class CommonProfile extends EcoProfile {
 
-  public static final String Prefix = "common.";
+  public static final String Common = "common.";
 
   private String name;
 
-  public CommonProfile(Environment environment, String root, CommonProfile defaultProfile) {
-    super(environment, root, defaultProfile);
+  public CommonProfile(Environment environment, int index, DefaultProfile defaultProfile) {
+    this(environment, Profile + Common + index, defaultProfile);
+  }
+
+  public CommonProfile(Environment environment, String root, DefaultProfile defaultProfile) {
+    read(environment, root, defaultProfile);
   }
 
   @Override

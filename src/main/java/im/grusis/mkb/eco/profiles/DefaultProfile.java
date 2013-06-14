@@ -7,11 +7,15 @@ import org.springframework.core.env.Environment;
  * Date: 13-6-13
  * Time: 下午11:11
  */
-public class DefaultProfile extends EcoProfile<DefaultProfile> {
+public class DefaultProfile extends EcoProfile {
 
-  public static final String Prefix = "default.";
+  public static final String Default = "default.";
+
+  public DefaultProfile(Environment environment) {
+    this(environment, Profile + Default, null);
+  }
 
   public DefaultProfile(Environment environment, String root, DefaultProfile defaultProfile) {
-    super(environment, root, defaultProfile);
+    read(environment, root, defaultProfile);
   }
 }

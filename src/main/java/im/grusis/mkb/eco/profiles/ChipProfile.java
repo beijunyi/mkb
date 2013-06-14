@@ -9,8 +9,9 @@ import org.springframework.core.env.Environment;
  */
 public class ChipProfile extends Profile<ChipProfile> {
 
-  public static final String Prefix = "chip.";
+  public static final String Chip = "chip.";
   public static final String FreeFight = "freeFight";
+  public static final boolean FreeFightDefault = true;
 
   private boolean freeFight;
 
@@ -20,7 +21,7 @@ public class ChipProfile extends Profile<ChipProfile> {
 
   @Override
   public void read(Environment environment, String root, ChipProfile defaultProfile) {
-    setFreeFight(environment.getProperty(root + Prefix + FreeFight, Boolean.class, defaultProfile == null ? null : defaultProfile.isFreeFight()));
+    setFreeFight(environment.getProperty(root + Chip + FreeFight, Boolean.class, defaultProfile == null ? FreeFightDefault : defaultProfile.isFreeFight()));
   }
 
   public boolean isFreeFight() {

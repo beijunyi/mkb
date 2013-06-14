@@ -9,10 +9,13 @@ import org.springframework.core.env.Environment;
  */
 public class CardGroupProfile extends Profile<CardGroupProfile> {
 
-  public static final String Prefix = "cardGroup.";
+  public static final String CardGroup = "cardGroup.";
   public static final String Main = "main";
+  public static final int MainDefault = 1;
   public static final String Boss = "boss";
+  public static final int BossDefault = 1;
   public static final String Thief = "thief";
+  public static final int ThiefDefault = 1;
 
   private int main;
   private int boss;
@@ -24,9 +27,9 @@ public class CardGroupProfile extends Profile<CardGroupProfile> {
 
   @Override
   public void read(Environment environment, String root, CardGroupProfile defaultProfile) {
-    setMain(environment.getProperty(root + Prefix + Main, Integer.class, defaultProfile == null ? null : defaultProfile.getMain()));
-    setBoss(environment.getProperty(root + Prefix + Boss, Integer.class, defaultProfile == null ? null : defaultProfile.getBoss()));
-    setThief(environment.getProperty(root + Prefix + Boss, Integer.class, defaultProfile == null ? null : defaultProfile.getThief()));
+    setMain(environment.getProperty(root + CardGroup + Main, Integer.class, defaultProfile == null ? MainDefault : defaultProfile.getMain()));
+    setBoss(environment.getProperty(root + CardGroup + Boss, Integer.class, defaultProfile == null ? BossDefault : defaultProfile.getBoss()));
+    setThief(environment.getProperty(root + CardGroup + Boss, Integer.class, defaultProfile == null ? ThiefDefault : defaultProfile.getThief()));
   }
 
   public int getMain() {

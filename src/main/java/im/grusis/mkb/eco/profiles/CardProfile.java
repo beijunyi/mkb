@@ -9,9 +9,11 @@ import org.springframework.core.env.Environment;
  */
 public class CardProfile extends Profile<CardProfile> {
 
-  public static final String Prefix = "card.";
+  public static final String Card = "card.";
   public static final String Upgrade = "upgrade";
+  public static final boolean UpgradeDefault = true;
   public static final String BuyResource = "buyResource";
+  public static final boolean  BuyResourceDefault = true;
 
   private boolean upgrade;
   private boolean buyResource;
@@ -22,8 +24,8 @@ public class CardProfile extends Profile<CardProfile> {
 
   @Override
   public void read(Environment environment, String root, CardProfile defaultProfile) {
-    setUpgrade(environment.getProperty(root + Prefix + Upgrade, Boolean.class, defaultProfile == null ? null : defaultProfile.isUpgrade()));
-    setBuyResource(environment.getProperty(root + Prefix + BuyResource, Boolean.class, defaultProfile == null ? null : defaultProfile.isBuyResource()));
+    setUpgrade(environment.getProperty(root + Card + Upgrade, Boolean.class, defaultProfile == null ? UpgradeDefault : defaultProfile.isUpgrade()));
+    setBuyResource(environment.getProperty(root + Card + BuyResource, Boolean.class, defaultProfile == null ? BuyResourceDefault : defaultProfile.isBuyResource()));
   }
 
   public boolean isUpgrade() {

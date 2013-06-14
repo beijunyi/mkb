@@ -9,9 +9,11 @@ import org.springframework.core.env.Environment;
  */
 public class RuneProfile extends Profile<RuneProfile> {
 
-  public static final String Prefix = "rune.";
+  public static final String Rune = "rune.";
   public static final String Update = "update";
+  public static final boolean UpdateDefault = true;
   public static final String BuyResource = "buyResource";
+  public static final boolean BuyResourceDefault = true;
 
   private boolean update;
   private boolean buyResource;
@@ -22,8 +24,8 @@ public class RuneProfile extends Profile<RuneProfile> {
 
   @Override
   public void read(Environment environment, String root, RuneProfile defaultProfile) {
-    setUpdate(environment.getProperty(root + Prefix + Update, Boolean.class, defaultProfile == null ? null : defaultProfile.isUpdate()));
-    setBuyResource(environment.getProperty(root + Prefix + BuyResource, Boolean.class, defaultProfile == null ? null : defaultProfile.isBuyResource()));
+    setUpdate(environment.getProperty(root + Rune + Update, Boolean.class, defaultProfile == null ? UpdateDefault : defaultProfile.isUpdate()));
+    setBuyResource(environment.getProperty(root + Rune + BuyResource, Boolean.class, defaultProfile == null ? BuyResourceDefault : defaultProfile.isBuyResource()));
   }
 
   public boolean isUpdate() {

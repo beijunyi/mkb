@@ -9,10 +9,13 @@ import org.springframework.core.env.Environment;
  */
 public class StageProfile extends Profile<StageProfile> {
 
-  public static final String Prefix = "stage.";
+  public static final String Stage = "stage.";
   public static final String MaxClear = "maxClear";
+  public static final int MaxClearDefault = 73;
   public static final String MaxTry = "maxTry";
+  public static final int MaxTryDefault = 5;
   public static final String ClearCounterAttack = "clearCounterAttack";
+  public static final boolean ClearCounterAttackDefault = true;
 
   private int maxClear;
   private int maxTry;
@@ -24,9 +27,9 @@ public class StageProfile extends Profile<StageProfile> {
 
   @Override
   public void read(Environment environment, String root, StageProfile defaultProfile) {
-    setMaxClear(environment.getProperty(root + Prefix + MaxClear, Integer.class, defaultProfile == null ? null : defaultProfile.getMaxClear()));
-    setMaxTry(environment.getProperty(root + Prefix + MaxTry, Integer.class, defaultProfile == null ? null : defaultProfile.getMaxTry()));
-    setClearCounterAttack(environment.getProperty(root + Prefix + ClearCounterAttack, Boolean.class, defaultProfile == null ? null : defaultProfile.isClearCounterAttack()));
+    setMaxClear(environment.getProperty(root + Stage + MaxClear, Integer.class, defaultProfile == null ? MaxClearDefault : defaultProfile.getMaxClear()));
+    setMaxTry(environment.getProperty(root + Stage + MaxTry, Integer.class, defaultProfile == null ? MaxTryDefault : defaultProfile.getMaxTry()));
+    setClearCounterAttack(environment.getProperty(root + Stage + ClearCounterAttack, Boolean.class, defaultProfile == null ? ClearCounterAttackDefault : defaultProfile.isClearCounterAttack()));
   }
 
   public int getMaxClear() {

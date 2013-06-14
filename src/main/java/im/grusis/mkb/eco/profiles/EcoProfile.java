@@ -7,7 +7,10 @@ import org.springframework.core.env.Environment;
  * Date: 13-6-13
  * Time: 下午11:12
  */
-public class EcoProfile<T extends EcoProfile> extends Profile<T> {
+public class EcoProfile {
+
+  public static final String Profile = "profile.";
+
   private BossProfile bossProfile;
   private CardGroupProfile cardGroupProfile;
   private CardProfile cardProfile;
@@ -17,10 +20,6 @@ public class EcoProfile<T extends EcoProfile> extends Profile<T> {
   private MazeProfile mazeProfile;
   private RuneProfile runeProfile;
   private StageProfile stageProfile;
-
-  public EcoProfile(Environment environment, String root, T defaultProfile) {
-    super(environment, root, defaultProfile);
-  }
 
   public void read(Environment environment, String root, EcoProfile defaultProfile) {
     bossProfile = new BossProfile(environment, root, defaultProfile == null ? null : defaultProfile.getBossProfile());

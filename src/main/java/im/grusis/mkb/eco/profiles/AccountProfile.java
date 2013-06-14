@@ -7,14 +7,25 @@ import org.springframework.core.env.Environment;
  * Date: 13-6-13
  * Time: 下午11:24
  */
-public class AccountProfile extends EcoProfile<AccountProfile> {
+public class AccountProfile extends EcoProfile {
 
-  public static final String Prefix = "account.";
+  public static final String Account = "account.";
+  public static final String Common = ".common";
 
   private String username;
 
-  public AccountProfile(Environment environment, String root, AccountProfile defaultProfile) {
-    super(environment, root, defaultProfile);
+  public AccountProfile(Environment environment, int index, DefaultProfile defaultProfile, CommonProfileMap commonProfileMap) {
+    String common = environment.getProperty(Profile + Account + index + Common);
+    String root = Profile + Account + index;
+    if(common != null) {
+      read(environment, root, commonProfileMap.get(common));
+    } else {
+      read(environment, root, defaultProfile);
+    }
+  }
+
+  public AccountProfile(Environment environment, String root, EcoProfile defaultProfile) {
+    read(environment, root, defaultProfile);
   }
 
   @Override

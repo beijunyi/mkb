@@ -9,9 +9,11 @@ import org.springframework.core.env.Environment;
  */
 public class EnergyProfile extends Profile<EnergyProfile> {
 
-  public static final String Prefix = "energy.";
+  public static final String Energy = "energy.";
   public static final String Send = "send";
+  public static final boolean SendDefault = true;
   public static final String Receive = "receive";
+  public static final boolean ReceiveDefault = true;
 
   private boolean send;
   private boolean receive;
@@ -22,8 +24,8 @@ public class EnergyProfile extends Profile<EnergyProfile> {
 
   @Override
   public void read(Environment environment, String root, EnergyProfile defaultProfile) {
-    setSend(environment.getProperty(root + Prefix + Send, Boolean.class, defaultProfile == null ? null : defaultProfile.isSend()));
-    setReceive(environment.getProperty(root + Prefix + Receive, Boolean.class, defaultProfile == null ? null : defaultProfile.isReceive()));
+    setSend(environment.getProperty(root + Energy + Send, Boolean.class, defaultProfile == null ? SendDefault : defaultProfile.isSend()));
+    setReceive(environment.getProperty(root + Energy + Receive, Boolean.class, defaultProfile == null ? ReceiveDefault : defaultProfile.isReceive()));
   }
 
   public boolean isSend() {

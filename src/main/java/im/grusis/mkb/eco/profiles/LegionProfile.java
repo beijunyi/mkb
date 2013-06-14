@@ -9,8 +9,9 @@ import org.springframework.core.env.Environment;
  */
 public class LegionProfile extends Profile<LegionProfile> {
 
-  public static final String Prefix = "legion.";
+  public static final String Legion = "legion.";
   public static final String Donate = "donate";
+  public static final long DonateDefault = 30000;
 
   private long donate;
 
@@ -20,7 +21,7 @@ public class LegionProfile extends Profile<LegionProfile> {
 
   @Override
   public void read(Environment environment, String root, LegionProfile defaultProfile) {
-    setDonate(environment.getProperty(root + Prefix + Donate, Long.class, defaultProfile == null ? null : defaultProfile.getDonate()));
+    setDonate(environment.getProperty(root + Legion + Donate, Long.class, defaultProfile == null ? DonateDefault : defaultProfile.getDonate()));
   }
 
   public long getDonate() {

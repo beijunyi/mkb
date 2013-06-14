@@ -12,10 +12,13 @@ import org.springframework.core.env.Environment;
  */
 public class MazeProfile extends Profile<MazeProfile> {
 
-  public static final String Prefix = "maze.";
+  public static final String Maze = "maze.";
   public static final String Clear = "clear";
+  public static final String ClearDefault = "8,7,6,5,4,3,2";
   public static final String ResetBudget = "resetBudget";
+  public static final int ResetBudgetDefault = 0;
   public static final String MaxTry = "maxTry";
+  public static final int MaxTryDefault = 5;
 
   private List<Integer> clear;
   private int resetBudget;
@@ -27,18 +30,23 @@ public class MazeProfile extends Profile<MazeProfile> {
 
   @Override
   public void read(Environment environment, String root, MazeProfile defaultProfile) {
-    String clearValue = environment.getProperty(root + Prefix + Clear);
+    String clearValue = environment.getProperty(root + Maze + Clear);
     if(clearValue == null) {
-      clear = new ArrayList<Integer>(defaultProfile.getClear());
-    } else {
+      if(defaultProfile != null) {
+        clear = new ArrayList<Integer>(defaultProfile.getClear());
+      } else {
+        clearValue = ClearDefault;
+      }
+    }
+    if(clear == null) {
       String[] clearArray = clearValue.split(",");
       clear = new ArrayList<Integer>();
       for(String c : clearArray) {
         clear.add(Integer.valueOf(c));
       }
     }
-    setResetBudget(environment.getProperty(root + Prefix + ResetBudget, Integer.class, defaultProfile == null ? null : defaultProfile.getResetBudget()));
-    setMaxTry(environment.getProperty(root + Prefix + MaxTry, Integer.class, defaultProfile == null ? null : defaultProfile.getMaxTry()));
+    setResetBudget(environment.getProperty(root + Maze + ResetBudget, Integer.class, defaultProfile == null ? ResetBudgetDefault : defaultProfile.getResetBudget()));
+    setMaxTry(environment.getProperty(root + Maze + MaxTry, Integer.class, defaultProfile == null ? MaxTryDefault : defaultProfile.getMaxTry()));
   }
 
   public List<Integer> getClear() {

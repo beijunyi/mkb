@@ -9,9 +9,11 @@ import org.springframework.core.env.Environment;
  */
 public class BossProfile extends Profile<BossProfile> {
 
-  public static final String Prefix = "boss.";
+  public static final String Boss = "boss.";
   public static final String Fight = "fight";
+  public static final boolean FightDefault = true;
   public static final String Adaptive = "adaptive";
+  public static final boolean AdaptiveDefault = true;
 
   private boolean fight;
   private boolean adaptive;
@@ -22,8 +24,8 @@ public class BossProfile extends Profile<BossProfile> {
 
   @Override
   public void read(Environment environment, String root, BossProfile defaultProfile) {
-    setFight(environment.getProperty(root + Prefix + Fight, Boolean.class, defaultProfile == null ? null : defaultProfile.isFight()));
-    setAdaptive(environment.getProperty(root + Prefix + Adaptive, Boolean.class, defaultProfile == null ? null : defaultProfile.isAdaptive()));
+    setFight(environment.getProperty(root + Boss + Fight, Boolean.class, defaultProfile == null ? FightDefault : defaultProfile.isFight()));
+    setAdaptive(environment.getProperty(root + Boss + Adaptive, Boolean.class, defaultProfile == null ? AdaptiveDefault : defaultProfile.isAdaptive()));
   }
 
   public boolean isFight() {
