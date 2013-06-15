@@ -31,6 +31,10 @@ public class AccountService {
     }
   }
 
+  private Iterable<MkbAccount> getAccounts() {
+    return usernameLookup.values();
+  }
+
   private void updateLookup(MkbAccount account) {
     String mac = account.getMac();
     if(mac != null) {
@@ -72,9 +76,17 @@ public class AccountService {
     return null;
   }
 
-  public Collection<MkbAccount> findAll(AccountFilter filter) {
+  public Iterable<MkbAccount> getAll() {
+    return usernameLookup.values();
+  }
+
+  public int getCount() {
+    return usernameLookup.size();
+  }
+
+  public Iterable<MkbAccount> findAll(AccountFilter filter) {
     Collection<MkbAccount> accounts = usernameLookup.values();
-    Collection<MkbAccount> ret = new LinkedHashSet<MkbAccount>();
+    Collection<MkbAccount> ret = new ArrayList<MkbAccount>();
     for(MkbAccount account : accounts) {
       if(filter.accept(account)) {
         ret.add(account);
@@ -94,4 +106,5 @@ public class AccountService {
     account.setInviteCount(account.getInviteCount() + 1);
     saveAccount(account);
   }
+
 }

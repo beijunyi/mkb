@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@PropertySource("classpath:/mkb.properties")
+@PropertySource("classpath:/emulator.properties")
 public class MkbEmulator {
 
   private static final Logger Log = LoggerFactory.getLogger(MkbEmulator.class);

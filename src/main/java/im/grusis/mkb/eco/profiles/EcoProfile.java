@@ -24,6 +24,7 @@ public class EcoProfile {
   public void read(Environment environment, String root, EcoProfile defaultProfile) {
     bossProfile = new BossProfile(environment, root, defaultProfile == null ? null : defaultProfile.getBossProfile());
     cardGroupProfile = new CardGroupProfile(environment, root, defaultProfile == null ? null : defaultProfile.getCardGroupProfile());
+    cardProfile = new CardProfile(environment, root, defaultProfile == null ? null : defaultProfile.getCardProfile());
     chipProfile = new ChipProfile(environment, root, defaultProfile == null ? null : defaultProfile.getChipProfile());
     energyProfile = new EnergyProfile(environment, root, defaultProfile == null ? null : defaultProfile.getEnergyProfile());
     legionProfile = new LegionProfile(environment, root, defaultProfile == null ? null : defaultProfile.getLegionProfile());
