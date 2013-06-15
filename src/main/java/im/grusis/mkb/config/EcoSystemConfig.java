@@ -1,9 +1,10 @@
 package im.grusis.mkb.config;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import im.grusis.mkb.eco.EcoSystemMaster;
-import im.grusis.mkb.util.CollectionUtil;
+import im.grusis.mkb.eco.configs.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -18,40 +19,29 @@ import org.springframework.core.env.Environment;
 @ComponentScan(basePackageClasses = EcoSystemMaster.class)
 public class EcoSystemConfig {
 
-  private static final String KeepConfigPrefix = "keep.";
-  private static final String KeepMin = "min";
-  private static final int KeepMinDefault = 4;
-  private static final String KeepUpgrade = "upgrade";
-  private static final boolean KeepUpgradeDefault = true;
-
-  private static final String StarterConfigPrefix = "starter.";
-
-  private static final String CardConfigPrefix = "card.";
-  private static final String UpgradeMaxNumberSuffix = ".upgrade";
-  private static final String KeepMaxNumberSuffix = ".keep";
 
   @Autowired private Environment env;
 
   @Bean
   public KeepConfig getKeepConfig() {
-    int min = env.getProperty(KeepConfigPrefix + KeepMin, Integer.class, KeepMinDefault);
-    boolean upgrade = env.getProperty(KeepConfigPrefix + KeepUpgrade, Boolean.class, KeepUpgradeDefault);
+    int min = env.getProperty(KeepConfig.KeepConfigPrefix + KeepConfig.KeepMin, Integer.class, KeepConfig.KeepMinDefault);
+    boolean upgrade = env.getProperty(KeepConfig.KeepConfigPrefix + KeepConfig.KeepUpgrade, Boolean.class, KeepConfig.KeepUpgradeDefault);
     return new KeepConfig(min, upgrade);
   }
 
   @Bean
-  public StarterConfigList getStarterConfig() {
-    StarterConfigList starterConfigMap = new StarterConfigList();
+  public BeginnerConfigList getBeginnerConfigList() {
+    BeginnerConfigList starterConfigMap = new BeginnerConfigList();
     int i = 1;
     String key;
-    while(env.containsProperty((key = StarterConfigPrefix + i))) {
+    while(env.containsProperty((key = BeginnerConfig.Beginner + i))) {
       String cards = env.getProperty(key);
       String[] cardArray = cards.split(",");
       List<Integer> cardIdList = new ArrayList<Integer>();
       for(String card : cardArray) {
         cardIdList.add(Integer.valueOf(card));
       }
-      starterConfigMap.add(new StarterConfig(cardIdList));
+      starterConfigMap.add(new BeginnerConfig(cardIdList));
       i++;
     }
     return starterConfigMap;
@@ -62,112 +52,19 @@ public class EcoSystemConfig {
     CardConfigMap cardConfigMap = new CardConfigMap();
     int i = 1;
     String key;
-    while(env.containsProperty((key = CardConfigPrefix + i))) {
+    while(env.containsProperty((key = CardConfig.CardConfigPrefix + i))) {
       int id = env.getProperty(key, Integer.class);
-      int upgrade = env.getProperty(key + UpgradeMaxNumberSuffix, Integer.class, Integer.MAX_VALUE);
-      int keep = env.getProperty(key + KeepMaxNumberSuffix, Integer.class, Integer.MAX_VALUE);
+      int upgrade = env.getProperty(key + CardConfig.UpgradeMaxNumberSuffix, Integer.class, Integer.MAX_VALUE);
+      int keep = env.getProperty(key + CardConfig.KeepMaxNumberSuffix, Integer.class, Integer.MAX_VALUE);
       cardConfigMap.put(id, new CardConfig(id, upgrade, keep));
       i++;
     }
     return cardConfigMap;
   }
 
-  public class KeepConfig {
-    int min;
-    boolean upgrade;
-
-    public KeepConfig() {
-    }
-
-    public KeepConfig(int min, boolean upgrade) {
-      this.min = min;
-      this.upgrade = upgrade;
-    }
-
-    public int getMin() {
-      return min;
-    }
-
-    public void setMin(int min) {
-      this.min = min;
-    }
-
-    public boolean isUpgrade() {
-      return upgrade;
-    }
-
-    public void setUpgrade(boolean upgrade) {
-      this.upgrade = upgrade;
-    }
+  @Bean
+  public SystemConfig getSystemConfig() {
+    return new SystemConfig(env.getProperty(SystemConfig.SystemConfigPrefix + SystemConfig.Size, Integer.class));
   }
 
-  public class StarterConfigList extends ArrayList<StarterConfig> {
-
-  }
-
-  public class StarterConfig {
-    private Map<Integer, Integer> starterCards;
-
-    public StarterConfig() {
-    }
-
-    public StarterConfig(Map<Integer, Integer> starterCards) {
-      this.starterCards = starterCards;
-    }
-
-    public StarterConfig(List<Integer> cards) {
-      this(CollectionUtil.instanceCount(cards));
-    }
-
-    public Map<Integer, Integer> getStarterCards() {
-      return starterCards;
-    }
-
-    public void setStarterCards(Map<Integer, Integer> starterCards) {
-      this.starterCards = starterCards;
-    }
-  }
-
-  public class CardConfigMap extends LinkedHashMap<Integer, CardConfig> {
-
-  }
-
-  public class CardConfig {
-    private int id;
-    private int upgrade;
-    private int keep;
-
-    public CardConfig() {
-    }
-
-    public CardConfig(int id, int upgrade, int keep) {
-      this.id = id;
-      this.upgrade = upgrade;
-      this.keep = keep;
-    }
-
-    public int getId() {
-      return id;
-    }
-
-    public void setId(int id) {
-      this.id = id;
-    }
-
-    public int getUpgrade() {
-      return upgrade;
-    }
-
-    public void setUpgrade(int upgrade) {
-      this.upgrade = upgrade;
-    }
-
-    public int getKeep() {
-      return keep;
-    }
-
-    public void setKeep(int keep) {
-      this.keep = keep;
-    }
-  }
 }

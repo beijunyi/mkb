@@ -5,33 +5,33 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Date: 13-6-7
  * Time: 下午10:25
  */
-public class BattleMazeExtData extends BattleExtData{
+public class BattleNormalExtData extends BattleExtData {
 
   private Award Award;
   private Clear Clear;
   private User User;
 
-  public BattleMazeExtData.Award getAward() {
+  public BattleNormalExtData.Award getAward() {
     return Award;
   }
 
-  public void setAward(BattleMazeExtData.Award award) {
+  public void setAward(BattleNormalExtData.Award award) {
     Award = award;
   }
 
-  public BattleMazeExtData.Clear getClear() {
+  public BattleNormalExtData.Clear getClear() {
     return Clear;
   }
 
-  public void setClear(BattleMazeExtData.Clear clear) {
+  public void setClear(BattleNormalExtData.Clear clear) {
     Clear = clear;
   }
 
-  public BattleMazeExtData.User getUser() {
+  public BattleNormalExtData.User getUser() {
     return User;
   }
 
-  public void setUser(BattleMazeExtData.User user) {
+  public void setUser(BattleNormalExtData.User user) {
     User = user;
   }
 
@@ -39,38 +39,27 @@ public class BattleMazeExtData extends BattleExtData{
     private int Coins;
     private int Exp;
     private int CardId;
+    private int Honor;
     private int Chip;
 
     public int getCoins() {
       return Coins;
     }
 
-    public void setCoins(int coins) {
-      Coins = coins;
-    }
-
     public int getExp() {
       return Exp;
-    }
-
-    public void setExp(int exp) {
-      Exp = exp;
     }
 
     public int getCardId() {
       return CardId;
     }
 
-    public void setCardId(int cardId) {
-      CardId = cardId;
-    }
-
     public int getChip() {
       return Chip;
     }
 
-    public void setChip(int chip) {
-      Chip = chip;
+    public int getHonor() {
+      return Honor;
     }
   }
 
@@ -83,25 +72,14 @@ public class BattleMazeExtData extends BattleExtData{
       return IsClear;
     }
 
-    public void setIsClear(int isClear) {
-      IsClear = isClear;
-    }
-
     public int getCardId() {
       return CardId;
-    }
-
-    public void setCardId(int cardId) {
-      CardId = cardId;
     }
 
     public int getCoins() {
       return Coins;
     }
 
-    public void setCoins(int coins) {
-      Coins = coins;
-    }
   }
 
   public class User {
@@ -114,32 +92,16 @@ public class BattleMazeExtData extends BattleExtData{
       return Level;
     }
 
-    public void setLevel(int level) {
-      Level = level;
-    }
-
     public long getExp() {
       return Exp;
-    }
-
-    public void setExp(long exp) {
-      Exp = exp;
     }
 
     public long getPrevExp() {
       return PrevExp;
     }
 
-    public void setPrevExp(long prevExp) {
-      PrevExp = prevExp;
-    }
-
     public long getNextExp() {
       return NextExp;
-    }
-
-    public void setNextExp(long nextExp) {
-      NextExp = nextExp;
     }
   }
 }

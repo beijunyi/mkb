@@ -1,5 +1,6 @@
 package im.grusis.mkb.eco;
 
+import im.grusis.mkb.eco.configs.BeginnerConfigList;
 import im.grusis.mkb.emulator.emulator.MkbEmulator;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 import im.grusis.mkb.exception.MkbException;
@@ -8,8 +9,6 @@ import im.grusis.mkb.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,15 +18,13 @@ import org.springframework.stereotype.Component;
  * Time: 下午8:16
  */
 @Component
-@PropertySource("classpath:/eco.properties")
 public class EcoSystemMaster {
 
   private static final Logger Log = LoggerFactory.getLogger(EcoSystemMaster.class);
 
   @Autowired MkbEmulator emulator;
   @Autowired AccountService accountService;
-
-  @Value("${system.size}")
+  @Autowired BeginnerConfigList beginnerConfigList;
 
   @Scheduled(cron = "0 1/10 * * * *")
   public void addEnergy() throws MkbException {
@@ -92,6 +89,11 @@ public class EcoSystemMaster {
     for(MkbAccount account : mkbAccounts) {
       emulator.gameGetUserChip(account.getUsername(), true);
     }
+  }
+
+  @Scheduled(fixedDelay = 600000)
+  public void clearBadBeginner() throws MkbException {
+
   }
 
 

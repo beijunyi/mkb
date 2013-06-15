@@ -1,5 +1,6 @@
 package im.grusis.mkb.internal.accountFilter.common;
 
+import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.internal.accountFilter.AccountFilter;
 
@@ -23,18 +24,22 @@ public class NumericPropertyFilter implements AccountFilter {
   @Override
   public boolean accept(MkbAccount account) {
     long value;
+    UserInfo userInfo = account.getUserInfo();
+    if(userInfo == null) {
+      return false;
+    }
     switch(property) {
       case Level:
-        value = account.getLevel();
+        value = userInfo.getLevel();
         break;
       case Gold:
-        value = account.getGold();
+        value = userInfo.getCoins();
         break;
       case Diamond:
-        value = account.getDiamond();
+        value = userInfo.getCash();
         break;
       case Ticket:
-        value = account.getTicket();
+        value = userInfo.getTicket();
         break;
       default:
         return false;

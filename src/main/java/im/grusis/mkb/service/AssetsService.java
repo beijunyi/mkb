@@ -1,12 +1,10 @@
 package im.grusis.mkb.service;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import java.util.*;
 import javax.annotation.PostConstruct;
 
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
+import im.grusis.mkb.emulator.emulator.passport.model.basic.GameServer;
 import im.grusis.mkb.internal.*;
 import im.grusis.mkb.repository.AssetsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +24,15 @@ public class AssetsService {
   private Runes runes;
   private AllSkill skills;
   private MapStageAll stages;
+  private List<GameServer> gameServers;
 
   private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
   private Map<Integer, Rune> runeLookup = new LinkedHashMap<Integer, Rune>();
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
   private Map<Integer, MapStage> mapStageLookup = new LinkedHashMap<Integer, MapStage>();
   private Map<Integer, MapStageDetail> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDetail>();
+  private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
+  private Map<String, GameServer> gameServerDescCache = new LinkedHashMap<String, GameServer>();
 
   @PostConstruct
   public void prepareLookups() {
@@ -43,6 +44,8 @@ public class AssetsService {
     updateSkillLookup(skillAssets);
     MapStageAssets mapStageAssets = assetsRepository.getAssets(MapStageAssets.AssetName, MapStageAssets.class);
     updateMapStageLookup(mapStageAssets);
+    GameServerAssets gameServerAssets = assetsRepository.getAssets(MapStageAssets.AssetName, GameServerAssets.class);
+    updateGameServerLookup(gameServerAssets);
   }
 
   public void updateCardLookup(CardAssets cardAssets) {
@@ -96,6 +99,17 @@ public class AssetsService {
     }
   }
 
+  public void updateGameServerLookup(GameServerAssets gameServerAssets) {
+    if(gameServerAssets == null) {
+      return;
+    }
+    gameServerLookup.clear();
+    List<GameServer> gameServers = gameServerAssets.getAsset();
+    for(GameServer gameServer : gameServers) {
+      gameServerLookup.put(gameServer.getGsName(), gameServer);
+    }
+  }
+
   public Card findCard(int id) {
     return cardLookup.get(id);
   }
@@ -114,6 +128,23 @@ public class AssetsService {
 
   public MapStageDetail findMapStageDetail(int id) {
     return mapStageDetailLookup.get(id);
+  }
+
+  public GameServer findGameServerByName(String name) {
+    return gameServerLookup.get(name);
+  }
+
+  public GameServer findGameServerByDescription(String desc) {
+    GameServer ret = gameServerDescCache.get(desc);
+    Collection<GameServer> gameServers = gameServerLookup.values();
+    for(GameServer gameServer : gameServers) {
+      if(gameServer.getGsDesc().contains(desc)) {
+        gameServerDescCache.put(desc, gameServer);
+        ret = gameServer;
+        break;
+      }
+    }
+    return ret;
   }
 
   public void saveAssets(AllCard cards) {
@@ -148,6 +179,14 @@ public class AssetsService {
     updateMapStageLookup(mapStageAssets);
   }
 
+  public void saveAssets(List<GameServer> gameServers) {
+    this.gameServers = gameServers;
+    GameServerAssets gameServerAssets = new GameServerAssets();
+    gameServerAssets.setAsset(gameServers);
+    assetsRepository.createOrUpdateAssets(gameServerAssets);
+    updateGameServerLookup(gameServerAssets);
+  }
+
   public AllCard getCards() {
     return cards;
   }
@@ -162,5 +201,9 @@ public class AssetsService {
 
   public MapStageAll getStages() {
     return stages;
+  }
+
+  public List<GameServer> getGameServers() {
+    return gameServers;
   }
 }

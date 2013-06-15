@@ -2,12 +2,13 @@ package im.grusis.mkb.emulator.emulator;
 
 import java.util.*;
 
+import im.grusis.mkb.emulator.dictionary.MkbDictionary;
 import im.grusis.mkb.emulator.emulator.core.model.basic.*;
-import im.grusis.mkb.exception.ServerNotAvailableException;
-import im.grusis.mkb.exception.UnknownErrorException;
-import im.grusis.mkb.exception.WrongCredentialException;
+import im.grusis.mkb.emulator.emulator.passport.model.basic.GameServer;
+import im.grusis.mkb.exception.*;
 import im.grusis.mkb.internal.MkbAccount;
 import im.grusis.mkb.service.AccountService;
+import im.grusis.mkb.util.MacAddressHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,18 +60,33 @@ public class AutomatedServiceEngine {
     return mazeDependency;
   }
 
-  public boolean clearMaze(String username, int mapStageId, int maxTry, int resetBudget) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  private String getNickname(String username) throws MkbException {
+    return emulator.gameGetUserInfo(username, false).getNickName();
+  }
+
+  private int getEnergy(String username) throws MkbException {
+    return emulator.gameGetUserInfo(username, false).getEnergy();
+  }
+
+  private String getStageDetailName(String username, int stageDetailId) throws MkbException {
+    return emulator.gameGetMapStageDetail(username, stageDetailId).getName();
+  }
+
+  public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget) throws MkbException {
     if(maxTry < 1) {
       Log.warn("Max try time {} is invalid. A valid value must be at least 1", maxTry);
       maxTry = 1;
     }
     if(resetBudget < 0) {
       Log.warn("Reset budget {} is invalid. A valid value must be at least 0", resetBudget);
-      maxTry = 1;
+      resetBudget = 0;
     }
-    MkbAccount account = accountService.findAccountByUsername(username);
     MazeShow maze = emulator.gameGetMaze(username, mapStageId);
     if(maze.clear()) {
+      if(!reset) {
+        Log.error("Maze {} {} is already cleared", mapStageId, maze.getName());
+        return false;
+      }
       if(!maze.freeReset() && maze.getResetCash() > resetBudget) {
         Log.error("Cannot reset maze {} {}", mapStageId, maze.getName());
         return false;
@@ -84,27 +100,27 @@ public class AutomatedServiceEngine {
     while(true) {
       List<Integer> enemies = currentLayer.getEnemyIndices();
       for(int e : enemies) {
-        if(account.getEnergy() < MazeInfo.EnergyExpend) {
-          Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, account.getNickname());
+        if(getEnergy(username) < MazeInfo.EnergyExpend) {
+          Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, getNickname(username));
           return false;
         }
         int count = 0;
         while(true) {
-          BattleMaze battle = emulator.gameMazeBattleAuto(username, mapStageId, layer, e);
+          BattleNormal battle = emulator.gameMazeBattleAuto(username, mapStageId, layer, e);
           if(battle == null) {
-            Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, account.getNickname());
+            Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, getNickname(username));
             return false;
           }
           if(battle.lost()) {
             count++;
             if(count > maxTry) {
-              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, maze.getName(), username, account.getNickname(), e, battle.getDefendPlayer().getNickName(), currentLayer.getName());
+              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, maze.getName(), username, getNickname(username), e, battle.getDefendPlayer().getNickName(), currentLayer.getName());
               return false;
             }
           } else {
-            Log.info("{} {} has defeated enemy {} {} on level {}", username, account.getNickname(), e, battle.getDefendPlayer().getNickName(), layer);
+            Log.info("{} {} has defeated enemy {} {} on level {}", username, getNickname(username), e, battle.getDefendPlayer().getNickName(), layer);
             if(battle.mazeClear()) {
-              Log.info("{} {} has cleared maze {} {}", username, account.getNickname(), mapStageId, maze.getName());
+              Log.info("{} {} has cleared maze {} {}", username, getNickname(username), mapStageId, maze.getName());
               return true;
             }
             break;
@@ -143,12 +159,19 @@ public class AutomatedServiceEngine {
     List<Long> sendList = account.getEnergySenderList();
     boolean max = false;
     for(long fid : sendList) {
-      if(emulator.gameGetFriend(username, fid).getFEnergySend() != 0) {
-        if(!emulator.gameSendEnergy(username, fid)) {
-          max = true;
-          break;
+      Friend friend = emulator.gameGetFriend(username, fid);
+      if(friend == null) {
+        account.removeSender(fid);
+        accountService.saveAccount(account);
+      } else {
+        if(friend.getFEnergySend() != 0) {
+          if(!emulator.gameSendEnergy(username, fid)) {
+            max = true;
+            break;
+          }
         }
       }
+
     }
     if(max) {
       return accept;
@@ -182,11 +205,12 @@ public class AutomatedServiceEngine {
     return accept;
   }
 
-  public boolean clearCounterAttacks(String username, int maxTry) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean clearCounterAttacks(String username, int maxTry) throws MkbException {
     if(maxTry < 1) {
       Log.warn("Max try time {} is invalid. A valid value must be at least 1", maxTry);
       maxTry = 1;
     }
+    String nickname = getNickname(username);
     UserMapStages stageMap = emulator.gameGetUserMapStages(username, true);
     Collection<UserMapStage> stages = stageMap.values();
     List<Integer> attacked = new ArrayList<Integer>();
@@ -195,28 +219,64 @@ public class AutomatedServiceEngine {
         attacked.add(stage.getMapStageDetailId());
       }
     }
-    MkbAccount account = accountService.findAccountByUsername(username);
-    for(int stageId : attacked) {
+    for(int stageDetailId : attacked) {
       int count = 0;
       while(true) {
-        BattleMap battle = emulator.gameMapBattleAuto(username, stageId);
+        String stageDetailName = getStageDetailName(username, stageDetailId);
+        BattleMap battle = emulator.gameMapBattleAuto(username, stageDetailId);
         if(battle == null) {
-          Log.info("Cannot clear counter attack {} {} difficulty {} . {} {} has insufficient energy", stageId, emulator.gameGetMapStageDetail(username, stageId).getName(), stageMap.get(stageId).getFinishedStage(), username, account.getNickname());
+          Log.info("Cannot clear counter attack at {} {}. {} {} has insufficient energy", stageDetailId, stageDetailName, username, nickname);
           return false;
         }
         if(battle.win()) {
+          Log.info("{} {} has cleared the counter attack at {} {}", username, nickname, stageDetailId, stageDetailName);
           break;
         } else {
           count++;
           if(count > maxTry) {
-            Log.info("Cannot clear counter attack {} {} difficulty {} . {} {} has been defeated {} times", stageId, emulator.gameGetMapStageDetail(username, stageId).getName(), stageMap.get(stageId).getFinishedStage(), username, account.getNickname(), maxTry);
+            Log.info("Cannot clear counter attack {} {}. {} {} has been defeated {} times", stageDetailId, stageDetailName, username, nickname, maxTry);
             return false;
           }
         }
       }
     }
-    Log.info("{} {} has cleared {} counter attacks", username, account.getNickname(), attacked.size());
+    Log.info("{} {} has cleared {} counter attacks", username, nickname, attacked.size());
     return true;
   }
+
+  public boolean registerNewAccount(String username, String password, int sex, MkbDictionary nicknameDictionary, String serverDesc, String inviteCode) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String mac = null;
+    while(mac == null) {
+      String newMac = MacAddressHelper.getMacAddress();
+      if(accountService.findAccountByMac(mac) == null) {
+        mac = newMac;
+      }
+    }
+    GameServer gameServer = emulator.webGetGameServerByDescription(serverDesc);
+    if(!emulator.webReg(username, password, mac, gameServer.getGsId())) {
+      return false;
+    }
+    emulator.webLogin(username);
+    emulator.gamePassportLogin(username);
+    String nickname = null;
+    while(nickname == null && nicknameDictionary.hasNext()) {
+      String newNickname = nicknameDictionary.next();
+      if(emulator.gameSetNickname(username, sex, inviteCode, newNickname)) {
+        nickname = newNickname;
+      }
+    }
+    if(nickname == null) {
+      Log.error("Nickname dictionary has no more usable instance");
+      return false;
+    }
+    emulator.gameMapBattleAuto(username, 1);
+    emulator.gameMapBattleAuto(username, 2);
+    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Fight, ItemCode.Tutorial_Fight_Stages[0]);
+    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[0]);
+    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[1]);
+    emulator.gamePurchase(username, ItemCode.Ticket);
+    return true;
+  }
+
 
 }

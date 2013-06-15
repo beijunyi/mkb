@@ -14,21 +14,10 @@ public class MkbAccount {
   private String username;
   private String password;
   private String mac;
-  private String nickname;
-  private long uid;
-  private String inviteCode;
-  private int inviteCount = 0;
   private String server;
 
-  private int level;
-  private long gold;
-  private long exp;
-  private long diamond;
-  private int ticket;
-  private int energy;
   private List<Integer> newCards;
   private Set<Integer> currentChips;
-  private Map<Integer, Integer> mapStageProgress;
   private Map<Integer, Long> mazeClearTimes;
   private Map<Long, Integer> energyRecord;
 
@@ -74,38 +63,6 @@ public class MkbAccount {
     this.mac = mac;
   }
 
-  public String getNickname() {
-    return nickname;
-  }
-
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
-  }
-
-  public String getInviteCode() {
-    return inviteCode;
-  }
-
-  public void setInviteCode(String inviteCode) {
-    this.inviteCode = inviteCode;
-  }
-
-  public int getInviteCount() {
-    return inviteCount;
-  }
-
-  public void setInviteCount(int inviteCount) {
-    this.inviteCount = inviteCount;
-  }
-
-  public long getUid() {
-    return uid;
-  }
-
-  public void setUid(long uid) {
-    this.uid = uid;
-  }
-
   public String getServer() {
     return server;
   }
@@ -120,15 +77,6 @@ public class MkbAccount {
 
   public void setUserInfo(UserInfo userInfo) {
     this.userInfo = userInfo;
-    level = userInfo.getLevel();
-    gold = userInfo.getCoins();
-    exp = userInfo.getExp();
-    diamond = userInfo.getCash();
-    ticket = userInfo.getTicket();
-    energy = userInfo.getEnergy();
-    nickname = userInfo.getNickName();
-    inviteCode = userInfo.getInviteCode();
-    uid = userInfo.getUid();
     this.userInfoUpdate = System.currentTimeMillis();
   }
 
@@ -155,15 +103,6 @@ public class MkbAccount {
 
   public void setUserMapStages(UserMapStages userMapStages) {
     this.userMapStages = userMapStages;
-    if(mapStageProgress == null) {
-      mapStageProgress = new TreeMap<Integer, Integer>();
-    } else {
-      mapStageProgress.clear();
-    }
-    Collection<UserMapStage> stages = userMapStages.values();
-    for(UserMapStage stage : stages) {
-      mapStageProgress.put(stage.getMapStageId(), stage.getFinishedStage());
-    }
     this.userMapStagesUpdate = System.currentTimeMillis();
   }
 
@@ -214,47 +153,6 @@ public class MkbAccount {
     return userChipUpdate;
   }
 
-
-  public int getLevel() {
-    return level;
-  }
-
-  public void setLevel(int level) {
-    this.level = level;
-  }
-
-  public long getGold() {
-    return gold;
-  }
-
-  public void setGold(long gold) {
-    this.gold = gold;
-  }
-
-  public long getExp() {
-    return exp;
-  }
-
-  public void setExp(long exp) {
-    this.exp = exp;
-  }
-
-  public long getDiamond() {
-    return diamond;
-  }
-
-  public void setDiamond(long diamond) {
-    this.diamond = diamond;
-  }
-
-  public int getTicket() {
-    return ticket;
-  }
-
-  public void setTicket(int ticket) {
-    this.ticket = ticket;
-  }
-
   public List<Integer> getNewCards() {
     return newCards;
   }
@@ -289,20 +187,16 @@ public class MkbAccount {
     mazeClearTimes.put(mapStageId, System.currentTimeMillis());
   }
 
-  public void addGold(long gold) {
-    this.gold += gold;
+  public void addCoins(long coins) {
+    if(userInfo != null) {
+      userInfo.addCoins(coins);
+    }
   }
 
   public void addExp(long exp) {
-    this.exp += exp;
-  }
-
-  public void addTicket(int ticket) {
-    this.ticket += ticket;
-  }
-
-  public void addDiamond(int diamond) {
-    this.diamond += diamond;
+    if(userInfo != null) {
+      userInfo.addExp(exp);
+    }
   }
 
   public void addNewCard(int cardId) {
@@ -323,20 +217,10 @@ public class MkbAccount {
     return currentChips;
   }
 
-  public Map<Integer, Integer> getMapStageProgress() {
-    return mapStageProgress;
-  }
-
-  public void useEnergy(int amount) {
-    energy -= amount;
-  }
-
-  public int getEnergy() {
-    return energy;
-  }
-
-  public void setEnergy(int energy) {
-    this.energy = energy;
+  public void consumeEnergy(int amount) {
+    if(userInfo != null) {
+      userInfo.consumeEnergy(amount);
+    }
   }
 
   public TemporaryProfile getProfile() {
@@ -359,19 +243,6 @@ public class MkbAccount {
     this.lastAction = lastAction;
   }
 
-  public void conquerMapStage(int mapStageDetailId) {
-    if(mapStageProgress == null) {
-      mapStageProgress = new LinkedHashMap<Integer, Integer>();
-    }
-    Integer currentProgress = mapStageProgress.get(mapStageDetailId);
-    if(currentProgress == null) {
-      currentProgress = 1;
-    } else {
-      currentProgress++;
-    }
-    mapStageProgress.put(mapStageDetailId, currentProgress);
-  }
-
   public Map<Long, Integer> getEnergyRecord() {
     return energyRecord;
   }
@@ -391,7 +262,9 @@ public class MkbAccount {
       count++;
     }
     energyRecord.put(fid, count);
-    energy++;
+    if(userInfo != null) {
+      userInfo.addEnergy();
+    }
   }
 
   public Map<Long, Friend> getFriendMap() {
@@ -419,6 +292,10 @@ public class MkbAccount {
     return friendMap.get(fid);
   }
 
+  public void removeSender(long fid) {
+    energyRecord.remove(fid);
+  }
+
   public List<Long> getEnergySenderList() {
     if(energyRecord == null) {
       return Collections.emptyList();
@@ -444,5 +321,11 @@ public class MkbAccount {
 
   public long getLegionUpdate() {
     return legionUpdate;
+  }
+
+  public void setLevel(int level) {
+    if(userInfo != null) {
+      userInfo.setLevel(level);
+    }
   }
 }

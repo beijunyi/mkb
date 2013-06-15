@@ -101,10 +101,4 @@ public class AccountService {
     }
   }
 
-  public void finishInvite(String invitor) {
-    MkbAccount account = findAccountByUsername(invitor);
-    account.setInviteCount(account.getInviteCount() + 1);
-    saveAccount(account);
-  }
-
 }

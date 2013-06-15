@@ -5,7 +5,7 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Date: 13-6-8
  * Time: 上午1:29
  */
-public class BattleMaze extends Battle<BattleMazeExtData> {
+public class BattleNormal extends Battle<BattleNormalExtData> {
   public boolean mazeClear() {
     return getExtData().getClear().getIsClear() != 0;
   }

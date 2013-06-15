@@ -58,6 +58,49 @@ public class UserInfo {
   private boolean gscode;
   private boolean appdriver;
 
+
+  public void addEnergy() {
+    Energy++;
+  }
+
+  public void addEnergy(int e) {
+    Energy += e;
+  }
+
+  public void consumeEnergy() {
+    Energy--;
+  }
+
+  public void consumeEnergy(int e) {
+    Energy -= e;
+  }
+
+  public void addCoins(long c) {
+    Coins += c;
+  }
+
+  public void consumeCoins(long c) {
+    Coins -= c;
+  }
+
+  public void addExp(long e) {
+    Exp += e;
+  }
+
+  public void addTicket() {
+    Ticket++;
+  }
+
+  public void addTickets(int t) {
+    Ticket += t;
+  }
+
+  public void consumeTicket() {
+    Ticket--;
+  }
+
+
+
   public long getUid() {
     return Uid;
   }
