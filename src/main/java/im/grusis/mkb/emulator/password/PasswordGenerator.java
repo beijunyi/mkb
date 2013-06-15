@@ -1,4 +1,4 @@
-package im.grusis.mkb.emulator.bot.password;
+package im.grusis.mkb.emulator.password;
 
 /**
  * User: Mothership

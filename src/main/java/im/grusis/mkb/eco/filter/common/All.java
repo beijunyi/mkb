@@ -1,7 +1,7 @@
-package im.grusis.mkb.internal.accountFilter.common;
+package im.grusis.mkb.eco.filter.common;
 
 import im.grusis.mkb.internal.MkbAccount;
-import im.grusis.mkb.internal.accountFilter.AccountFilter;
+import im.grusis.mkb.eco.filter.AccountFilter;
 
 /**
  * User: Mothership

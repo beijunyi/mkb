@@ -1,6 +1,6 @@
 package im.grusis.mkb.emulator.bot;
 
-import im.grusis.mkb.emulator.bot.password.HashPasswordGenerator;
+import im.grusis.mkb.emulator.password.HashPasswordGenerator;
 import im.grusis.mkb.emulator.dictionary.MkbDictionary;
 import im.grusis.mkb.emulator.emulator.MkbEmulator;
 import im.grusis.mkb.emulator.emulator.core.model.basic.Card;

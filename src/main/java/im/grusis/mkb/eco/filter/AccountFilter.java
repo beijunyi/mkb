@@ -1,4 +1,4 @@
-package im.grusis.mkb.internal.accountFilter;
+package im.grusis.mkb.eco.filter;
 
 import im.grusis.mkb.internal.MkbAccount;
 

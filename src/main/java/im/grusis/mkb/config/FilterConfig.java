@@ -1,6 +1,6 @@
 package im.grusis.mkb.config;
 
-import im.grusis.mkb.internal.accountFilter.common.All;
+import im.grusis.mkb.eco.filter.common.All;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
