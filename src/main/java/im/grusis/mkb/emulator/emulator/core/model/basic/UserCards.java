@@ -7,5 +7,5 @@ import java.util.ArrayList;
  * Date: 13-6-7
  * Time: 下午9:34
  */
-public class UserCards extends ArrayList<Card> {
+public class UserCards extends ArrayList<UserCardInfo> {
 }

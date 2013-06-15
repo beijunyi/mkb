@@ -17,7 +17,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 @PropertySource("classpath:/mkb.properties")
-@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class, EcoSystemConfig.class, ProfileConfig.class})
+@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class, EcoSystemConfig.class, ProfileConfig.class, FilterConfig.class})
 public class RuntimeConfig {
 
   public static final Logger Log = LoggerFactory.getLogger(RuntimeConfig.class);

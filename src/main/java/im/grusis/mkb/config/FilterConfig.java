@@ -1,5 +1,6 @@
 package im.grusis.mkb.config;
 
+import im.grusis.mkb.eco.filter.BeginnerLevel;
 import im.grusis.mkb.eco.filter.common.All;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,11 @@ public class FilterConfig {
   @Bean
   public All all() {
     return new All();
+  }
+
+  @Bean
+  public BeginnerLevel beginnerLevel() {
+    return new BeginnerLevel();
   }
 
 

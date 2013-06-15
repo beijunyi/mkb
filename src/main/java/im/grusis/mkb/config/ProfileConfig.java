@@ -1,7 +1,5 @@
 package im.grusis.mkb.config;
 
-import java.util.Map;
-
 import im.grusis.mkb.eco.profiles.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +17,6 @@ import org.springframework.core.env.Environment;
 public class ProfileConfig {
 
   @Autowired private Environment env;
-
 
   @Bean
   public DefaultProfile defaultProfile() {
@@ -40,19 +37,4 @@ public class ProfileConfig {
     }
     return commonProfileMap;
   }
-
-  @Bean AccountProfileMap accountProfileMap(DefaultProfile defaultProfile, CommonProfileMap commonProfileMap) {
-    AccountProfileMap accountProfileMap = new AccountProfileMap();
-    int count = 1;
-    while(true) {
-      if(env.containsProperty(EcoProfile.Profile + AccountProfile.Account + count)) {
-        AccountProfile accountProfile = new AccountProfile(env, count++, defaultProfile, commonProfileMap);
-        accountProfileMap.put(accountProfile.getUsername(), accountProfile);
-      } else {
-        break;
-      }
-    }
-    return accountProfileMap;
-  }
-
 }
