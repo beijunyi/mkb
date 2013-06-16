@@ -906,6 +906,18 @@ public class MkbEmulator {
     return true;
   }
 
+  public MeleeInfo gameMeleeGetInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("{} {} is retrieving melee event information", username, nickname);
+    MeleeGetInfoResponse response = gameDoAction(username, "melee.php", "GetInfo", null, MeleeGetInfoResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    MeleeInfo info = response.getData();
+    Log.info("{} {} has retrieved melee event information", username, nickname);
+    return info;
+  }
+
   public MeleeApplyResult gameMeleeApply(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     String nickname = gameGetUserInfo(username, false).getNickName();
     Log.debug("{} {} is applying for a type {} melee event", username, nickname, type);
@@ -926,6 +938,33 @@ public class MkbEmulator {
     }
     Log.info("{} {} obtained {} from type {} melee event", username, nickname, sb.toString(), type);
     return result;
+  }
+
+  public MeleeCardGroup gameMeleeGetCardGroup(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("{} {} is retrieving type {} melee event card group information", username, nickname, type);
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("type", Integer.toString(type));
+    params.put("Uid", Long.toString(gameGetUserInfo(username, false).getUid()));
+    MeleeGetCardGroupResponse response = gameDoAction(username, "melee.php", "GetCardGroup", params, MeleeGetCardGroupResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    MeleeCardGroup cardGroup = response.getData();
+    Log.info("{} {} has retrieved card group information for type {} melee event", username, nickname, type);
+    return cardGroup;
+  }
+
+  public LegionAttackInfo gameLegionAttackInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("{} {} is retrieving legion attack info", username, nickname);
+    LegionAttackInfoResponse response = gameDoAction(username, "legionattack.php", "info", null, LegionAttackInfoResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    LegionAttackInfo info = response.getData();
+    Log.info("{} {} has retrieved legion attack info", username, nickname);
+    return info;
   }
 
 }
