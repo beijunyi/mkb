@@ -21,8 +21,8 @@ public class FindAccounts {
     System.currentTimeMillis();
 
 
-    String username = "urnmso90377";
-//    String username = "tug100";
+//    String username = "urnmso90377";
+    String username = "tug100";
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 //    emulator.webLogin("tug100", "mewhome123", MacAddressHelper.getMacAddress());
@@ -37,5 +37,6 @@ public class FindAccounts {
     ase.clearMaze(username,8, 2, true, 0);
     ase.clearMaze(username,7, 2, true, 0);
     ase.clearMaze(username,6, 2, true, 0);
+    ase.clearMaze(username,5, 2, true, 0);
   }
 }

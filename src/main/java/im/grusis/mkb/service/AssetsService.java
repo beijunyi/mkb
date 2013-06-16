@@ -52,9 +52,9 @@ public class AssetsService {
     updateGameServerLookup(gameServerAssets);
   }
 
-  public void updateCardLookup(CardAssets cardAssets) {
+  public Map<Integer, Card> updateCardLookup(CardAssets cardAssets) {
     if(cardAssets == null) {
-      return;
+      return null;
     }
     cardLookup.clear();
     AllCard cards = cardAssets.getAsset();
@@ -62,11 +62,12 @@ public class AssetsService {
     for(Card card : cardList) {
       cardLookup.put(card.getCardId(), card);
     }
+    return cardLookup;
   }
 
-  public void updateRuneLookup(RuneAssets runeAssets) {
+  public Map<Integer, Rune> updateRuneLookup(RuneAssets runeAssets) {
     if(runeAssets == null) {
-      return;
+      return null;
     }
     runeLookup.clear();
     Runes runes = runeAssets.getAsset();
@@ -74,11 +75,12 @@ public class AssetsService {
     for(Rune rune : runeList) {
       runeLookup.put(rune.getRuneId(), rune);
     }
+    return runeLookup;
   }
 
-  public void updateSkillLookup(SkillAssets skillAssets) {
+  public Map<Integer, Skill> updateSkillLookup(SkillAssets skillAssets) {
     if(skillAssets == null) {
-      return;
+      return null;
     }
     skillLookup.clear();
     AllSkill skills = skillAssets.getAsset();
@@ -86,11 +88,12 @@ public class AssetsService {
     for(Skill skill : skillList) {
       skillLookup.put(skill.getSkillId(), skill);
     }
+    return skillLookup;
   }
 
-  public void updateMapStageLookup(MapStageAssets mapStageAssets) {
+  public Map<Integer, MapStage> updateMapStageLookup(MapStageAssets mapStageAssets) {
     if(mapStageAssets == null) {
-      return;
+      return null;
     }
     mapStageLookup.clear();
     mapStageDetailLookup.clear();
@@ -101,28 +104,31 @@ public class AssetsService {
         mapStageDetailLookup.put(detail.getMapStageDetailId(), detail);
       }
     }
+    return mapStageLookup;
   }
 
-  public void updateGoodsLookup(GoodsAssets goodsAssets) {
+  public Map<Integer, Goods> updateGoodsLookup(GoodsAssets goodsAssets) {
     if(goodsAssets == null) {
-      return;
+      return null;
     }
     goodsLookup.clear();
     GoodsList goodsList = goodsAssets.getAsset();
     for(Goods goods : goodsList) {
       goodsLookup.put(goods.getGoodsId(), goods);
     }
+    return goodsLookup;
   }
 
-  public void updateGameServerLookup(GameServerAssets gameServerAssets) {
+  public Map<String, GameServer> updateGameServerLookup(GameServerAssets gameServerAssets) {
     if(gameServerAssets == null) {
-      return;
+      return null;
     }
     gameServerLookup.clear();
     List<GameServer> gameServers = gameServerAssets.getAsset();
     for(GameServer gameServer : gameServers) {
       gameServerLookup.put(gameServer.getGsName(), gameServer);
     }
+    return gameServerLookup;
   }
 
   public Card findCard(int id) {
@@ -166,52 +172,80 @@ public class AssetsService {
     return ret;
   }
 
-  public void saveAssets(AllCard cards) {
+  public Map<Integer, Card> saveAssets(AllCard cards) {
     this.cards = cards;
     CardAssets cardAssets = new CardAssets();
     cardAssets.setAsset(cards);
     assetsRepository.createOrUpdateAssets(cardAssets);
-    updateCardLookup(cardAssets);
+    return updateCardLookup(cardAssets);
   }
 
-  public void saveAssets(Runes runes) {
+  public Map<Integer, Rune> saveAssets(Runes runes) {
     this.runes = runes;
     RuneAssets runeAssets = new RuneAssets();
     runeAssets.setAsset(runes);
     assetsRepository.createOrUpdateAssets(runeAssets);
-    updateRuneLookup(runeAssets);
+    return updateRuneLookup(runeAssets);
   }
 
-  public void saveAssets(AllSkill skills) {
+  public Map<Integer, Skill> saveAssets(AllSkill skills) {
     this.skills = skills;
     SkillAssets skillAssets = new SkillAssets();
     skillAssets.setAsset(skills);
     assetsRepository.createOrUpdateAssets(skillAssets);
-    updateSkillLookup(skillAssets);
+    return updateSkillLookup(skillAssets);
   }
 
-  public void saveAssets(MapStageAll stages) {
+  public Map<Integer, MapStage> saveAssets(MapStageAll stages) {
     this.stages = stages;
     MapStageAssets mapStageAssets = new MapStageAssets();
     mapStageAssets.setAsset(stages);
     assetsRepository.createOrUpdateAssets(mapStageAssets);
-    updateMapStageLookup(mapStageAssets);
+    return updateMapStageLookup(mapStageAssets);
   }
 
-  public void saveAssets(GoodsList goodsList) {
+  public Map<Integer, Goods> saveAssets(GoodsList goodsList) {
     this.goodsList = goodsList;
     GoodsAssets goodsAssets = new GoodsAssets();
     goodsAssets.setAsset(goodsList);
     assetsRepository.createOrUpdateAssets(goodsAssets);
-    updateGoodsLookup(goodsAssets);
+    return updateGoodsLookup(goodsAssets);
   }
 
-  public void saveAssets(List<GameServer> gameServers) {
+  public Map<String, GameServer> saveAssets(List<GameServer> gameServers) {
     this.gameServers = gameServers;
     GameServerAssets gameServerAssets = new GameServerAssets();
     gameServerAssets.setAsset(gameServers);
     assetsRepository.createOrUpdateAssets(gameServerAssets);
-    updateGameServerLookup(gameServerAssets);
+    return updateGameServerLookup(gameServerAssets);
+  }
+
+  public Map<Integer, Card> getCardLookup() {
+    return cardLookup;
+  }
+
+  public Map<Integer, Rune> getRuneLookup() {
+    return runeLookup;
+  }
+
+  public Map<Integer, Skill> getSkillLookup() {
+    return skillLookup;
+  }
+
+  public Map<Integer, MapStage> getMapStageLookup() {
+    return mapStageLookup;
+  }
+
+  public Map<Integer, MapStageDetail> getMapStageDetailLookup() {
+    return mapStageDetailLookup;
+  }
+
+  public Map<Integer, Goods> getGoodsLookup() {
+    return goodsLookup;
+  }
+
+  public Map<String, GameServer> getGameServerLookup() {
+    return gameServerLookup;
   }
 
   public AllCard getCards() {

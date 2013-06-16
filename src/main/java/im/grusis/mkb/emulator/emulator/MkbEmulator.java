@@ -850,6 +850,9 @@ public class MkbEmulator {
       if(response.energyGetMax()) {
         return false;
       }
+      if(response.energyOverMax()) {
+        return false;
+      }
       throw new UnknownErrorException();
     }
     gameGetFriend(username, fid).setFEnergySurplus(0);

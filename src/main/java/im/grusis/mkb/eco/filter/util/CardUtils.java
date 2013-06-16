@@ -2,7 +2,10 @@ package im.grusis.mkb.eco.filter.util;
 
 import java.util.*;
 
+import im.grusis.mkb.eco.configs.CardConfig;
+import im.grusis.mkb.eco.configs.CardConfigMap;
 import im.grusis.mkb.eco.filter.common.CompareOperator;
+import im.grusis.mkb.emulator.emulator.core.model.basic.Card;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserCardInfo;
 import im.grusis.mkb.emulator.emulator.core.model.basic.UserCards;
 
@@ -82,5 +85,14 @@ public class CardUtils {
       }
     }
     return true;
+  }
+
+  public static int ValuateCard(UserCardInfo userCardInfo, Card card, CardConfigMap cardConfigMap) {
+    int id = userCardInfo.getCardId();
+    CardConfig config = cardConfigMap.get(id);
+    if(config == null) {
+      return 0;
+    }
+    return 0;
   }
 }
