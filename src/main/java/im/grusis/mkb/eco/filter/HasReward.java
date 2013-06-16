@@ -13,6 +13,6 @@ public class HasReward implements AccountFilter{
   @Override
   public boolean accept(MkbAccount account) {
     UserInfo userInfo = account.getUserInfo();
-    return userInfo != null && userInfo.getNewGoods() != 0;
+    return userInfo != null && userInfo.getSalaryCount() > 0;
   }
 }

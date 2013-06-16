@@ -58,7 +58,7 @@ public class ManualAccessService extends MkbService {
   public UserInfo getUserInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException{
     return mkbEmulator.gameGetUserInfo(username, true);
 //    String responseString = doAction(username, "user.php", "GetUserInfo", null);
-//    return GameDataFactory.getGameData(responseString, UserInfoResponse.class).getData();
+//    return GameDataFactory.getGameData(responseString, UserGetUserInfoResponse.class).getData();
   }
 
 }

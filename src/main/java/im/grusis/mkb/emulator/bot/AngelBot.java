@@ -65,7 +65,7 @@ public class AngelBot extends Bot {
         UserInfo userInfo = emulator.gameGetUserInfo(username, false);
         if(previous != null) {
           String prevUsername = previous.getUserName();
-          emulator.gameAcceptRewards(prevUsername);
+          emulator.gameAcceptSalary(prevUsername);
           cardId = emulator.gamePurchase(prevUsername, 3);
           card = emulator.gameGetCardDetail(prevUsername, cardId);
           Log.info("{} {} obtained {} stars card {} {}", prevUsername, previous.getNickName(), card.getColor(), card.getCardId(), card.getCardName());

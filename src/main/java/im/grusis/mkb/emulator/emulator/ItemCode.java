@@ -28,5 +28,8 @@ public class ItemCode {
   public static final int Tutorial_Cost = 10;
   public static final int[] Tutorial_Cost_Stages = {4};
 
+  public static final int Melee_Coins = 1;
+  public static final int Melee_Cash = 2;
+
   public static final int Ticket = 3;
 }

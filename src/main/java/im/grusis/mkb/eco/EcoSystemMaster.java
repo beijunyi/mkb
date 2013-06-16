@@ -100,7 +100,7 @@ public class EcoSystemMaster {
   public void claimReward() throws MkbException {
     Iterable<MkbAccount> accounts = accountService.findAll(hasReward);
     for(MkbAccount account : accounts) {
-      emulator.gameClaimRewards(account.getUsername());
+      emulator.gameFetchSalary(account.getUsername());
     }
   }
 

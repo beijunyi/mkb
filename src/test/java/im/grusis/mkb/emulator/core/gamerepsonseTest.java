@@ -1,7 +1,7 @@
 package im.grusis.mkb.emulator.core;
 
 import com.google.gson.Gson;
-import im.grusis.mkb.emulator.emulator.core.model.response.AllCardResponse;
+import im.grusis.mkb.emulator.emulator.core.model.response.CardGetAllCardResponse;
 import org.testng.annotations.Test;
 
 /**
@@ -93,7 +93,7 @@ public class gamerepsonseTest {
                    "    \"$resolved\": true\n" +
                    "}";
 //    Map map = new Gson().fromJson(str, Map.class);
-    AllCardResponse acr = new Gson().fromJson(str, AllCardResponse.class);
+    CardGetAllCardResponse acr = new Gson().fromJson(str, CardGetAllCardResponse.class);
     System.currentTimeMillis();
   }
 }

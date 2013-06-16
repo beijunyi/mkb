@@ -28,6 +28,7 @@ public class FindAccounts {
 //    emulator.webLogin("tug100", "mewhome123", MacAddressHelper.getMacAddress());
 //    emulator.gameGetUserInfo(username, true);
 //    ase.clearCounterAttacks(username, 5);
+    emulator.gameAcceptSalary(username);
     ase.clearMaze(username,8, 2, true, 0);
     ase.clearMaze(username,7, 2, true, 0);
     ase.clearMaze(username,6, 2, true, 0);
