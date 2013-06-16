@@ -99,7 +99,7 @@ public class Skill {
   public static final int Type_Trap_Will = 90;
   public static final int Type_Guardian = 91;
   public static final int Type_Evasion = 92; // TeamEvasion, Dinner
-  public static final int Type_Immolation = 93;
+  public static final int Type_Sacrifice = 93;
   public static final int Type_CriticalHit = 94; // Warpath, Pursue, HeroSlayer, Overdraw, TeamCriticalHit, TeamPursue, TeamWarpath
   public static final int Type_Penetrate = 95; // WeaknessAttack,
   public static final int Type_FirmStorm_Befall = 96;
@@ -189,7 +189,8 @@ public class Skill {
   public static final int AffectType_Immune = 52;
   public static final int AffectType_Will = 53;
   public static final int AffectType_Guardian = 54;
-  public static final int AffectType_Immolation = 56;
+  public static final int AffectType_Evasion = 54;
+  public static final int AffectType_Sacrifice = 56;
   public static final int AffectType_CriticalHit = 57;
   public static final int AffectType_Penetrate = 58;
   public static final int AffectType_Befall = 59;
