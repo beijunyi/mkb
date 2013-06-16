@@ -24,6 +24,7 @@ public class AssetsService {
   private Runes runes;
   private AllSkill skills;
   private MapStageAll stages;
+  private GoodsList goodsList;
   private List<GameServer> gameServers;
 
   private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
@@ -31,6 +32,7 @@ public class AssetsService {
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
   private Map<Integer, MapStage> mapStageLookup = new LinkedHashMap<Integer, MapStage>();
   private Map<Integer, MapStageDetail> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDetail>();
+  private Map<Integer, Goods> goodsLookup = new LinkedHashMap<Integer, Goods>();
   private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
   private Map<String, GameServer> gameServerDescCache = new LinkedHashMap<String, GameServer>();
 
@@ -44,7 +46,9 @@ public class AssetsService {
     updateSkillLookup(skillAssets);
     MapStageAssets mapStageAssets = assetsRepository.getAssets(MapStageAssets.AssetName, MapStageAssets.class);
     updateMapStageLookup(mapStageAssets);
-    GameServerAssets gameServerAssets = assetsRepository.getAssets(MapStageAssets.AssetName, GameServerAssets.class);
+    GoodsAssets goodsAssets = assetsRepository.getAssets(GoodsAssets.AssetName, GoodsAssets.class);
+    updateGoodsLookup(goodsAssets);
+    GameServerAssets gameServerAssets = assetsRepository.getAssets(GameServerAssets.AssetName, GameServerAssets.class);
     updateGameServerLookup(gameServerAssets);
   }
 
@@ -99,6 +103,17 @@ public class AssetsService {
     }
   }
 
+  public void updateGoodsLookup(GoodsAssets goodsAssets) {
+    if(goodsAssets == null) {
+      return;
+    }
+    goodsLookup.clear();
+    GoodsList goodsList = goodsAssets.getAsset();
+    for(Goods goods : goodsList) {
+      goodsLookup.put(goods.getGoodsId(), goods);
+    }
+  }
+
   public void updateGameServerLookup(GameServerAssets gameServerAssets) {
     if(gameServerAssets == null) {
       return;
@@ -128,6 +143,10 @@ public class AssetsService {
 
   public MapStageDetail findMapStageDetail(int id) {
     return mapStageDetailLookup.get(id);
+  }
+
+  public Goods findGoods(int id) {
+    return goodsLookup.get(id);
   }
 
   public GameServer findGameServerByName(String name) {
@@ -179,6 +198,14 @@ public class AssetsService {
     updateMapStageLookup(mapStageAssets);
   }
 
+  public void saveAssets(GoodsList goodsList) {
+    this.goodsList = goodsList;
+    GoodsAssets goodsAssets = new GoodsAssets();
+    goodsAssets.setAsset(goodsList);
+    assetsRepository.createOrUpdateAssets(goodsAssets);
+    updateGoodsLookup(goodsAssets);
+  }
+
   public void saveAssets(List<GameServer> gameServers) {
     this.gameServers = gameServers;
     GameServerAssets gameServerAssets = new GameServerAssets();
@@ -201,6 +228,10 @@ public class AssetsService {
 
   public MapStageAll getStages() {
     return stages;
+  }
+
+  public GoodsList getGoods() {
+    return goodsList;
   }
 
   public List<GameServer> getGameServers() {

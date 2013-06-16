@@ -33,13 +33,16 @@ public class EcoSystemMaster {
 
   @Scheduled(cron = "0 1/10 * * * *")
   public void addEnergy() throws MkbException {
+
     Iterable<MkbAccount> mkbAccounts = accountService.getAll();
     for(MkbAccount account : mkbAccounts) {
       UserInfo userInfo = emulator.gameGetUserInfo(account.getUsername(), false);
-      int energy = userInfo.getEnergy();
-      if(energy < 50) {
-        energy++;
-        userInfo.setEnergy(energy);
+      if(userInfo != null) {
+        int energy = userInfo.getEnergy();
+        if(energy < 50) {
+          energy++;
+          userInfo.setEnergy(energy);
+        }
       }
     }
   }

@@ -278,7 +278,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public int gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public String gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("GoodsId", Integer.toString(goodsId));
     ShopBuyResponse response = gameDoAction(username, "shop.php", "Buy", paramMap, ShopBuyResponse.class);
@@ -288,7 +288,7 @@ public class MkbEmulator {
       } else {
         throw new UnknownErrorException();
       }
-      return -1;
+      return null;
     }
     return response.getData();
   }
@@ -522,9 +522,27 @@ public class MkbEmulator {
     return userChip;
   }
 
-  private void processBonus(String username, String... bonuses) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    MkbAccount account = accountService.findAccountByUsername(username);
+  private void processGoodsPurchaseResult(String username, String result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("Processing purchase result {} for account {} {}", result, username, nickname);
+    MkbAccount account = accountService.findAccountByUsername(username);
+    String[] cardIdArray = result.split("_");
+    StringBuilder sb = new StringBuilder();
+    for(String id : cardIdArray) {
+      if(sb.length() > 0) {
+        sb.append(", ");
+      }
+      int cardId = Integer.parseInt(id);
+      account.addNewCard(cardId);
+      sb.append(id).append(' ').append(gameGetCardDetail(username, cardId).getCardName());
+    }
+    Log.warn("Account {} {} has obtained cards {}", username, nickname, sb.toString());
+  }
+
+  private void processBonus(String username, String... bonuses) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("Processing bonus {} for {} {}", bonuses, username, nickname);
+    MkbAccount account = accountService.findAccountByUsername(username);
     for(String bonus : bonuses) {
       String[] pair = bonus.split("_");
       String key = pair[0].toLowerCase();
@@ -720,12 +738,29 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public GoodsList gameGetGoods(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    ShopGetGoodsResponse response = gameDoAction(username, "shop.php", "GetGoods", null, ShopGetGoodsResponse.class);
-    if(response.badRequest()) {
-      throw new UnknownErrorException();
+  public GoodsList gameShopGetGoodsList(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    GoodsList goodsList;
+    if(refresh || (goodsList = assetsService.getGoods()) == null) {
+      ShopGetGoodsResponse response = gameDoAction(username, "shop.php", "GetGoods", null, ShopGetGoodsResponse.class);
+      if(response.badRequest()) {
+        throw new UnknownErrorException();
+      }
+      goodsList = response.getData();
+      assetsService.saveAssets(goodsList);
     }
-    return response.getData();
+    return goodsList;
+  }
+
+  public Goods gameShopGetGoods(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Goods goods = assetsService.findGoods(goodsId);
+    if(goods == null) {
+      gameShopGetGoodsList(username, true);
+      goods = assetsService.findGoods(goodsId);
+      if(goods == null) {
+        throw new UnknownErrorException();
+      }
+    }
+    return goods;
   }
 
   public Streng gameUpgradeCard(String username, long targetUserCardId, long... sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
@@ -934,7 +969,7 @@ public class MkbEmulator {
       if(sb.length() > 0) {
         sb.append(", ");
       }
-      sb.append(id).append(gameGetCardDetail(username, Integer.parseInt(id)).getCardName());
+      sb.append(id).append(' ').append(gameGetCardDetail(username, Integer.parseInt(id)).getCardName());
     }
     Log.info("{} {} obtained {} from type {} melee event", username, nickname, sb.toString(), type);
     return result;

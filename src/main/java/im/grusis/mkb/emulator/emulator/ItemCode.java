@@ -31,5 +31,8 @@ public class ItemCode {
   public static final int Melee_Coins = 1;
   public static final int Melee_Cash = 2;
 
+  public static final int Coins = 1;
+  public static final int Cash = 2;
   public static final int Ticket = 3;
+  public static final int Card = 4;
 }
