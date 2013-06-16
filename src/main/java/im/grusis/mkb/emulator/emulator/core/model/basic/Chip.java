@@ -6,6 +6,11 @@ package im.grusis.mkb.emulator.emulator.core.model.basic;
  * Time: 下午4:13
  */
 public class Chip {
+
+  public static final int FromStage = 1;
+  public static final int FromMaze = 2;
+  public static final int FromFreeFight = 3;
+
   private int id;
   private int num;
   private int type;

@@ -1,6 +1,8 @@
 package im.grusis.mkb.config;
 
 import im.grusis.mkb.eco.filter.BeginnerLevel;
+import im.grusis.mkb.eco.filter.HasReward;
+import im.grusis.mkb.eco.filter.MissingFreeFightChip;
 import im.grusis.mkb.eco.filter.common.All;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,16 @@ public class FilterConfig {
   @Bean
   public BeginnerLevel beginnerLevel() {
     return new BeginnerLevel();
+  }
+
+  @Bean
+  public HasReward hasReward() {
+    return new HasReward();
+  }
+
+  @Bean
+  public MissingFreeFightChip missingFreeFightChip() {
+    return new MissingFreeFightChip();
   }
 
 

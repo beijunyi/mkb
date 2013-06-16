@@ -308,7 +308,7 @@ public class MkbEmulator {
     return true;
   }
 
-  public boolean gameGetRewards(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean gameClaimRewards(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserSalaryResponse response = gameDoAction(username, "user.php", "GetUserSalary", null, UserSalaryResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
