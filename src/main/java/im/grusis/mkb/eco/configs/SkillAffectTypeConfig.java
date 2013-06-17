@@ -9,6 +9,7 @@ import java.util.List;
  */
 public class SkillAffectTypeConfig {
   public static final String SkillAffectTypeConfigPrefix = "skill.affectType.";
+  public static final String SubTypes = ".type";
   public static final String SubType = ".type.";
   public static final String ScoreBase = ".base.";
   public static final String ScoreDiscount = ".discount";

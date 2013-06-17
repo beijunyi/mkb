@@ -5,11 +5,6 @@ import im.grusis.mkb.emulator.emulator.AutomatedServiceEngine;
 import im.grusis.mkb.emulator.emulator.MkbEmulator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-/**
- * User: Mothership
- * Date: 13-6-7
- * Time: 下午11:46
- */
 public class FindAccounts {
 
   public static void main(String[] args) throws Exception{

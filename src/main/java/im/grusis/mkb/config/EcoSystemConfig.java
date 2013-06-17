@@ -72,30 +72,30 @@ public class EcoSystemConfig {
     SkillAffectTypeConfigMap skillAffectTypeConfigMap = new SkillAffectTypeConfigMap();
     int i = 1;
     String key;
-    int score;
-    int base;
+    int score, base;
     double discount;
+    String[] types;
     while(env.containsProperty((key = SkillAffectTypeConfig.SkillAffectTypeConfigPrefix + i))) {
       score = env.getProperty(key, Integer.class);
       if(score == -1) {
+        types = env.getProperty(key + SkillAffectTypeConfig.SubTypes).split(",");
         key += SkillAffectTypeConfig.SubType;
-        int j = 1;
         List<SubType> subTypes = new ArrayList<SubType>();
         String subKey;
-        while(env.containsProperty((subKey = key + j))) {
+        for(String type : types) {
+          subKey = key + type;
           score = env.getProperty(subKey, Integer.class);
-          int k = 1;
+          int j = 1;
           List<ScoreBase> scoreBases = new ArrayList<ScoreBase>();
           String scoreBaseKey = subKey + SkillAffectTypeConfig.ScoreBase;
           String subScoreBaseKey;
-          while(env.containsProperty((subScoreBaseKey = scoreBaseKey + k))) {
+          while(env.containsProperty((subScoreBaseKey = scoreBaseKey + j))) {
             base = env.getProperty(subScoreBaseKey, Integer.class);
             discount = env.getProperty(subScoreBaseKey + SkillAffectTypeConfig.ScoreDiscount, Double.class, 1d);
             scoreBases.add(new ScoreBase(base, discount));
-            k++;
+            j++;
           }
-          subTypes.add(new SubType(k, score, scoreBases));
-          j++;
+          subTypes.add(new SubType(j, score, scoreBases));
         }
         skillAffectTypeConfigMap.put(i, new SkillAffectTypeConfig(i, subTypes));
         i++;
