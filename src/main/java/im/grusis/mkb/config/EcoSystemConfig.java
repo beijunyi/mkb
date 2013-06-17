@@ -67,4 +67,54 @@ public class EcoSystemConfig {
     return new SystemConfig(env.getProperty(SystemConfig.SystemConfigPrefix + SystemConfig.Size, Integer.class));
   }
 
+  @Bean
+  public SkillAffectTypeConfigMap getSkillAffectTypeConfigMap() {
+    SkillAffectTypeConfigMap skillAffectTypeConfigMap = new SkillAffectTypeConfigMap();
+    int i = 1;
+    String key;
+    int score;
+    int base;
+    double discount;
+    while(env.containsProperty((key = SkillAffectTypeConfig.SkillAffectTypeConfigPrefix + i))) {
+      score = env.getProperty(key, Integer.class);
+      if(score == -1) {
+        key += SkillAffectTypeConfig.SubType;
+        int j = 1;
+        List<SubType> subTypes = new ArrayList<SubType>();
+        String subKey;
+        while(env.containsProperty((subKey = key + j))) {
+          score = env.getProperty(subKey, Integer.class);
+          int k = 1;
+          List<ScoreBase> scoreBases = new ArrayList<ScoreBase>();
+          String scoreBaseKey = subKey + SkillAffectTypeConfig.ScoreBase;
+          String subScoreBaseKey;
+          while(env.containsProperty((subScoreBaseKey = scoreBaseKey + k))) {
+            base = env.getProperty(subScoreBaseKey, Integer.class);
+            discount = env.getProperty(subScoreBaseKey + SkillAffectTypeConfig.ScoreDiscount, Double.class, 1d);
+            scoreBases.add(new ScoreBase(base, discount));
+            k++;
+          }
+          subTypes.add(new SubType(k, score, scoreBases));
+          j++;
+        }
+        skillAffectTypeConfigMap.put(i, new SkillAffectTypeConfig(i, subTypes));
+        i++;
+        continue;
+      }
+      int j = 1;
+      List<ScoreBase> scoreBases = new ArrayList<ScoreBase>();
+      String scoreBaseKey = key + SkillAffectTypeConfig.ScoreBase;
+      String subScoreBaseKey;
+      while(env.containsProperty((subScoreBaseKey = scoreBaseKey + j))) {
+        base = env.getProperty(subScoreBaseKey, Integer.class);
+        discount = env.getProperty(subScoreBaseKey + SkillAffectTypeConfig.ScoreDiscount, Double.class, 1d);
+        scoreBases.add(new ScoreBase(base, discount));
+        j++;
+      }
+      skillAffectTypeConfigMap.put(i, new SkillAffectTypeConfig(i, score, scoreBases));
+      i++;
+    }
+    return skillAffectTypeConfigMap;
+  }
+
 }
