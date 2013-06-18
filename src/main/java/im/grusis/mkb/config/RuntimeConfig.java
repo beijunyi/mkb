@@ -17,8 +17,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
  */
 @Configuration
 @PropertySource("classpath:/mkb.properties")
-@Import({ControllerConfig.class, RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class, DictionaryConfig.class, BotConfig.class, EcoSystemConfig.class, ProfileConfig.class, FilterConfig.class})
-public class RuntimeConfig {
+@Import({RepositoryConfig.class, ServiceConfig.class, EmulatorConfig.class})
+public class RuntimeConfig{
 
   public static final Logger Log = LoggerFactory.getLogger(RuntimeConfig.class);
 
@@ -29,6 +29,7 @@ public class RuntimeConfig {
     TimeZone.setDefault(TimeZone.getTimeZone(timezone));
     Log.info("Timezone is set to {}, the current time is {}", timezone, new Date().toString());
   }
+
 
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

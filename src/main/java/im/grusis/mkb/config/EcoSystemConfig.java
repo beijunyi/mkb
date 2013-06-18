@@ -1,12 +1,17 @@
 package im.grusis.mkb.config;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import im.grusis.mkb.eco.EcoSystemMaster;
 import im.grusis.mkb.eco.configs.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 /**
  * User: Junyi BEI
@@ -15,11 +20,23 @@ import org.springframework.core.env.Environment;
  */
 @Configuration
 @PropertySource("classpath:/eco.properties")
+@EnableScheduling
 @ComponentScan(basePackageClasses = EcoSystemMaster.class)
-public class EcoSystemConfig {
-
+public class EcoSystemConfig implements SchedulingConfigurer {
 
   @Autowired private Environment env;
+
+
+  @Bean(destroyMethod="shutdown")
+  public ScheduledExecutorService taskScheduler() {
+    return Executors.newScheduledThreadPool(42);
+  }
+
+  @Override
+  public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+    taskRegistrar.setScheduler(taskScheduler());
+  }
+
 
   @Bean
   public KeepConfig getKeepConfig() {
