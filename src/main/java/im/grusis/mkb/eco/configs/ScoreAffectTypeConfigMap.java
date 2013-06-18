@@ -7,5 +7,5 @@ import java.util.LinkedHashMap;
  * Date: 13-6-17
  * Time: 上午12:57
  */
-public class SkillAffectTypeConfigMap extends LinkedHashMap<Integer, SkillAffectTypeConfig> {
+public class ScoreAffectTypeConfigMap extends LinkedHashMap<Integer, ScoreAffectTypeConfig> {
 }

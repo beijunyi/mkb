@@ -324,17 +324,15 @@ public class MkbEmulator {
     return true;
   }
 
-  public AllCard gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    AllCard cards;
-    if(refresh || (cards = assetsService.getCards()) == null) {
+  public Map<Integer, Card> gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, Card> cards;
+    if(refresh || (cards = assetsService.getCardLookup()).isEmpty()) {
       CardGetAllCardResponse response = gameDoAction(username, "card.php", "GetAllCard", null, CardGetAllCardResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      cards = response.getData();
-      assetsService.saveAssets(cards);
+      cards = assetsService.saveAssets(response.getData());
     }
-
     return cards;
   }
 
@@ -353,15 +351,14 @@ public class MkbEmulator {
     return card;
   }
 
-  public Runes gameGetRunes(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    Runes runes;
-    if(refresh || (runes = assetsService.getRunes()) == null) {
+  public Map<Integer, Rune> gameGetRunes(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, Rune> runes;
+    if(refresh || (runes = assetsService.getRuneLookup()).isEmpty()) {
       RuneGetAllRuneResponse response = gameDoAction(username, "rune.php", "GetAllRune", null, RuneGetAllRuneResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      runes = response.getData();
-      assetsService.saveAssets(runes);
+      runes = assetsService.saveAssets(response.getData());
     }
     return runes;
   }
@@ -369,8 +366,7 @@ public class MkbEmulator {
   public Rune gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Rune rune = assetsService.findRune(runeId);
     if(rune == null) {
-      gameGetRunes(username, true);
-      rune = assetsService.findRune(runeId);
+      rune = gameGetRunes(username, true).get(runeId);
       if(rune == null) {
         throw new UnknownErrorException();
       }
@@ -378,15 +374,14 @@ public class MkbEmulator {
     return rune;
   }
 
-  public AllSkill gameGetSkills(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    AllSkill skills;
-    if(refresh || (skills = assetsService.getSkills()) == null) {
+  public Map<Integer, Skill> gameGetSkills(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, Skill> skills;
+    if(refresh || (skills = assetsService.getSkillLookup()).isEmpty()) {
       CardGetAllSkillResponse response = gameDoAction(username, "card.php", "GetAllSkill", null, CardGetAllSkillResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      skills = response.getData();
-      assetsService.saveAssets(skills);
+      skills = assetsService.saveAssets(response.getData());
     }
     return skills;
   }
@@ -394,8 +389,7 @@ public class MkbEmulator {
   public Skill gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Skill skill = assetsService.findSkill(skillId);
     if(skill == null) {
-      gameGetSkills(username, true);
-      skill = assetsService.findSkill(skillId);
+      skill = gameGetSkills(username, true).get(skillId);
       if(skill == null) {
         throw new UnknownErrorException();
       }
@@ -403,15 +397,14 @@ public class MkbEmulator {
     return skill;
   }
 
-  public MapStageAll gameGetMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    MapStageAll stages;
-    if(refresh || (stages = assetsService.getStages()) == null) {
+  public Map<Integer, MapStage> gameGetMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, MapStage> stages;
+    if(refresh || (stages = assetsService.getMapStageLookup()).isEmpty()) {
       MapStageGetMapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageGetMapStageAllResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      stages = response.getData();
-      assetsService.saveAssets(stages);
+      stages = assetsService.saveAssets(response.getData());
     }
     return stages;
   }
@@ -419,8 +412,7 @@ public class MkbEmulator {
   public MapStage gameGetMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStage mapStage = assetsService.findMapStage(stageId);
     if(mapStage == null) {
-      gameGetMapStages(username, true);
-      mapStage = assetsService.findMapStage(stageId);
+      mapStage = gameGetMapStages(username, true).get(stageId);
       if(mapStage == null) {
         throw new UnknownErrorException();
       }

@@ -29,36 +29,36 @@ public class AutomatedServiceEngine {
 
   private Map<Integer, Integer> mazeDependency;
 
-  private Map<Integer, Integer> getMazeDependency(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    if(mazeDependency == null) {
-      mazeDependency = new LinkedHashMap<Integer, Integer>();
-      MapStageAll stages = emulator.gameGetMapStages(username, false);
-      for(MapStage stage : stages) {
-        List<MapStageDetail> details = stage.getMapStageDetails();
-        boolean hasMaze = false;
-        int boss = -1;
-        for(MapStageDetail detail : details) {
-          int type = detail.getType();
-          if(type == MapStageDetail.MazeLevel) {
-            hasMaze = true;
-          } else if(type == MapStageDetail.BossLevel) {
-            boss = detail.getMapStageDetailId();
-          }
-          if(hasMaze && boss != -1) {
-            break;
-          }
-        }
-        if(hasMaze) {
-          if(boss == -1) {
-            Log.error("Cannot find boss level for map stage {} {}", stage.getMapStageId(), stage.getName());
-            throw new UnknownErrorException();
-          }
-          mazeDependency.put(stage.getMapStageId(), boss);
-        }
-      }
-    }
-    return mazeDependency;
-  }
+//  private Map<Integer, Integer> getMazeDependency(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+//    if(mazeDependency == null) {
+//      mazeDependency = new LinkedHashMap<Integer, Integer>();
+//      MapStageAll stages = emulator.gameGetMapStages(username, false);
+//      for(MapStage stage : stages) {
+//        List<MapStageDetail> details = stage.getMapStageDetails();
+//        boolean hasMaze = false;
+//        int boss = -1;
+//        for(MapStageDetail detail : details) {
+//          int type = detail.getType();
+//          if(type == MapStageDetail.MazeLevel) {
+//            hasMaze = true;
+//          } else if(type == MapStageDetail.BossLevel) {
+//            boss = detail.getMapStageDetailId();
+//          }
+//          if(hasMaze && boss != -1) {
+//            break;
+//          }
+//        }
+//        if(hasMaze) {
+//          if(boss == -1) {
+//            Log.error("Cannot find boss level for map stage {} {}", stage.getMapStageId(), stage.getName());
+//            throw new UnknownErrorException();
+//          }
+//          mazeDependency.put(stage.getMapStageId(), boss);
+//        }
+//      }
+//    }
+//    return mazeDependency;
+//  }
 
   private String getNickname(String username) throws MkbException {
     return emulator.gameGetUserInfo(username, false).getNickName();

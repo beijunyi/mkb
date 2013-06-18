@@ -1,7 +1,6 @@
 package im.grusis.mkb.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import im.grusis.mkb.eco.EcoSystemMaster;
 import im.grusis.mkb.eco.configs.*;
@@ -68,53 +67,68 @@ public class EcoSystemConfig {
   }
 
   @Bean
-  public SkillAffectTypeConfigMap getSkillAffectTypeConfigMap() {
-    SkillAffectTypeConfigMap skillAffectTypeConfigMap = new SkillAffectTypeConfigMap();
+  public ScoreAffectTypeConfigMap getSkillAffectTypeConfigMap() {
+    ScoreAffectTypeConfigMap scoreAffectTypeConfigMap = new ScoreAffectTypeConfigMap();
     int i = 1;
     String key;
     int score, base;
     double discount;
+    boolean inverse;
     String[] types;
-    while(env.containsProperty((key = SkillAffectTypeConfig.SkillAffectTypeConfigPrefix + i))) {
+    while(env.containsProperty((key = ScoreAffectTypeConfig.SkillAffectTypeConfigPrefix + i))) {
       score = env.getProperty(key, Integer.class);
       if(score == -1) {
-        types = env.getProperty(key + SkillAffectTypeConfig.SubTypes).split(",");
-        key += SkillAffectTypeConfig.SubType;
-        List<SubType> subTypes = new ArrayList<SubType>();
+        types = env.getProperty(key + ScoreAffectTypeConfig.SubTypes).split(",");
+        key += ScoreAffectTypeConfig.SubType;
+        Map<Integer, SubType> subTypes = new LinkedHashMap<Integer, SubType>();
         String subKey;
         for(String type : types) {
           subKey = key + type;
           score = env.getProperty(subKey, Integer.class);
           int j = 1;
           List<ScoreBase> scoreBases = new ArrayList<ScoreBase>();
-          String scoreBaseKey = subKey + SkillAffectTypeConfig.ScoreBase;
+          String scoreBaseKey = subKey + ScoreAffectTypeConfig.ScoreBase;
           String subScoreBaseKey;
           while(env.containsProperty((subScoreBaseKey = scoreBaseKey + j))) {
             base = env.getProperty(subScoreBaseKey, Integer.class);
-            discount = env.getProperty(subScoreBaseKey + SkillAffectTypeConfig.ScoreDiscount, Double.class, 1d);
-            scoreBases.add(new ScoreBase(base, discount));
+            discount = env.getProperty(subScoreBaseKey + ScoreAffectTypeConfig.ScoreDiscount, Double.class, 1d);
+            inverse = env.getProperty(subScoreBaseKey + ScoreAffectTypeConfig.ScoreInverse, Boolean.class, false);
+            scoreBases.add(new ScoreBase(base, discount, inverse));
             j++;
           }
-          subTypes.add(new SubType(j, score, scoreBases));
+          subTypes.put(Integer.valueOf(type), new SubType(j, score, scoreBases));
         }
-        skillAffectTypeConfigMap.put(i, new SkillAffectTypeConfig(i, subTypes));
+        scoreAffectTypeConfigMap.put(i, new ScoreAffectTypeConfig(i, subTypes));
         i++;
         continue;
       }
       int j = 1;
       List<ScoreBase> scoreBases = new ArrayList<ScoreBase>();
-      String scoreBaseKey = key + SkillAffectTypeConfig.ScoreBase;
+      String scoreBaseKey = key + ScoreAffectTypeConfig.ScoreBase;
       String subScoreBaseKey;
       while(env.containsProperty((subScoreBaseKey = scoreBaseKey + j))) {
         base = env.getProperty(subScoreBaseKey, Integer.class);
-        discount = env.getProperty(subScoreBaseKey + SkillAffectTypeConfig.ScoreDiscount, Double.class, 1d);
-        scoreBases.add(new ScoreBase(base, discount));
+        discount = env.getProperty(subScoreBaseKey + ScoreAffectTypeConfig.ScoreDiscount, Double.class, 1d);
+        inverse = env.getProperty(subScoreBaseKey + ScoreAffectTypeConfig.ScoreInverse, Boolean.class, false);
+        scoreBases.add(new ScoreBase(base, discount, inverse));
         j++;
       }
-      skillAffectTypeConfigMap.put(i, new SkillAffectTypeConfig(i, score, scoreBases));
+      scoreAffectTypeConfigMap.put(i, new ScoreAffectTypeConfig(i, score, scoreBases));
       i++;
     }
-    return skillAffectTypeConfigMap;
+    return scoreAffectTypeConfigMap;
+  }
+
+  @Bean
+  public ScoreCardAttributeConfig getScoreCardAttributeConfig() {
+    return new ScoreCardAttributeConfig(env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.AttackDiscount, Double.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.HPDiscount, Double.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.HPPenalty, Integer.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.HPPenaltyBase, Integer.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.CDBase, Integer.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.CDDiscount, Double.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.CDPenalty, Integer.class),
+                                         env.getProperty(ScoreCardAttributeConfig.CardAttributeConfigPrefix + ScoreCardAttributeConfig.CDPenaltyException));
   }
 
 }
