@@ -5,8 +5,8 @@ import java.util.Map;
 
 import im.grusis.mkb.eco.filter.AccountFilter;
 import im.grusis.mkb.eco.filter.util.CardUtils;
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserCards;
-import im.grusis.mkb.internal.MkbAccount;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCards;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 
 /**
  * User: Mothership

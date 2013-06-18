@@ -77,7 +77,7 @@
       }
 
       function outerHTML(node){
-        // if IE, Chrome take the internal method otherwise build one
+        // if IE, Chrome take the model method otherwise build one
         return node.outerHTML || (
             function(n){
                 var div = document.createElement('div'), h;

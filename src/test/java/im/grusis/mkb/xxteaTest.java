@@ -2,7 +2,7 @@ package im.grusis.mkb;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import im.grusis.mkb.util.XXTEA;
+import im.grusis.mkb.core.util.XXTEA;
 
 /**
  * User: Mothership

@@ -2,11 +2,11 @@ package im.grusis.mkb.run;
 
 import java.util.*;
 
-import im.grusis.mkb.config.RuntimeConfig;
+import im.grusis.mkb.config.core.MkbCoreConfig;
 import im.grusis.mkb.eco.EcoMind;
-import im.grusis.mkb.emulator.emulator.MkbEmulator;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Card;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Skill;
+import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.game.model.basic.Card;
+import im.grusis.mkb.core.emulator.game.model.basic.Skill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -24,7 +24,7 @@ public class ListCardRanking {
     String username = "tug100";
     int level = 10;
     boolean detail = true;
-    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(RuntimeConfig.class);
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MkbCoreConfig.class);
     ctx.start();
 
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);

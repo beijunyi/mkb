@@ -279,7 +279,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || this.constructor(null);
 	},
 
-	// For internal use only.
+	// For model use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: core_push,
 	sort: [].sort,
@@ -577,7 +577,7 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
-	// args is for internal usage only
+	// args is for model usage only
 	each: function( obj, callback, args ) {
 		var name,
 			i = 0,
@@ -634,7 +634,7 @@ jQuery.extend({
 				( text + "" ).replace( rtrim, "" );
 		},
 
-	// results is for internal usage only
+	// results is for model usage only
 	makeArray: function( arr, results ) {
 		var type,
 			ret = results || [];
@@ -716,7 +716,7 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
+	// arg is for model usage only
 	map: function( elems, callback, arg ) {
 		var value, key,
 			ret = [],
@@ -1594,8 +1594,8 @@ jQuery.extend({
 
 		thisCache = cache[ id ];
 
-		// jQuery data() is stored in a separate object inside the object's internal data
-		// cache in order to avoid key collisions between internal data and user-defined
+		// jQuery data() is stored in a separate object inside the object's model data
+		// cache in order to avoid key collisions between model data and user-defined
 		// data.
 		if ( !pvt ) {
 			if ( !thisCache.data ) {
@@ -1688,7 +1688,7 @@ jQuery.extend({
 		if ( !pvt ) {
 			delete cache[ id ].data;
 
-			// Don't destroy the parent cache unless the internal data object
+			// Don't destroy the parent cache unless the model data object
 			// had been the only thing left in it
 			if ( !isEmptyDataObject( cache[ id ] ) ) {
 				return;
@@ -1709,7 +1709,7 @@ jQuery.extend({
 		}
 	},
 
-	// For internal use only.
+	// For model use only.
 	_data: function( elem, name, data ) {
 		return jQuery.data( elem, name, data, true );
 	},
@@ -5803,7 +5803,7 @@ jQuery.fn.extend({
 		}
 	},
 
-	// keepData is for internal use only--do not document
+	// keepData is for model use only--do not document
 	remove: function( selector, keepData ) {
 		var elem,
 			i = 0;
@@ -6407,7 +6407,7 @@ jQuery.extend({
 		return ret;
 	},
 
-	cleanData: function( elems, /* internal */ acceptData ) {
+	cleanData: function( elems, /* model */ acceptData ) {
 		var data, id, elem, type,
 			i = 0,
 			internalKey = jQuery.expando,
@@ -7353,7 +7353,7 @@ function addToPrefiltersOrTransports( structure ) {
 
 // Base inspection function for prefilters and transports
 function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR,
-		dataType /* internal */, inspected /* internal */ ) {
+		dataType /* model */, inspected /* model */ ) {
 
 	dataType = dataType || options.dataTypes[ 0 ];
 	inspected = inspected || {};
@@ -12312,7 +12312,7 @@ function createInjector(modulesToLoad) {
   }
 
   ////////////////////////////////////
-  // internal Injector
+  // model Injector
   ////////////////////////////////////
 
   function createInternalInjector(cache, factory) {
@@ -13226,7 +13226,7 @@ function Browser(window, document, $log, $sniffer) {
    *
    * The return values vary depending on the arguments that the method was called with as follows:
    * <ul>
-   *   <li>cookies() -> hash of all cookies, this is NOT a copy of the internal state, so do not modify it</li>
+   *   <li>cookies() -> hash of all cookies, this is NOT a copy of the model state, so do not modify it</li>
    *   <li>cookies(name, value) -> set name to value, if value is undefined delete the cookie</li>
    *   <li>cookies(name) -> the same as (name, undefined) == DELETES (no one calls it right now that way)</li>
    * </ul>
@@ -18074,7 +18074,7 @@ function $RootScopeProvider(){
        *    The `scope` refers to the current scope.
        *
        * @returns {function()} Returns a de-registration function for this listener. When the de-registration function is executed
-       * then the internal watch operation is terminated.
+       * then the model watch operation is terminated.
        */
       $watchCollection: function(obj, listener) {
         var self = this;
@@ -19712,7 +19712,7 @@ function $HttpProvider() {
        * Resolves the raw $http promise.
        */
       function resolvePromise(response, status, headers) {
-        // normalize internal statuses to 0
+        // normalize model statuses to 0
         status = Math.max(status, 0);
 
         (isSuccess(status) ? deferred.resolve : deferred.reject)({

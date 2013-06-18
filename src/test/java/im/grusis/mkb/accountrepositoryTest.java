@@ -1,7 +1,7 @@
 package im.grusis.mkb;
 
-import im.grusis.mkb.internal.MkbAccount;
-import im.grusis.mkb.repository.AccountRepository;
+import im.grusis.mkb.core.repository.model.MkbAccount;
+import im.grusis.mkb.core.repository.AccountRepository;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.testng.Assert;
 import org.testng.annotations.Test;

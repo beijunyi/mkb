@@ -2870,7 +2870,7 @@ function createInjector(modulesToLoad) {
   }
 
   ////////////////////////////////////
-  // internal Injector
+  // model Injector
   ////////////////////////////////////
 
   function createInternalInjector(cache, factory) {
@@ -3784,7 +3784,7 @@ function Browser(window, document, $log, $sniffer) {
    *
    * The return values vary depending on the arguments that the method was called with as follows:
    * <ul>
-   *   <li>cookies() -> hash of all cookies, this is NOT a copy of the internal state, so do not modify it</li>
+   *   <li>cookies() -> hash of all cookies, this is NOT a copy of the model state, so do not modify it</li>
    *   <li>cookies(name, value) -> set name to value, if value is undefined delete the cookie</li>
    *   <li>cookies(name) -> the same as (name, undefined) == DELETES (no one calls it right now that way)</li>
    * </ul>
@@ -8632,7 +8632,7 @@ function $RootScopeProvider(){
        *    The `scope` refers to the current scope.
        *
        * @returns {function()} Returns a de-registration function for this listener. When the de-registration function is executed
-       * then the internal watch operation is terminated.
+       * then the model watch operation is terminated.
        */
       $watchCollection: function(obj, listener) {
         var self = this;
@@ -10270,7 +10270,7 @@ function $HttpProvider() {
        * Resolves the raw $http promise.
        */
       function resolvePromise(response, status, headers) {
-        // normalize internal statuses to 0
+        // normalize model statuses to 0
         status = Math.max(status, 0);
 
         (isSuccess(status) ? deferred.resolve : deferred.reject)({

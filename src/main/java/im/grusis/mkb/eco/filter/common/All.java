@@ -1,6 +1,6 @@
 package im.grusis.mkb.eco.filter.common;
 
-import im.grusis.mkb.internal.MkbAccount;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.eco.filter.AccountFilter;
 
 /**

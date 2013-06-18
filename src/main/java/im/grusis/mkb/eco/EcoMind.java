@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import im.grusis.mkb.eco.configs.*;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Card;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Skill;
+import im.grusis.mkb.core.emulator.game.model.basic.Card;
+import im.grusis.mkb.core.emulator.game.model.basic.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.log4testng.Logger;

@@ -5,9 +5,9 @@ import java.util.*;
 import im.grusis.mkb.eco.configs.CardConfig;
 import im.grusis.mkb.eco.configs.CardConfigMap;
 import im.grusis.mkb.eco.filter.common.CompareOperator;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Card;
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserCardInfo;
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserCards;
+import im.grusis.mkb.core.emulator.game.model.basic.Card;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCards;
 
 /**
  * User: Mothership

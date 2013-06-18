@@ -1,7 +1,7 @@
 package im.grusis.mkb.eco.filter.common;
 
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserInfo;
-import im.grusis.mkb.internal.MkbAccount;
+import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.eco.filter.AccountFilter;
 
 /**

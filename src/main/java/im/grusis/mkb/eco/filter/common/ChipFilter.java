@@ -3,9 +3,9 @@ package im.grusis.mkb.eco.filter.common;
 import java.util.Collection;
 
 import im.grusis.mkb.eco.filter.AccountFilter;
-import im.grusis.mkb.emulator.emulator.core.model.basic.Chip;
-import im.grusis.mkb.emulator.emulator.core.model.basic.UserChip;
-import im.grusis.mkb.internal.MkbAccount;
+import im.grusis.mkb.core.emulator.game.model.basic.Chip;
+import im.grusis.mkb.core.emulator.game.model.basic.UserChip;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 
 /**
  * User: Mothership

@@ -3,7 +3,7 @@ package im.grusis.mkb.eco.configs;
 import java.util.List;
 import java.util.Map;
 
-import im.grusis.mkb.util.CollectionUtil;
+import im.grusis.mkb.core.util.CollectionUtil;
 
 /**
  * User: Mothership

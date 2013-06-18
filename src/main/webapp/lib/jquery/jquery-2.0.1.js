@@ -272,7 +272,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || this.constructor(null);
 	},
 
-	// For internal use only.
+	// For model use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: core_push,
 	sort: [].sort,
@@ -432,7 +432,7 @@ jQuery.extend({
 
 	isPlainObject: function( obj ) {
 		// Not plain objects:
-		// - Any object or value whose internal [[Class]] property is not "[object Object]"
+		// - Any object or value whose model [[Class]] property is not "[object Object]"
 		// - DOM nodes
 		// - window
 		if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
@@ -557,7 +557,7 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
-	// args is for internal usage only
+	// args is for model usage only
 	each: function( obj, callback, args ) {
 		var value,
 			i = 0,
@@ -611,7 +611,7 @@ jQuery.extend({
 		return text == null ? "" : core_trim.call( text );
 	},
 
-	// results is for internal usage only
+	// results is for model usage only
 	makeArray: function( arr, results ) {
 		var ret = results || [];
 
@@ -672,7 +672,7 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
+	// arg is for model usage only
 	map: function( elems, callback, arg ) {
 		var value,
 			i = 0,
@@ -5492,7 +5492,7 @@ jQuery.fn.extend({
 		});
 	},
 
-	// keepData is for internal use only--do not document
+	// keepData is for model use only--do not document
 	remove: function( selector, keepData ) {
 		var elem,
 			elems = selector ? jQuery.filter( selector, this ) : this,
