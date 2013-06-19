@@ -279,17 +279,41 @@ public class MkbEmulator {
   }
 
   public String gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Goods goods = gameShopGetGoods(username, goodsId);
+    String goodsName = goods.getName();
+    Log.info("Account {} {} is purchasing {} {}", username, nickname, goodsId, goodsName);
+    int cash = goods.getCash();
+    int coins = goods.getCoins();
+    int ticket = goods.getTicket();
+    String cost = "";
+    if(cash > 0) {
+      cost += cash + " cash";
+    }
+    if(coins > 0) {
+      if(!cost.isEmpty()) {
+        cost += ", ";
+      }
+      cost += coins + " coins";
+    }
+    if(ticket > 0) {
+      if(!cost.isEmpty()) {
+        cost += ", ";
+      }
+      cost += ticket + " ticket";
+    }
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("GoodsId", Integer.toString(goodsId));
     ShopBuyResponse response = gameDoAction(username, "shop.php", "Buy", paramMap, ShopBuyResponse.class);
     if(response.badRequest()) {
       if(response.noCurrency()) {
-        Log.error("Cannot purchase goods {}. {} does not have enough currency", goodsId, username);
+        Log.error("Cannot purchase goods {} {} for account {} {} due to insufficient currency. {} costs {}", goodsId, goodsName, username, nickname, goodsName, cost);
       } else {
         throw new UnknownErrorException();
       }
       return null;
     }
+    Log.info("Account {} {} has purchased {} {} for {}", username, nickname, goodsId, goodsName, cost);
     return response.getData();
   }
 
