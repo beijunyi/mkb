@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
  * Time: 上午12:26
  */
 @Configuration
-@PropertySource("classpath:/filter.properties")
+@PropertySource("classpath:/eco_filter.properties")
 public class EcoFilterConfig {
 
   @Bean

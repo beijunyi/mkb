@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.util.dictionary;
+package im.grusis.mkb.eco.util.dictionary;
 
 /**
  * User: beij
@@ -15,7 +15,5 @@ public abstract class MkbDictionary {
   public abstract boolean hasNext();
 
   public abstract String next();
-
-  public abstract int tailSize();
 
 }

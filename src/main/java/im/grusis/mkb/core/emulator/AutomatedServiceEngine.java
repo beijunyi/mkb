@@ -2,7 +2,7 @@ package im.grusis.mkb.core.emulator;
 
 import java.util.*;
 
-import im.grusis.mkb.core.util.dictionary.MkbDictionary;
+import im.grusis.mkb.eco.util.dictionary.MkbDictionary;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.emulator.web.model.basic.GameServer;
 import im.grusis.mkb.exception.*;

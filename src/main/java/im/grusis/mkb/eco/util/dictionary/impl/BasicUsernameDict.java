@@ -1,7 +1,7 @@
-package im.grusis.mkb.core.util.dictionary.dicts;
+package im.grusis.mkb.eco.util.dictionary.impl;
 
-import im.grusis.mkb.core.util.dictionary.BasicDict;
-import im.grusis.mkb.core.util.dictionary.MkbDictionary;
+import im.grusis.mkb.eco.util.dictionary.BasicDict;
+import im.grusis.mkb.eco.util.dictionary.MkbDictionary;
 
 /**
  * User: Mothership

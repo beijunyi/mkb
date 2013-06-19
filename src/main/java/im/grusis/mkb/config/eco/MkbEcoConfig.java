@@ -26,7 +26,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableScheduling
 @PropertySource("classpath:/eco.properties")
 @ComponentScan(basePackageClasses = MkbEcoMarker.class)
-@Import({EcoDictionaryConfig.class, EcoFilterConfig.class, EcoProfileConfig.class})
+@Import({EcoUtilConfig.class, EcoFilterConfig.class, EcoProfileConfig.class})
 public class MkbEcoConfig implements SchedulingConfigurer {
 
   private static final Logger Log = LoggerFactory.getLogger(MkbEcoConfig.class);

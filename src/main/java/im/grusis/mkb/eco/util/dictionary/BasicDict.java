@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.util.dictionary;
+package im.grusis.mkb.eco.util.dictionary;
 
 /**
  * User: Mothership
@@ -50,11 +50,6 @@ public class BasicDict extends MkbDictionary {
     }
     count++;
     return prefix + sb.toString();
-  }
-
-  @Override
-  public int tailSize() {
-    return max - count;
   }
 
 }

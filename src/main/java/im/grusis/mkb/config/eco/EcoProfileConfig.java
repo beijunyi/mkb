@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
  * Time: 下午10:58
  */
 @Configuration
-@PropertySource("classpath:/profile.properties")
+@PropertySource("classpath:/eco_profile.properties")
 public class EcoProfileConfig {
 
   @Autowired private Environment env;
