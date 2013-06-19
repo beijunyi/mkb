@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.annotation.PostConstruct;
 
-import im.grusis.mkb.core.filter.AccountFilter;
+import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;

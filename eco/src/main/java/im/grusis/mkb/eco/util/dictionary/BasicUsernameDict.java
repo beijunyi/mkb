@@ -1,7 +1,4 @@
-package im.grusis.mkb.core.util.dictionary.impl;
-
-import im.grusis.mkb.core.util.dictionary.BasicDict;
-import im.grusis.mkb.core.util.dictionary.MkbDictionary;
+package im.grusis.mkb.eco.util.dictionary;
 
 /**
  * User: Mothership
@@ -13,7 +10,7 @@ public class BasicUsernameDict extends BasicDict {
   public final static String CharSet = "0123456789abcdefghijklmnopqrstuvwxyz";
 
   public BasicUsernameDict(String prefix) {
-    super(prefix, CharSet, MkbDictionary.MaxUsernameLength);
+    super(prefix, CharSet, MaxUsernameLength);
     init();
   }
 }

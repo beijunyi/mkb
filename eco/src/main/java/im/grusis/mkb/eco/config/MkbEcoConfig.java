@@ -5,6 +5,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
 
+import im.grusis.mkb.core.config.MkbCoreConfig;
 import im.grusis.mkb.eco.MkbEcoMarker;
 import im.grusis.mkb.eco.configs.*;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @EnableScheduling
 @PropertySource("classpath:/eco.properties")
 @ComponentScan(basePackageClasses = MkbEcoMarker.class)
-@Import({EcoUtilConfig.class, EcoFilterConfig.class, EcoProfileConfig.class})
+@Import({MkbCoreConfig.class, EcoUtilConfig.class, EcoFilterConfig.class, EcoProfileConfig.class})
 public class MkbEcoConfig implements SchedulingConfigurer {
 
   private static final Logger Log = LoggerFactory.getLogger(MkbEcoConfig.class);

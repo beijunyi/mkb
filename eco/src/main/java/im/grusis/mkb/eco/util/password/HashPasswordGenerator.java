@@ -1,4 +1,6 @@
-package im.grusis.mkb.core.util.password;
+package im.grusis.mkb.eco.util.password;
+
+import im.grusis.mkb.core.util.MkbPasswordGenerator;
 
 /**
  * User: Mothership

@@ -1,8 +1,8 @@
-package im.grusis.mkb.core.filter.util;
+package im.grusis.mkb.eco.util.filter.util;
 
 import java.util.*;
 
-import im.grusis.mkb.core.filter.common.CompareOperator;
+import im.grusis.mkb.eco.util.filter.common.CompareOperator;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCards;
 

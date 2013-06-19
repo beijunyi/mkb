@@ -1,10 +1,10 @@
-package im.grusis.mkb.core.filter.common;
+package im.grusis.mkb.eco.util.filter.common;
 
 import java.util.List;
 import java.util.Map;
 
-import im.grusis.mkb.core.filter.AccountFilter;
-import im.grusis.mkb.core.filter.util.CardUtils;
+import im.grusis.mkb.core.util.AccountFilter;
+import im.grusis.mkb.eco.util.filter.util.CardUtils;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCards;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 

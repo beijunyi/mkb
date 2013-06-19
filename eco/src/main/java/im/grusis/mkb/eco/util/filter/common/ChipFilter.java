@@ -1,8 +1,8 @@
-package im.grusis.mkb.core.filter.common;
+package im.grusis.mkb.eco.util.filter.common;
 
 import java.util.Collection;
 
-import im.grusis.mkb.core.filter.AccountFilter;
+import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.core.emulator.game.model.basic.Chip;
 import im.grusis.mkb.core.emulator.game.model.basic.UserChip;
 import im.grusis.mkb.core.repository.model.MkbAccount;

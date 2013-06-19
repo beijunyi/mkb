@@ -1,8 +1,8 @@
-package im.grusis.mkb.core.filter;
+package im.grusis.mkb.eco.util.filter;
 
-import im.grusis.mkb.core.filter.common.CompareOperator;
-import im.grusis.mkb.core.filter.common.NumericProperty;
-import im.grusis.mkb.core.filter.common.NumericPropertyFilter;
+import im.grusis.mkb.eco.util.filter.common.CompareOperator;
+import im.grusis.mkb.eco.util.filter.common.NumericProperty;
+import im.grusis.mkb.eco.util.filter.common.NumericPropertyFilter;
 
 /**
  * User: Mothership

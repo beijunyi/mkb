@@ -1,6 +1,7 @@
-package im.grusis.mkb.core.filter;
+package im.grusis.mkb.eco.util.filter;
 
 import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
+import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 
 /**
@@ -8,7 +9,7 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
  * Date: 13-6-16
  * Time: 上午1:52
  */
-public class HasReward implements AccountFilter{
+public class HasReward implements AccountFilter {
 
   @Override
   public boolean accept(MkbAccount account) {

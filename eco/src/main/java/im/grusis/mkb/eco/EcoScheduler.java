@@ -1,8 +1,8 @@
 package im.grusis.mkb.eco;
 
 import im.grusis.mkb.eco.configs.BeginnerConfigList;
-import im.grusis.mkb.core.filter.HasReward;
-import im.grusis.mkb.core.filter.MissingFreeFightChip;
+import im.grusis.mkb.eco.util.filter.HasReward;
+import im.grusis.mkb.eco.util.filter.MissingFreeFightChip;
 import im.grusis.mkb.core.emulator.MkbEmulator;
 import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
 import im.grusis.mkb.core.exception.MkbException;

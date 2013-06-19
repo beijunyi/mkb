@@ -1,6 +1,6 @@
-package im.grusis.mkb.core.filter.common;
+package im.grusis.mkb.eco.util.filter.common;
 
-import im.grusis.mkb.core.filter.AccountFilter;
+import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.core.emulator.game.model.basic.UserMapStage;
 import im.grusis.mkb.core.emulator.game.model.basic.UserMapStages;
 import im.grusis.mkb.core.repository.model.MkbAccount;

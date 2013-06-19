@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.filter.common;
+package im.grusis.mkb.eco.util.filter.common;
 
 /**
  * User: Mothership

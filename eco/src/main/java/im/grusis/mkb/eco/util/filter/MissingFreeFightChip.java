@@ -1,8 +1,8 @@
-package im.grusis.mkb.core.filter;
+package im.grusis.mkb.eco.util.filter;
 
-import im.grusis.mkb.core.filter.common.ChipFilter;
-import im.grusis.mkb.core.filter.common.ChipType;
-import im.grusis.mkb.core.filter.common.CompareOperator;
+import im.grusis.mkb.eco.util.filter.common.ChipFilter;
+import im.grusis.mkb.eco.util.filter.common.ChipType;
+import im.grusis.mkb.eco.util.filter.common.CompareOperator;
 
 /**
  * User: Mothership

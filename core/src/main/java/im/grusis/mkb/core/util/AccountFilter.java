@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.filter;
+package im.grusis.mkb.core.util;
 
 import im.grusis.mkb.core.repository.model.MkbAccount;
 

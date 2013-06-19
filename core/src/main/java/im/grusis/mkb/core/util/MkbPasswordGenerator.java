@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.util.password;
+package im.grusis.mkb.core.util;
 
 /**
  * User: Mothership

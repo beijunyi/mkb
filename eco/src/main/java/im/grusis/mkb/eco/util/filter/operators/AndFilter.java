@@ -1,7 +1,7 @@
-package im.grusis.mkb.core.filter.operators;
+package im.grusis.mkb.eco.util.filter.operators;
 
 import im.grusis.mkb.core.repository.model.MkbAccount;
-import im.grusis.mkb.core.filter.AccountFilter;
+import im.grusis.mkb.core.util.AccountFilter;
 
 /**
  * User: Mothership

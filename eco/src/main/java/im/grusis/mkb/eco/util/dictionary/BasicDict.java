@@ -1,11 +1,13 @@
-package im.grusis.mkb.core.util.dictionary;
+package im.grusis.mkb.eco.util.dictionary;
+
+import im.grusis.mkb.core.util.MkbDictionary;
 
 /**
  * User: Mothership
  * Date: 13-6-5
  * Time: 下午9:15
  */
-public class BasicDict extends MkbDictionary {
+public class BasicDict implements MkbDictionary {
 
   protected final char[] charset;
   protected int lengthMax;

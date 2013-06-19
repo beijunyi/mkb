@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import im.grusis.mkb.core.util.dictionary.MkbDictionary;
-import im.grusis.mkb.core.util.password.MkbPasswordGenerator;
+import im.grusis.mkb.core.util.MkbDictionary;
+import im.grusis.mkb.core.util.MkbPasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,8 +40,8 @@ public class EcoUtilConfig {
     int length = args.size();
     Class<?>[] types = new Class[length];
     Arrays.fill(types, String.class);
-    String[] argArray = new String[length];
-    return clazz.getConstructor(types).newInstance(args.toArray(argArray));
+    Object[] argArray = new String[length];
+    return clazz.getConstructor(types).newInstance((Object[])args.toArray(argArray));
   }
 
   private MkbDictionary getDictionary(String key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
