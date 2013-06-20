@@ -17,6 +17,7 @@ public class FindAccounts {
     String username = "tug100";
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
+
 //    core.webLogin("tug100", "mewhome123", MacAddressHelper.getMacAddress());
 //    core.gameGetUserInfo(username, true);
 //    ase.clearCounterAttacks(username, 5);

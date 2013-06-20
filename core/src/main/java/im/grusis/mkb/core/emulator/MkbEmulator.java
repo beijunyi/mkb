@@ -45,6 +45,8 @@ public class MkbEmulator {
   @Value("${versionClient}") private String versionClient;
   @Value("${versionBuild}") private String versionBuild;
 
+  @Value("${stageMax}") private String stageMax;
+
   @Autowired AccountService accountService;
   @Autowired ArchiveService archiveService;
   @Autowired AssetsService assetsService;
@@ -420,7 +422,7 @@ public class MkbEmulator {
   public Map<Integer, MapStage> gameGetMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, MapStage> stages;
     if(refresh || (stages = assetsService.getMapStageLookup()).isEmpty()) {
-      MapStageGetMapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL", null, MapStageGetMapStageAllResponse.class);
+      MapStageGetMapStageAllResponse response = gameDoAction(username, "mapstage.php", "GetMapStageALL&stageNum=" + stageMax, null, MapStageGetMapStageAllResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
