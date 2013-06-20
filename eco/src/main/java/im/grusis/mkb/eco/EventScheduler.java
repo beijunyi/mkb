@@ -65,6 +65,11 @@ public class EventScheduler {
     Log.info("Finished sending natural energy. {} of {} accounts have received 1 energy", count, mkbAccounts.size());
   }
 
+  @Scheduled(cron = "30 0 0 * * *")
+  public void newDay() throws MkbException {
+
+  }
+
   @Scheduled(cron = "0 0 13,21 * * *")
   public void bossFight() throws MkbException {
 

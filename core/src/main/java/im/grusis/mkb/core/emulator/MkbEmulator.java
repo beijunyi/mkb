@@ -132,12 +132,11 @@ public class MkbEmulator {
       profiles.put(username, profile);
       MkbAccount account = accountService.findAccountByUsername(username);
       if(account == null) {
-        account = new MkbAccount();
-        account.setUsername(username);
-        account.setPassword(password);
-        account.setMac(mac);
-        account.setServer(ret.getGS_NAME());
+        account = new MkbAccount(username, password, mac);
         archiveService.addUsername(username);
+      }
+      if(account.getServer() == null) {
+        account.setServer(ret.getGS_NAME());
       }
       account.setProfile(profile);
       accountService.saveAccount(account);
@@ -161,10 +160,7 @@ public class MkbEmulator {
       }
       throw new UnknownErrorException();
     }
-    MkbAccount account = new MkbAccount();
-    account.setUsername(username);
-    account.setPassword(password);
-    account.setMac(mac);
+    MkbAccount account = new MkbAccount(username, password, mac);
     accountService.saveAccount(account);
     archiveService.addUsername(username);
     return true;
@@ -573,7 +569,7 @@ public class MkbEmulator {
         account.addNewCard(value);
         Log.info("Account {} {} has obtained card {} {}", username, nickname, value, gameGetCardDetail(account.getUsername(), value).getCardName());
       } else if(key.contains("chip")) {
-        account.addNewChip(value);
+        account.addChip(value);
         Log.info("Account {} {} has obtained chip {}", username, nickname, value);
       } else {
         Log.warn("Account {} {} has obtained unknown reward {}", username, nickname, bonus);
@@ -633,7 +629,7 @@ public class MkbEmulator {
       }
       int chip = award.getChip();
       if(chip > 0) {
-        account.addNewChip(chip);
+        account.addChip(chip);
         Log.info("Account {} {} has obtained chip fragment {}", username, nickname, chip);
       }
     }

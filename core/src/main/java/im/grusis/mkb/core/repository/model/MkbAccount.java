@@ -17,8 +17,6 @@ public class MkbAccount {
   private String server;
 
   private List<Integer> newCards;
-  private Set<Integer> currentChips;
-  private Map<Integer, Long> mazeClearTimes;
   private Map<Long, Integer> energyRecord;
   private Map<Long, BattleRecord> battleRecordMap;
 
@@ -40,28 +38,24 @@ public class MkbAccount {
   private Legion legion;
   private long legionUpdate;
 
-  public String getUsername() {
-    return username;
+  public MkbAccount(String username, String password, String mac) {
+    this.username = username;
+    this.password = password;
+    this.mac = mac;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+
+  public String getUsername() {
+    return username;
   }
 
   public String getPassword() {
     return password;
   }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
 
   public String getMac() {
     return mac;
-  }
-
-  public void setMac(String mac) {
-    this.mac = mac;
   }
 
   public String getServer() {
@@ -136,17 +130,6 @@ public class MkbAccount {
 
   public void setUserChip(UserChip userChip) {
     this.userChip = userChip;
-    if(currentChips == null) {
-      currentChips = new TreeSet<Integer>();
-    } else {
-      currentChips.clear();
-    }
-    Collection<Chip> chips = userChip.values();
-    for(Chip chip : chips) {
-      if(chip.getNum() > 0) {
-        currentChips.add(chip.getId());
-      }
-    }
     this.userChipUpdate = System.currentTimeMillis();
   }
 
@@ -160,32 +143,6 @@ public class MkbAccount {
 
   public void setNewCards(List<Integer> newCards) {
     this.newCards = newCards;
-  }
-
-  public Map<Integer, Long> getMazeClearTimes() {
-    return mazeClearTimes;
-  }
-
-  public void setMazeClearTimes(Map<Integer, Long> mazeClearTimes) {
-    this.mazeClearTimes = mazeClearTimes;
-  }
-
-  public long getMazeClearTime(int mapStageId) {
-    if(mazeClearTimes == null) {
-      return 0;
-    }
-    Long clearTime = mazeClearTimes.get(mapStageId);
-    if(clearTime == null) {
-      return 0;
-    }
-    return clearTime;
-  }
-
-  public void clearMaze(int mapStageId) {
-    if(mazeClearTimes == null) {
-      mazeClearTimes = new LinkedHashMap<Integer, Long>();
-    }
-    mazeClearTimes.put(mapStageId, System.currentTimeMillis());
   }
 
   public void addCoins(long coins) {
@@ -207,15 +164,10 @@ public class MkbAccount {
     newCards.add(cardId);
   }
 
-  public void addNewChip(int chip) {
-    if(currentChips == null) {
-      currentChips = new TreeSet<Integer>();
+  public void addChip(int chip) {
+    if(userChip != null) {
+      userChip.addChip(chip);
     }
-    currentChips.add(chip);
-  }
-
-  public Set<Integer> getCurrentChips() {
-    return currentChips;
   }
 
   public void consumeEnergy(int amount) {
