@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 
 import im.grusis.mkb.core.config.MkbCoreConfig;
 import im.grusis.mkb.eco.MkbEcoMarker;
-import im.grusis.mkb.eco.configs.*;
+import im.grusis.mkb.eco.heuristics.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

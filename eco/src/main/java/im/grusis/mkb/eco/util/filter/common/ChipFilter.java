@@ -14,6 +14,8 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
  */
 public class ChipFilter implements AccountFilter {
 
+  public static int ChipMax = 3;
+
   private ChipType type;
   private CompareOperator compare;
   private int num;

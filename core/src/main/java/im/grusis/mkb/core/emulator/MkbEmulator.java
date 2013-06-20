@@ -601,7 +601,8 @@ public class MkbEmulator {
     }
   }
 
-  private void processBattleMazeResult(String username, BattleNormal result, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+
+  private void processBattleMazeResult(String username, BattleNormal result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     String nickname = gameGetUserInfo(username, false).getNickName();
     BattleNormalExtData ext = result.getExtData();
@@ -611,8 +612,7 @@ public class MkbEmulator {
       account.addExp(user.getExp());
 
       BattleNormalExtData.Clear clear = ext.getClear();
-      if(clear.getIsClear() > 0) {
-        account.clearMaze(mapStageId);
+      if(clear != null && clear.getIsClear() > 0) {
         int coins = clear.getCoins();
         account.addCoins(coins);
         int card = clear.getCardId();
@@ -689,7 +689,7 @@ public class MkbEmulator {
     }
     account.consumeEnergy(MazeInfo.EnergyExpend);
     BattleNormal result = response.getData();
-    processBattleMazeResult(username, result, mapStageId);
+    processBattleMazeResult(username, result);
     return result;
   }
 
@@ -1011,14 +1011,76 @@ public class MkbEmulator {
 
   public LegionAttackInfo gameLegionAttackInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     String nickname = gameGetUserInfo(username, false).getNickName();
-    Log.debug("{} {} is retrieving legion attack info", username, nickname);
+    Log.debug("Account {} {} is retrieving legion attack info", username, nickname);
     LegionAttackInfoResponse response = gameDoAction(username, "legionattack.php", "info", null, LegionAttackInfoResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
     LegionAttackInfo info = response.getData();
-    Log.info("{} {} has retrieved legion attack info", username, nickname);
+    Log.info("Account {} {} has retrieved legion attack info", username, nickname);
     return info;
+  }
+
+  public ArenaCompetitors gameArenaGetCompetitors(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("Account {} {} is retrieving arena competitor list", username, nickname);
+    ArenaGetCompetitorsResponse response = gameDoAction(username, "arena.php", "GetCompetitors", null, ArenaGetCompetitorsResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    ArenaCompetitors competitors = response.getData();
+    Log.info("Account {} {} has successfully retrieved arena competitor list", username, nickname);
+    return competitors;
+  }
+
+  public BattleNormal gameArenaFreeFightAuto(String username, long competitor, boolean forChip) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("{} {} is starting arena free fight against {}", username, nickname, competitor);
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    if(!forChip) {
+      params.put("NoChip", Integer.toString(1));
+    }
+    params.put("isManual", Integer.toString(0));
+    params.put("competitor", Long.toString(competitor));
+    ArenaFreeFightResponse response = gameDoAction(username, "arena.php", "FreeFight", params, ArenaFreeFightResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    BattleNormal battle = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    if(battle.win()) {
+      Log.info("Account {} {} has won the arena free fight against {} {}", username, nickname, competitor, battle.getDefendPlayer().getNickName());
+      account.battle(competitor, true);
+    } else {
+      Log.info("Account {} {} has lost the arena free fight against {} {}", username, nickname, competitor, battle.getDefendPlayer().getNickName());
+      account.battle(competitor, false);
+    }
+    accountService.saveAccount(account);
+    return battle;
+  }
+
+  public BattleNormal gameArenaRankFight(String username, int rank) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("{} {} is starting arena rank fight against competitor ranked {}", username, nickname, rank);
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("CompetitorRank", Integer.toString(rank));
+    ArenaFreeFightResponse response = gameDoAction(username, "arena.php", "RankFight", params, ArenaFreeFightResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    BattleNormal battle = response.getData();
+    MkbAccount account = accountService.findAccountByUsername(username);
+    Player defendPlayer = battle.getDefendPlayer();
+    long uid = defendPlayer.getUid();
+    if(battle.win()) {
+      Log.info("Account {} {} has won the arena rank fight against {} {}", username, nickname, uid, defendPlayer.getNickName());
+      account.battle(uid, true);
+    } else {
+      Log.info("Account {} {} has lost the arena rank fight against {} {}", username, nickname, uid, defendPlayer.getNickName());
+      account.battle(uid, false);
+    }
+    accountService.saveAccount(account);
+    return battle;
   }
 
 }

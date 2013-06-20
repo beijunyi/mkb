@@ -32,10 +32,10 @@ public class NumericPropertyFilter implements AccountFilter {
       case Level:
         value = userInfo.getLevel();
         break;
-      case Gold:
+      case Coins:
         value = userInfo.getCoins();
         break;
-      case Diamond:
+      case Cash:
         value = userInfo.getCash();
         break;
       case Ticket:

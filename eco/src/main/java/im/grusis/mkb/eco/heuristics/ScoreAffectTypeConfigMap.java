@@ -1,4 +1,4 @@
-package im.grusis.mkb.eco.configs;
+package im.grusis.mkb.eco.heuristics;
 
 import java.util.LinkedHashMap;
 

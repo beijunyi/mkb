@@ -2,13 +2,14 @@ package im.grusis.mkb.core.emulator;
 
 import java.util.*;
 
-import im.grusis.mkb.core.util.MkbDictionary;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.emulator.web.model.basic.GameServer;
 import im.grusis.mkb.core.exception.*;
+import im.grusis.mkb.core.repository.model.BattleRecord;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.util.MacAddressHelper;
+import im.grusis.mkb.core.util.MkbDictionary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -241,6 +242,46 @@ public class AutomatedServiceEngine {
       }
     }
     Log.info("{} {} has cleared {} counter attacks", username, nickname, attacked.size());
+    return true;
+  }
+
+  public boolean findChipFreeFight(String username, int maxRefresh, final Map<Long, BattleRecord> battleRecords) throws MkbException {
+    int count = 0;
+    List<ArenaCompetitor> chipCompetitors = new ArrayList<ArenaCompetitor>();
+    while(chipCompetitors.isEmpty() && count < maxRefresh) {
+      ArenaCompetitors competitors = emulator.gameArenaGetCompetitors(username);
+      if(competitors.getCountdown() > 0) {
+        return false;
+      }
+      for(ArenaCompetitor competitor : competitors.getCompetitors()) {
+        if(competitor.isChip()) {
+          chipCompetitors.add(competitor);
+        }
+      }
+    }
+    if(chipCompetitors.isEmpty()) {
+      return false;
+    }
+    Collections.sort(chipCompetitors, new Comparator<ArenaCompetitor>() {
+      @Override
+      public int compare(ArenaCompetitor o1, ArenaCompetitor o2) {
+        if(battleRecords != null) {
+          BattleRecord r1 = battleRecords.get(o1.getUid());
+          BattleRecord r2 = battleRecords.get(o2.getUid());
+          double p1 = r1 == null ? 0.5d : r1.getPercent();
+          double p2 = r2 == null ? 0.5d : r2.getPercent();
+          if(p1 == p2) {
+            return Integer.compare(o2.getRank(), o1.getRank());
+          } else {
+            return Double.compare(p2, p1);
+          }
+        } else {
+          return Integer.compare(o2.getRank(), o1.getRank());
+        }
+      }
+    });
+    ArenaCompetitor competitor = chipCompetitors.get(0);
+    emulator.gameArenaFreeFightAuto(username, competitor.getUid(), true);
     return true;
   }
 

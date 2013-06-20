@@ -20,6 +20,7 @@ public class MkbAccount {
   private Set<Integer> currentChips;
   private Map<Integer, Long> mazeClearTimes;
   private Map<Long, Integer> energyRecord;
+  private Map<Long, BattleRecord> battleRecordMap;
 
   private TemporaryProfile profile;
   private long lastAction;
@@ -326,6 +327,26 @@ public class MkbAccount {
   public void setLevel(int level) {
     if(userInfo != null) {
       userInfo.setLevel(level);
+    }
+  }
+
+  public Map<Long, BattleRecord> getBattleRecordMap() {
+    return battleRecordMap;
+  }
+
+  public void battle(long uid, boolean win) {
+    if(battleRecordMap == null) {
+      battleRecordMap = new TreeMap<Long, BattleRecord>();
+    }
+    BattleRecord battleRecord = battleRecordMap.get(uid);
+    if(battleRecord == null) {
+      battleRecord = new BattleRecord();
+      battleRecordMap.put(uid, battleRecord);
+    }
+    if(win) {
+      battleRecord.win();
+    } else {
+      battleRecord.lose();
     }
   }
 }

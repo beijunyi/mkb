@@ -1,4 +1,4 @@
-package im.grusis.mkb.eco.configs;
+package im.grusis.mkb.eco.heuristics;
 
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class ScoreAffectTypeConfig {
   private List<ScoreBase> scoreBases;
   private Map<Integer, SubType> subTypes;
 
-  public ScoreAffectTypeConfig(int affectType, Map<Integer, im.grusis.mkb.eco.configs.SubType> subTypes) {
+  public ScoreAffectTypeConfig(int affectType, Map<Integer, im.grusis.mkb.eco.heuristics.SubType> subTypes) {
     this.affectType = affectType;
     this.subTypes = subTypes;
   }

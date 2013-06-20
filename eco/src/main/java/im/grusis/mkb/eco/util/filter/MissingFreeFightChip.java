@@ -11,8 +11,6 @@ import im.grusis.mkb.eco.util.filter.common.CompareOperator;
  */
 public class MissingFreeFightChip extends ChipFilter{
 
-  public static int ChipMax = 3;
-
   public MissingFreeFightChip() {
     super(ChipType.FreeFight, CompareOperator.NotEqualTo, ChipMax);
   }

@@ -76,7 +76,7 @@ public class AccountService {
     return null;
   }
 
-  public Iterable<MkbAccount> getAll() {
+  public Collection<MkbAccount> getAll() {
     return usernameLookup.values();
   }
 
@@ -84,7 +84,7 @@ public class AccountService {
     return usernameLookup.size();
   }
 
-  public Iterable<MkbAccount> findAll(AccountFilter filter) {
+  public Collection<MkbAccount> findAll(AccountFilter filter) {
     Collection<MkbAccount> accounts = usernameLookup.values();
     Collection<MkbAccount> ret = new ArrayList<MkbAccount>();
     for(MkbAccount account : accounts) {

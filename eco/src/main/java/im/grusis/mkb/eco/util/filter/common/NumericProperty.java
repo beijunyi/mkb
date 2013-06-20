@@ -7,7 +7,7 @@ package im.grusis.mkb.eco.util.filter.common;
  */
 public enum NumericProperty {
   Level,
-  Gold,
-  Diamond,
+  Coins,
+  Cash,
   Ticket
 }

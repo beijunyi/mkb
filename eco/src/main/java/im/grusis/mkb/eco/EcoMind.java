@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import im.grusis.mkb.eco.configs.*;
+import im.grusis.mkb.eco.heuristics.*;
 import im.grusis.mkb.core.emulator.game.model.basic.Card;
 import im.grusis.mkb.core.emulator.game.model.basic.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
