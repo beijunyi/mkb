@@ -212,7 +212,7 @@ public class AutomatedServiceEngine {
       maxTry = 1;
     }
     String nickname = getNickname(username);
-    UserMapStages stageMap = emulator.gameGetUserMapStages(username, true);
+    Map<Integer, UserMapStage> stageMap = emulator.gameGetUserMapStages(username, true);
     Collection<UserMapStage> stages = stageMap.values();
     List<Integer> attacked = new ArrayList<Integer>();
     for(UserMapStage stage : stages) {

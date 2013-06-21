@@ -1,9 +1,10 @@
 package im.grusis.mkb.eco.util.filter.common;
 
-import im.grusis.mkb.core.util.AccountFilter;
+import java.util.Map;
+
 import im.grusis.mkb.core.emulator.game.model.basic.UserMapStage;
-import im.grusis.mkb.core.emulator.game.model.basic.UserMapStages;
 import im.grusis.mkb.core.repository.model.MkbAccount;
+import im.grusis.mkb.core.util.AccountFilter;
 
 /**
  * User: Mothership
@@ -22,7 +23,7 @@ public class MapStagerProgressFilter implements AccountFilter {
 
   @Override
   public boolean accept(MkbAccount account) {
-    UserMapStages userMapStages = account.getUserMapStages();
+    Map<Integer, UserMapStage> userMapStages = account.getUserMapStages();
     if(userMapStages == null) {
       return false;
     }

@@ -25,13 +25,13 @@ public class MkbAccount {
 
   private UserInfo userInfo;
   private long userInfoUpdate;
-  private UserCards userCards;
+  private Map<Long, UserCardInfo> userCards;
   private long userCardsUpdate;
-  private CardGroup cardGroup;
+  private Map<Long, Group> cardGroup;
   private long cardGroupUpdate;
-  private UserMapStages userMapStages;
+  private Map<Integer, UserMapStage> userMapStages;
   private long userMapStagesUpdate;
-  private UserChip userChip;
+  private Map<Integer, Chip> userChip;
   private long userChipUpdate;
   private Map<Long, Friend> friendMap;
   private long friendsUpdate;
@@ -43,6 +43,8 @@ public class MkbAccount {
     this.password = password;
     this.mac = mac;
   }
+
+
 
 
   public String getUsername() {
@@ -75,11 +77,11 @@ public class MkbAccount {
     this.userInfoUpdate = System.currentTimeMillis();
   }
 
-  public CardGroup getCardGroup() {
+  public Map<Long, Group> getCardGroup() {
     return cardGroup;
   }
 
-  public void setCardGroup(CardGroup cardGroup) {
+  public void setCardGroup(Map<Long, Group> cardGroup) {
     this.cardGroup = cardGroup;
     this.cardGroupUpdate = System.currentTimeMillis();
   }
@@ -92,11 +94,11 @@ public class MkbAccount {
     return cardGroupUpdate;
   }
 
-  public UserMapStages getUserMapStages() {
+  public Map<Integer, UserMapStage> getUserMapStages() {
     return userMapStages;
   }
 
-  public void setUserMapStages(UserMapStages userMapStages) {
+  public void setUserMapStages(Map<Integer, UserMapStage> userMapStages) {
     this.userMapStages = userMapStages;
     this.userMapStagesUpdate = System.currentTimeMillis();
   }
@@ -105,11 +107,11 @@ public class MkbAccount {
     return userMapStagesUpdate;
   }
 
-  public UserCards getUserCards() {
+  public Map<Long, UserCardInfo> getUserCards() {
     return userCards;
   }
 
-  public void setUserCards(UserCards userCards) {
+  public void setUserCards(Map<Long, UserCardInfo> userCards) {
     this.userCards = userCards;
     if(newCards == null) {
       newCards = new ArrayList<Integer>();
@@ -124,11 +126,11 @@ public class MkbAccount {
   }
 
 
-  public UserChip getUserChip() {
+  public Map<Integer, Chip> getUserChip() {
     return userChip;
   }
 
-  public void setUserChip(UserChip userChip) {
+  public void setUserChip(Map<Integer, Chip> userChip) {
     this.userChip = userChip;
     this.userChipUpdate = System.currentTimeMillis();
   }
@@ -164,9 +166,12 @@ public class MkbAccount {
     newCards.add(cardId);
   }
 
-  public void addChip(int chip) {
+  public void addChip(int chipId) {
     if(userChip != null) {
-      userChip.addChip(chip);
+      Chip chip = userChip.get(chipId);
+      if(chip != null) {
+        chip.setNum(chip.getNum() + 1);
+      }
     }
   }
 
@@ -299,6 +304,14 @@ public class MkbAccount {
       battleRecord.win();
     } else {
       battleRecord.lose();
+    }
+  }
+
+  public void consumeCards(List<Long> userCardIds) {
+    if(userCards != null) {
+      for(long ucid : userCardIds) {
+        userCards.remove(ucid);
+      }
     }
   }
 }

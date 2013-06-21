@@ -103,7 +103,7 @@ public class MkbEmulator {
     return helper.sendRequest(passportRequest, clazz);
   }
 
-  public TemporaryProfile webLogin(String username) throws WrongCredentialException{
+  public TemporaryProfile webLogin(String username) throws WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     if(account == null) {
       Log.error("Cannot login account {}. There is no credential record in the database for this account.", username);
@@ -199,7 +199,7 @@ public class MkbEmulator {
     return result;
   }
 
-  public<T extends GameData> T gameDoAction(String username, String service, String action, Map<String, String> paramMap, Class<T> clazz) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public <T extends GameData> T gameDoAction(String username, String service, String action, Map<String, String> paramMap, Class<T> clazz) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     String responseString = gameDoAction(username, service, action, paramMap);
     T response = GameDataFactory.getGameData(responseString, clazz);
     if(response.badRequest()) {
@@ -470,39 +470,47 @@ public class MkbEmulator {
     return userInfo;
   }
 
-  public UserCards gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, UserCardInfo> gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    UserCards cards;
+    Map<Long, UserCardInfo> cards;
     if(refresh || (cards = account.getUserCards()) == null) {
       CardGetUserCardsResponse response = gameDoAction(username, "card.php", "GetUserCards", null, CardGetUserCardsResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      cards = response.getData();
+      List<UserCardInfo> cardList = response.getData();
+      cards = new LinkedHashMap<Long, UserCardInfo>();
+      for(UserCardInfo card : cardList) {
+        cards.put(card.getUserCardId(), card);
+      }
       account.setUserCards(cards);
       accountService.saveAccount(account);
     }
     return cards;
   }
 
-  public CardGroup gameGetCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, Group> gameGetCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    CardGroup cardGroup;
+    Map<Long, Group> cardGroup;
     if(refresh || (cardGroup = account.getCardGroup()) == null) {
       CardGetCardGroupResponse response = gameDoAction(username, "card.php", "GetCardGroup", null, CardGetCardGroupResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      cardGroup = response.getData();
+      CardGroup cardGroups = response.getData();
+      cardGroup = new TreeMap<Long, Group>();
+      for(Group g : cardGroups.getGroups()) {
+        cardGroup.put(g.getGroupId(), g);
+      }
       account.setCardGroup(cardGroup);
       accountService.saveAccount(account);
     }
     return cardGroup;
   }
 
-  public UserMapStages gameGetUserMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, UserMapStage> gameGetUserMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    UserMapStages stages;
+    Map<Integer, UserMapStage> stages;
     if(refresh || (stages = account.getUserMapStages()) == null) {
       MapStageGetUserMapStagesResponse response = gameDoAction(username, "mapstage.php", "GetUserMapStages", null, MapStageGetUserMapStagesResponse.class);
       if(response.badRequest()) {
@@ -517,13 +525,13 @@ public class MkbEmulator {
   }
 
   public UserMapStage gameGetUserMapStage(String username, int userMapStageDetailId, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserMapStages stages = gameGetUserMapStages(username, refresh);
+    Map<Integer, UserMapStage> stages = gameGetUserMapStages(username, refresh);
     return stages.get(userMapStageDetailId);
   }
 
-  public UserChip gameGetUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, Chip> gameGetUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    UserChip userChip;
+    Map<Integer, Chip> userChip;
     if(refresh || (userChip = account.getUserChip()) == null) {
       ChipGetUserChipResponse response = gameDoAction(username, "chip.php", "GetUserChip", null, ChipGetUserChipResponse.class);
       if(response.badRequest()) {
@@ -598,7 +606,6 @@ public class MkbEmulator {
       }
     }
   }
-
 
   private void processBattleMazeResult(String username, BattleNormal result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
@@ -744,12 +751,17 @@ public class MkbEmulator {
     return response.getData();
   }
 
-  public Thieves gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, ThievesInfo> gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     ArenaGetThievesResponse response = gameDoAction(username, "arena.php", "GetThieves", null, ArenaGetThievesResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
-    return response.getData();
+    Thieves thieves = response.getData();
+    Map<Long, ThievesInfo> thiefMap = new LinkedHashMap<Long, ThievesInfo>();
+    for(ThievesInfo thief : thieves.getThieves()) {
+      thiefMap.put(thief.getUserThievesId(), thief);
+    }
+    return thiefMap;
   }
 
   public GoodsList gameShopGetGoodsList(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
@@ -820,7 +832,6 @@ public class MkbEmulator {
     }
     return response.getData();
   }
-
 
   public boolean gameDisposeFriendApply(String username, long friendId, boolean accept) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
