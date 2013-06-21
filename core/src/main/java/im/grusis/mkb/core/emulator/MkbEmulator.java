@@ -470,17 +470,17 @@ public class MkbEmulator {
     return userInfo;
   }
 
-  public Map<Long, UserCardInfo> gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, UserCard> gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
-    Map<Long, UserCardInfo> cards;
+    Map<Long, UserCard> cards;
     if(refresh || (cards = account.getUserCards()) == null) {
       CardGetUserCardsResponse response = gameDoAction(username, "card.php", "GetUserCards", null, CardGetUserCardsResponse.class);
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      List<UserCardInfo> cardList = response.getData();
-      cards = new LinkedHashMap<Long, UserCardInfo>();
-      for(UserCardInfo card : cardList) {
+      List<UserCard> cardList = response.getData();
+      cards = new LinkedHashMap<Long, UserCard>();
+      for(UserCard card : cardList) {
         cards.put(card.getUserCardId(), card);
       }
       account.setUserCards(cards);
@@ -789,7 +789,7 @@ public class MkbEmulator {
     return goods;
   }
 
-  public Streng gameUpgradeCard(String username, long targetUserCardId, long... sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Streng gameUpgradeCard(String username, long targetUserCardId, List<Long> sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     StringBuilder sb = new StringBuilder();
     for(long sourceId : sourceUserCardIds) {

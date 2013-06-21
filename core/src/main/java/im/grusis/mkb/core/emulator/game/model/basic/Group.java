@@ -12,7 +12,7 @@ public class Group {
   private String UserCardIds;
   private String UserRuneIds;
   private long GroupId;
-  private List<UserCardInfo> UserCardInfo;
+  private List<UserCard> UserCardInfo;
   private List<UserRuneInfo> UserRuneInfo;
 
   public long getUid() {
@@ -47,11 +47,11 @@ public class Group {
     GroupId = groupId;
   }
 
-  public List<UserCardInfo> getUserCardInfo() {
+  public List<UserCard> getUserCardInfo() {
     return UserCardInfo;
   }
 
-  public void setUserCardInfo(List<UserCardInfo> userCardInfo) {
+  public void setUserCardInfo(List<UserCard> userCardInfo) {
     UserCardInfo = userCardInfo;
   }
 

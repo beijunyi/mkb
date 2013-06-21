@@ -3,10 +3,10 @@ package im.grusis.mkb.eco.util.filter.common;
 import java.util.List;
 import java.util.Map;
 
-import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.eco.util.filter.util.CardUtils;
-import im.grusis.mkb.core.repository.model.MkbAccount;
 
 /**
  * User: Mothership
@@ -25,7 +25,7 @@ public class CardNumberFilter implements AccountFilter {
 
   @Override
   public boolean accept(MkbAccount account) {
-    Map<Long, UserCardInfo> cards = account.getUserCards();
+    Map<Long, UserCard> cards = account.getUserCards();
     if(cards == null) {
       return false;
     }

@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-5-29
  * Time: 下午11:40
  */
-public class UserCardInfo {
+public class UserCard {
   private long Uid;
   private int CardId;
   private int Level;
@@ -16,39 +16,19 @@ public class UserCardInfo {
     return Uid;
   }
 
-  public void setUid(long uid) {
-    Uid = uid;
-  }
-
   public int getCardId() {
     return CardId;
-  }
-
-  public void setCardId(int cardId) {
-    CardId = cardId;
   }
 
   public int getLevel() {
     return Level;
   }
 
-  public void setLevel(int level) {
-    Level = level;
-  }
-
   public long getExp() {
     return Exp;
   }
 
-  public void setExp(long exp) {
-    Exp = exp;
-  }
-
   public long getUserCardId() {
     return UserCardId;
-  }
-
-  public void setUserCardId(long userCardId) {
-    UserCardId = userCardId;
   }
 }

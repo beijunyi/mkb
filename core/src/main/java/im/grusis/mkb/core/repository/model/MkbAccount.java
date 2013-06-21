@@ -25,7 +25,7 @@ public class MkbAccount {
 
   private UserInfo userInfo;
   private long userInfoUpdate;
-  private Map<Long, UserCardInfo> userCards;
+  private Map<Long, UserCard> userCards;
   private long userCardsUpdate;
   private Map<Long, Group> cardGroup;
   private long cardGroupUpdate;
@@ -107,11 +107,11 @@ public class MkbAccount {
     return userMapStagesUpdate;
   }
 
-  public Map<Long, UserCardInfo> getUserCards() {
+  public Map<Long, UserCard> getUserCards() {
     return userCards;
   }
 
-  public void setUserCards(Map<Long, UserCardInfo> userCards) {
+  public void setUserCards(Map<Long, UserCard> userCards) {
     this.userCards = userCards;
     if(newCards == null) {
       newCards = new ArrayList<Integer>();

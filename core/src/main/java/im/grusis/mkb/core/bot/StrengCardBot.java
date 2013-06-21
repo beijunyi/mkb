@@ -5,7 +5,7 @@ import java.util.*;
 
 import im.grusis.mkb.core.emulator.MkbEmulator;
 import im.grusis.mkb.core.emulator.game.model.basic.Group;
-import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.core.exception.MkbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +32,12 @@ public class StrengCardBot extends MkbBot {
   @Override
   public void run() {
     try {
-      Map<Long, UserCardInfo> userCards = emulator.gameGetUserCards(username, true);
+      Map<Long, UserCard> userCards = emulator.gameGetUserCards(username, true);
       Map<Long, Group> groups = emulator.gameGetCardGroup(username, true);
       Set<Long> inUse = new HashSet<Long>();
       for(Group group : groups.values()) {
-        List<UserCardInfo> cards = group.getUserCardInfo();
-        for(UserCardInfo card : cards) {
+        List<UserCard> cards = group.getUserCardInfo();
+        for(UserCard card : cards) {
           inUse.add(card.getUserCardId());
         }
       }

@@ -2,8 +2,8 @@ package im.grusis.mkb.eco.util.filter.util;
 
 import java.util.*;
 
+import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.eco.util.filter.common.CompareOperator;
-import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
 
 /**
  * User: Mothership
@@ -12,15 +12,15 @@ import im.grusis.mkb.core.emulator.game.model.basic.UserCardInfo;
  */
 public class CardUtils {
 
-  public static List<Integer> GetCardIdList(Iterable<UserCardInfo> cards) {
+  public static List<Integer> GetCardIdList(Iterable<UserCard> cards) {
     List<Integer> ret = new ArrayList<Integer>();
-    for(UserCardInfo card : cards) {
+    for(UserCard card : cards) {
       ret.add(card.getCardId());
     }
     return ret;
   }
 
-  public static Map<Integer, Integer> GetCardCount(Iterable<UserCardInfo> cards) {
+  public static Map<Integer, Integer> GetCardCount(Iterable<UserCard> cards) {
     Map<Integer, Integer> ret = new TreeMap<Integer, Integer>();
     for(int id : GetCardIdList(cards)) {
       Integer count = ret.get(id);
