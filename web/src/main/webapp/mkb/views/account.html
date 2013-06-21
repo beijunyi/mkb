@@ -1,0 +1,36 @@
+<div class="mkb-account">
+
+
+
+
+
+  <div ng-hide="account.user.nickName" id="modal-login" class="modal show">
+    <div class="modal-header">
+      <h4>Login</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label" for="account_username">Username</label>
+          <div class="controls">
+            <input type="text" ng-model="account.username" id="account_username" placeholder="Username">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="account_password">Password</label>
+          <div class="controls">
+            <input type="password" ng-model="account.password" id="account_password" placeholder="Maybe I know it...?">
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <label class="checkbox">
+              <input ng-model="account.remember" type="checkbox"> Remember me
+            </label>
+            <button type="submit" ng-click="account.login()" class="btn">Sign in</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

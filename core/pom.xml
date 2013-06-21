@@ -9,7 +9,9 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>core</artifactId>
+  <name>MKB Core</name>
+  <artifactId>mkb-core</artifactId>
+  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>

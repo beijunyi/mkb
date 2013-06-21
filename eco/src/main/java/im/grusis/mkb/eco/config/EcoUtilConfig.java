@@ -45,7 +45,7 @@ public class EcoUtilConfig {
   }
 
   private MkbDictionary getDictionary(String key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
-    String prefix = env.getProperty(DICTIONARY_PREFIX + key);
+    String prefix = DICTIONARY_PREFIX + key;
     String className = env.getProperty(prefix);
     Class<? extends MkbDictionary> clazz = Class.forName(className).asSubclass(MkbDictionary.class);
     return getInstance(prefix, clazz);
@@ -63,7 +63,7 @@ public class EcoUtilConfig {
 
   @Bean
   public MkbPasswordGenerator getPasswordGenerator() throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException  {
-    String prefix = env.getProperty(PASSWORD_GENERATOR_PREFIX);
+    String prefix = PASSWORD_GENERATOR_PREFIX;
     String className = env.getProperty(prefix);
     Class<? extends MkbPasswordGenerator> clazz = Class.forName(className).asSubclass(MkbPasswordGenerator.class);
     return getInstance(prefix, clazz);

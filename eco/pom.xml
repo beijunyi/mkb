@@ -9,12 +9,14 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>eco</artifactId>
+  <name>MKB EcoSystem</name>
+  <artifactId>mkb-eco</artifactId>
+  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>im.grusis.mkb</groupId>
-      <artifactId>core</artifactId>
+      <artifactId>mkb-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>

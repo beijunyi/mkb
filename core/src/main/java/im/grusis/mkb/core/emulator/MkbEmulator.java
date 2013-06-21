@@ -18,6 +18,7 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.service.ArchiveService;
 import im.grusis.mkb.core.service.AssetsService;
+import im.grusis.mkb.core.util.MacAddressHelper;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -110,6 +111,17 @@ public class MkbEmulator {
       throw new WrongCredentialException();
     }
     return webLogin(username, account.getPassword(), account.getMac());
+  }
+
+  public TemporaryProfile webLogin(String username, String password) throws WrongCredentialException {
+    MkbAccount account = accountService.findAccountByUsername(username);
+    String mac;
+    if(account != null) {
+      mac = account.getMac();
+    } else {
+      mac = MacAddressHelper.getMacAddress();
+    }
+    return webLogin(username, password, mac);
   }
 
   public TemporaryProfile webLogin(String username, String password, String mac) throws WrongCredentialException {

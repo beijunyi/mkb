@@ -1,8 +1,6 @@
 package im.grusis.mkb.eco.config;
 
-import im.grusis.mkb.eco.util.filter.BeginnerLevel;
-import im.grusis.mkb.eco.util.filter.HasReward;
-import im.grusis.mkb.eco.util.filter.MissingFreeFightChip;
+import im.grusis.mkb.eco.util.filter.*;
 import im.grusis.mkb.eco.util.filter.common.All;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,6 +33,11 @@ public class EcoFilterConfig {
   @Bean
   public MissingFreeFightChip missingFreeFightChip() {
     return new MissingFreeFightChip();
+  }
+
+  @Bean
+  public ShallDoFreeFight shallDoFreeFight() {
+    return new ShallDoFreeFight();
   }
 
 

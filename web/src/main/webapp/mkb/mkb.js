@@ -2,6 +2,11 @@ var app = angular.module('mkb', ['ngResource']);
 
 app.config(function($routeProvider) {
   $routeProvider
+    .when('/account', {
+      title: 'Account',
+      templateUrl: 'mkb/views/account.html',
+      controller: 'AccountCtrl'
+    })
     .when('/manual', {
       title: 'Manual Access',
       templateUrl: 'mkb/views/manual.html',
@@ -18,6 +23,6 @@ app.config(function($routeProvider) {
       controller: 'AutomatedProductionCtrl'
     })
     .otherwise({
-      redirectTo: '/manual'
+      redirectTo: '/account'
     })
 });

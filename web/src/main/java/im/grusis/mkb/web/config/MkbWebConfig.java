@@ -14,5 +14,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @ComponentScan(basePackageClasses = MkbWebMarker.class)
 @Import({MkbEcoConfig.class})
-public class WebConfig {
+public class MkbWebConfig {
 }
