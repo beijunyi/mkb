@@ -1,6 +1,7 @@
 <!doctype html>
 <html ng-app='mkb'>
 <head>
+  <base href="/">
   <link rel='stylesheet' href='lib/bootstrap/css/bootstrap.min.css'>
   <link rel='stylesheet' href='lib/font-awesome/css/font-awesome.min.css'>
   <link rel='stylesheet' href='mkb/styles/mkb.css'>
@@ -17,10 +18,10 @@
       <div class="container">
         <a class="brand" href="/">MKB</a>
         <ul class="nav">
-          <li><a href="#/account"><i class="icon-user"></i> Account</a></li>
-          <li><a href="#/manual"><i class="icon-wrench"></i> Manual Access</a></li>
-          <li><a href="#/auto"><i class="icon-tasks"></i>Automated Production</a></li>
-          <li><a href="#/stats"><i class="icon-info-sign"></i>Statistics</a></li>
+          <li><a href="/#/account"><i class="icon-user"></i> Account</a></li>
+          <li><a href="/#/manual"><i class="icon-wrench"></i> Manual Access</a></li>
+          <li><a href="/#/auto"><i class="icon-tasks"></i>Automated Production</a></li>
+          <li><a href="/#/stats"><i class="icon-info-sign"></i>Statistics</a></li>
         </ul>
       </div>
     </div>
@@ -37,7 +38,7 @@
 <script src='lib/jquery/jquery-2.0.1.js'></script>
 <script src="lib/bootstrap/js/bootstrap.js"></script>
 <script src='lib/angular/angular.min.js'></script>
-<script src='lib/angular/angular-resource.js'></script>
+<script src='lib/angular/angular-resource.min.js'></script>
 <script src='lib/jquery-cookie/jquery.cookie.js'></script>
 
 <script src="mkb/models/AccountModels.js"></script>
