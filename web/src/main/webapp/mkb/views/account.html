@@ -64,6 +64,8 @@
           <a class="btn btn-info span3">符文<span ng-show="assets.runes.length" class="label label-info">{{assets.runes.length}}</span></a>
         </div>
       </div>
+      <jq-grid options="account.cardDefs"></jq-grid>
+
     </div>
     <div class="span4 mkb-table mkb-table-friends">
       <table class="table table-bordered table-striped">
@@ -84,15 +86,6 @@
   </div>
 
   <div id="modal_assets_cards" class="modal hide fade" tabindex="-1" role="dialog">
-    <div class="modal-body">
-      <ul class="nav nav-tabs">
-        <li class="active">
-          <a href="#">Home</a>
-        </li>
-        <li><a href="#">...</a></li>
-        <li><a href="#">...</a></li>
-      </ul>
-    </div>
   </div>
 
   <div ng-hide="account.user.nickName" id="modal-login" class="modal show">

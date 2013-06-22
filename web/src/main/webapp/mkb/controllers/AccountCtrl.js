@@ -1,4 +1,4 @@
-app.controller('AccountCtrl', function($scope, $window, AccountService) {
+app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountService) {
 
   var view = $('div.mkb-view');
 
@@ -11,7 +11,20 @@ app.controller('AccountCtrl', function($scope, $window, AccountService) {
     friends: [],
     cards: [],
 
-
+    cardDefs: {
+      data: [],
+      datatype: "local",
+      height: 500,
+      rowNum: 50,
+      scroll: 1,
+      colNames:['¿¨ÅÆÃû³Æ', 'ÐÇ¼¶'],
+      colModel:[
+        {name: 'cardName', index:'cardName', width:60},
+        {name: 'color', index:'color', width:90}
+      ],
+      multiselect: true,
+      caption: "Manipulating Array Data"
+    },
 
     login: function() {
       AccountService.login(me.username, me.password, false, function(user) {
@@ -37,7 +50,6 @@ app.controller('AccountCtrl', function($scope, $window, AccountService) {
     me.login();
   }
 
-
   $scope.account = me;
 
   var resize = function() {
@@ -45,6 +57,10 @@ app.controller('AccountCtrl', function($scope, $window, AccountService) {
   };
   angular.element($window).bind('resize', resize);
   resize();
+
+  $scope.$on('assets.cards', function(event, cards) {
+    me.cardDefs.data = cards;
+  });
 
 });
 

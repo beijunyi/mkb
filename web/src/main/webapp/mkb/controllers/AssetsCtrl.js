@@ -1,4 +1,4 @@
-app.controller('AssetsCtrl', function($scope, AssetsService) {
+app.controller('AssetsCtrl', function($scope, $rootScope, AssetsService) {
 
   var me = {
     maps: {},
@@ -15,6 +15,7 @@ app.controller('AssetsCtrl', function($scope, AssetsService) {
       });
       AssetsService.getCardDefs(function(cards) {
         me.cards = cards;
+        $rootScope.$broadcast('assets.cards', cards);
       });
       AssetsService.getRuneDefs(function(runes) {
         me.runes = runes;
