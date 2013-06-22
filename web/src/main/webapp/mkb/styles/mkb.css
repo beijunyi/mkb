@@ -15,6 +15,15 @@ a {
   margin-left:5px;
 }
 
+div.modal div.jq-grid {
+  width: 560px;
+}
+
+.ui-jqgrid .ui-jqgrid-view {
+  font-size: 12px;
+}
+
+
 div.mkb-view div.mkb-table {
   overflow: auto;
 }

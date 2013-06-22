@@ -1,4 +1,4 @@
-app.directive('jqGrid', function(){
+app.directive('jqGrid', function($window){
   return {
     restrict: 'E',
     scope: {
@@ -20,7 +20,10 @@ app.directive('jqGrid', function(){
       var pager = elem.find('div.jq-grid-pager');
       var options = scope.options;
       options.pager = pager;
-      table.jqGrid(options);
+      angular.element($window).bind('resize', function() {
+        table.setGridWidth(elem.width());
+      });
+      table.jqGrid(options).setGridWidth(elem.width());
     }
   };
 });

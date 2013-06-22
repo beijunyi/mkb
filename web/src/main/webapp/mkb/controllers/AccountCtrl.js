@@ -15,15 +15,29 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
       data: [],
       datatype: "local",
       height: 500,
-      rowNum: 50,
-      scroll: 1,
-      colNames:['卡牌名称', '星级'],
+      autowidth:true,
+      rowNum: -1,
+      scroll: true,
+      colNames:['卡牌名称', '种族', '星级', 'Cost'],
       colModel:[
-        {name: 'cardName', index:'cardName', width:60},
-        {name: 'color', index:'color', width:90}
+        {name: 'cardName', sorttype:'text'},
+        {name: 'race', sorttype:'int', formatter: function(cellvalue, options, rowObject) {
+          switch(cellvalue) {
+            case 1:
+              return '王国';
+            case 2:
+              return '森林';
+            case 3:
+              return '蛮荒';
+            case 4:
+              return '地狱';
+          }
+          return '魔神';
+        }},
+        {name: 'color', sorttype:'int'},
+        {name: 'cost', sorttype:'int'}
       ],
-      multiselect: true,
-      caption: "Manipulating Array Data"
+      caption: '所有卡牌'
     },
 
     login: function() {
