@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date 13-5-29
  * Time 下午1153
  */
-public class Rune {
+public class RuneDef {
   private int RuneId;
   private String RuneName;
   private int Property;

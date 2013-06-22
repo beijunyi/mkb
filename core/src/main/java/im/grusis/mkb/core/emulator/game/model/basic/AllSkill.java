@@ -8,13 +8,13 @@ import java.util.List;
  * Time: 下午11:15
  */
 public class AllSkill {
-  private List<Skill> Skills;
+  private List<SkillDef> Skills;
 
-  public List<Skill> getSkills() {
+  public List<SkillDef> getSkills() {
     return Skills;
   }
 
-  public void setSkills(List<Skill> skills) {
+  public void setSkills(List<SkillDef> skills) {
     Skills = skills;
   }
 }

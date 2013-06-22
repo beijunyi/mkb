@@ -8,13 +8,13 @@ import java.util.List;
  * Time: 下午11:15
  */
 public class Runes {
-  private List<Rune> Runes;
+  private List<RuneDef> Runes;
 
-  public List<Rune> getRunes() {
+  public List<RuneDef> getRunes() {
     return Runes;
   }
 
-  public void setRunes(List<Rune> runes) {
+  public void setRunes(List<RuneDef> runes) {
     Runes = runes;
   }
 }

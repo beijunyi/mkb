@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date 13-5-29
  * Time 下午1133
  */
-public class Skill {
+public class SkillDef {
 
   public static final int Type_Assassination = 1;
   public static final int Type_Pollution = 2;

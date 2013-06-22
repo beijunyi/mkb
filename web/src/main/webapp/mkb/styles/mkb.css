@@ -1,0 +1,28 @@
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+a {
+  cursor: pointer;
+}
+
+.alert {
+  padding: 8px 14px 8px 14px;
+}
+
+.label {
+  margin-left:5px;
+}
+
+div.mkb-view div.mkb-table {
+  overflow: auto;
+}
+
+div.mkb-view div.mkb-table-cards {
+  height:100%;
+}
+
+div.mkb-view div.mkb-table-friends {
+  height:100%;
+}

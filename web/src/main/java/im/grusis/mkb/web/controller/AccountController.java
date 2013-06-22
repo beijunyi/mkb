@@ -1,19 +1,17 @@
 package im.grusis.mkb.web.controller;
 
-import java.util.*;
+import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.core.emulator.MkbEmulator;
-import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
 import im.grusis.mkb.core.emulator.game.model.basic.Friend;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
-import im.grusis.mkb.web.model.WebCard;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -52,12 +50,7 @@ public class AccountController {
   @GET
   @Path("/cards")
   public Response getCards(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
-    Collection<UserCard> userCards = emulator.gameGetUserCards(username, refresh).values();
-    Map<Integer, CardDef> cardDefMap = emulator.gameGetCards(username, refresh);
-    List<WebCard> cards = new ArrayList<WebCard>();
-    for(UserCard uc : userCards) {
-      cards.add(new WebCard(uc, cardDefMap.get(uc.getCardId()).getCardName()));
-    }
+    Collection<UserCard> cards = emulator.gameGetUserCards(username, refresh).values();
     return Response.ok(cards).build();
   }
 

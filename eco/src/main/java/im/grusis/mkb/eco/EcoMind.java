@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
+import im.grusis.mkb.core.emulator.game.model.basic.SkillDef;
 import im.grusis.mkb.eco.heuristics.*;
-import im.grusis.mkb.core.emulator.game.model.basic.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.log4testng.Logger;
@@ -24,7 +24,7 @@ public class EcoMind {
   @Autowired ScoreAffectTypeConfigMap affectTypes;
   @Autowired ScoreCardAttributeConfig cardAttributeConfig;
 
-  public double getSkillScore(Skill skill, Map<Integer, Skill> skillMap) {
+  public double getSkillScore(SkillDef skill, Map<Integer, SkillDef> skillMap) {
     int skillType = skill.getAffectType();
     ScoreAffectTypeConfig config = affectTypes.get(skillType);
     List<ScoreBase> scoreBases = config.getScoreBases();
@@ -67,7 +67,7 @@ public class EcoMind {
     return score;
   }
 
-  public double getSkillScore(String skillId, Map<Integer, Skill> skillMap) {
+  public double getSkillScore(String skillId, Map<Integer, SkillDef> skillMap) {
     double score = 0;
     String[] skills = skillId.split("_");
     for(String skill : skills) {
@@ -77,12 +77,12 @@ public class EcoMind {
     return score;
   }
 
-  public String getDetailSkillScore(String skillId, Map<Integer, Skill> skillMap) {
+  public String getDetailSkillScore(String skillId, Map<Integer, SkillDef> skillMap) {
     String desc = "";
     String[] skills = skillId.split("_");
     for(String id : skills) {
       if(id.isEmpty()) break;
-      Skill skill = skillMap.get(Integer.valueOf(id));
+      SkillDef skill = skillMap.get(Integer.valueOf(id));
       int score = (int)getSkillScore(skill, skillMap);
       desc += score + " scores from " + skill.getName() + ", ";
     }
@@ -99,7 +99,7 @@ public class EcoMind {
     return ret;
   }
 
-  public double getCardScore(CardDef card, int level, Map<Integer, Skill> skillMap) {
+  public double getCardScore(CardDef card, int level, Map<Integer, SkillDef> skillMap) {
     double score = 0;
     int atk = card.getAttackArray()[level];
     int hp = card.getHpArray()[level];
@@ -134,7 +134,7 @@ public class EcoMind {
     return score;
   }
 
-  public String getDetailCardScore(CardDef card, int level, Map<Integer, Skill> skillMap) {
+  public String getDetailCardScore(CardDef card, int level, Map<Integer, SkillDef> skillMap) {
     String desc = "";
     int atk = card.getAttackArray()[level];
     int hp = card.getHpArray()[level];
