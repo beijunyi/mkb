@@ -358,8 +358,8 @@ public class MkbEmulator {
     return true;
   }
 
-  public Map<Integer, Card> gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    Map<Integer, Card> cards;
+  public Map<Integer, CardDef> gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, CardDef> cards;
     if(refresh || (cards = assetsService.getCardLookup()).isEmpty()) {
       CardGetAllCardResponse response = gameDoAction(username, "card.php", "GetAllCard", null, CardGetAllCardResponse.class);
       if(response.badRequest()) {
@@ -370,11 +370,11 @@ public class MkbEmulator {
     return cards;
   }
 
-  public Card gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public CardDef gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     if(cardId <= 0) {
       Log.error("{} is an invalid card id. Card id must be positive integer", cardId);
     }
-    Card card = assetsService.findCard(cardId);
+    CardDef card = assetsService.findCard(cardId);
     if(card == null) {
       gameGetCards(username, true);
       card = assetsService.findCard(cardId);
@@ -490,7 +490,7 @@ public class MkbEmulator {
       if(response.badRequest()) {
         throw new UnknownErrorException();
       }
-      List<UserCard> cardList = response.getData();
+      List<UserCard> cardList = response.getData().getCards();
       cards = new LinkedHashMap<Long, UserCard>();
       for(UserCard card : cardList) {
         cards.put(card.getUserCardId(), card);

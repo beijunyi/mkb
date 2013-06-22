@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
 import im.grusis.mkb.eco.heuristics.*;
-import im.grusis.mkb.core.emulator.game.model.basic.Card;
 import im.grusis.mkb.core.emulator.game.model.basic.Skill;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -99,7 +99,7 @@ public class EcoMind {
     return ret;
   }
 
-  public double getCardScore(Card card, int level, Map<Integer, Skill> skillMap) {
+  public double getCardScore(CardDef card, int level, Map<Integer, Skill> skillMap) {
     double score = 0;
     int atk = card.getAttackArray()[level];
     int hp = card.getHpArray()[level];
@@ -134,7 +134,7 @@ public class EcoMind {
     return score;
   }
 
-  public String getDetailCardScore(Card card, int level, Map<Integer, Skill> skillMap) {
+  public String getDetailCardScore(CardDef card, int level, Map<Integer, Skill> skillMap) {
     String desc = "";
     int atk = card.getAttackArray()[level];
     int hp = card.getHpArray()[level];

@@ -7,7 +7,7 @@ import java.util.Map;
 import im.grusis.mkb.core.config.MkbCoreConfig;
 import im.grusis.mkb.core.emulator.AutomatedServiceEngine;
 import im.grusis.mkb.core.emulator.MkbEmulator;
-import im.grusis.mkb.core.emulator.game.model.basic.Card;
+import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -29,9 +29,9 @@ public class StrengCard {
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 
-    Card card = null;
-    Map<Integer, Card> allCard = emulator.gameGetCards(username, true);
-    for(Card c : allCard.values()) {
+    CardDef card = null;
+    Map<Integer, CardDef> allCard = emulator.gameGetCards(username, true);
+    for(CardDef c : allCard.values()) {
       if(c.getCardName().contains(cardName)) {
         card = c;
         break;
@@ -56,7 +56,7 @@ public class StrengCard {
     long exp = 0;
     List<Long> resources = new ArrayList<Long>();
     for(UserCard userCard : userCards.values()) {
-      Card c = allCard.get(userCard.getCardId());
+      CardDef c = allCard.get(userCard.getCardId());
       if(c.getColor() == 1) {
         resources.add(userCard.getUserCardId());
         exp += c.getCost() * 7 + 15;

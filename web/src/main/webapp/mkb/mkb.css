@@ -12,6 +12,10 @@ textarea {
   resize: none;
 }
 
+.mkb-table {
+  overflow: auto;
+}
+
 .manual .monitor textarea {
   height: 756px;
 }

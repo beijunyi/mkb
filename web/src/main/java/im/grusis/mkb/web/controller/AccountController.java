@@ -1,14 +1,19 @@
 package im.grusis.mkb.web.controller;
 
+import java.util.*;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
+import im.grusis.mkb.core.emulator.game.model.basic.Friend;
+import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
+import im.grusis.mkb.web.model.WebCard;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,13 +33,32 @@ public class AccountController {
 
   @GET
   @Path("/login")
-  public Response login(@QueryParam("username") String username, @QueryParam("password") String password) throws MkbException {
+  public Response login(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("refresh") boolean refresh) throws MkbException {
     MkbAccount account = accountService.findAccountByUsername(username);
     if(account == null || (!account.getPassword().equals(password) && !password.isEmpty())) {
       emulator.webLogin(username, password);
       emulator.gamePassportLogin(username);
     }
     return Response.ok(emulator.gameGetUserInfo(username, false)).build();
+  }
+
+  @GET
+  @Path("/friends")
+  public Response getFriends(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
+    Collection<Friend> friends = emulator.gameGetFriends(username, refresh).values();
+    return Response.ok(friends).build();
+  }
+
+  @GET
+  @Path("/cards")
+  public Response getCards(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
+    Collection<UserCard> userCards = emulator.gameGetUserCards(username, refresh).values();
+    Map<Integer, CardDef> cardDefMap = emulator.gameGetCards(username, refresh);
+    List<WebCard> cards = new ArrayList<WebCard>();
+    for(UserCard uc : userCards) {
+      cards.add(new WebCard(uc, cardDefMap.get(uc.getCardId()).getCardName()));
+    }
+    return Response.ok(cards).build();
   }
 
 }

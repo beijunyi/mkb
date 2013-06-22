@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
@@ -24,7 +23,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  * Time: 22:58
  */
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 @PropertySource("classpath:/eco.properties")
 @ComponentScan(basePackageClasses = MkbEcoMarker.class)
 @Import({MkbCoreConfig.class, EcoUtilConfig.class, EcoFilterConfig.class, EcoProfileConfig.class})

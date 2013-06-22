@@ -8,13 +8,13 @@ import java.util.List;
  * Time: 下午11:15
  */
 public class AllCard {
-  private List<Card> Cards;
+  private List<CardDef> Cards;
 
-  public List<Card> getCards() {
+  public List<CardDef> getCards() {
     return Cards;
   }
 
-  public void setCards(List<Card> cards) {
+  public void setCards(List<CardDef> cards) {
     Cards = cards;
   }
 }

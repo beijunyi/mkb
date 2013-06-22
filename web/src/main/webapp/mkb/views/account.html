@@ -1,7 +1,74 @@
 <div class="mkb-account">
 
-
-
+  <div class="row-fluid" ng-show="account.user.nickName">
+    <div class="span4 mkb-table mkb-table-cards">
+      <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+          <td><strong>卡牌</strong></td>
+          <td><strong>强化等级</strong></td>
+        </tr>
+        <tr ng-repeat="card in account.cards">
+          <td>{{card.name}}</td>
+          <td>{{card.level}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="span4">
+      <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+          <td>昵称</td>
+          <td>{{account.user.nickName}}</td>
+        </tr>
+        <tr>
+          <td>等级</td>
+          <td>{{account.user.level}} <span class="badge">{{((account.user.exp - account.user.prevExp) / (account.user.nextExp - account.user.prevExp) * 100).toFixed(2)}}%</span></td>
+        </tr>
+        <tr>
+          <td>邀请码</td>
+          <td>{{account.user.inviteCode}}</td>
+        </tr>
+        <tr>
+          <td>行动点</td>
+          <td>{{account.user.energy}}/{{account.user.energyMax}}</td>
+        </tr>
+        <tr>
+          <td>金币</td>
+          <td>{{account.user.coins}}</td>
+        </tr>
+        <tr>
+          <td>晶钻</td>
+          <td>{{account.user.cash}}</td>
+        </tr>
+        <tr>
+          <td>魔幻券</td>
+          <td>{{account.user.ticket}}</td>
+        </tr>
+        <tr>
+          <td>竞技场</td>
+          <td>胜利：{{account.user.win}} 失败：{{account.user.lose}} <span ng-show="account.user.win + account.user.lose" class="badge">{{(account.user.win / (account.user.win + account.user.lose) * 100).toFixed(2)}}%</span></td>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="span4">
+      <table class="table table-bordered table-striped">
+        <tbody>
+        <tr>
+          <td><strong>昵称</strong></td>
+          <td><strong>竞技场排名</strong></td>
+        </tr>
+        <tr ng-repeat="friend in account.friends">
+          <td>{{friend.nickName}} <span class="badge">LV:{{friend.level}}</span> <span ng-show="friend.legionName" class="badge">{{friend.legionName}}</span></td>
+          <td>{{friend.rank}} <span ng-show="friend.win + friend.lose" class="badge">{{(friend.win / (friend.win + friend.lose) * 100).toFixed(2)}}%</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 
   <div ng-hide="account.user.nickName" id="modal-login" class="modal show">
@@ -12,12 +79,14 @@
       <form class="form-horizontal">
         <div class="control-group">
           <label class="control-label" for="account_username">Username</label>
+
           <div class="controls">
             <input type="text" ng-model="account.username" id="account_username" placeholder="Username">
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="account_password">Password</label>
+
           <div class="controls">
             <input type="password" ng-model="account.password" id="account_password" placeholder="Maybe I know it...?">
           </div>

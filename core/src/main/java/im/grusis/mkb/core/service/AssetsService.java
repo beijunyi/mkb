@@ -27,7 +27,7 @@ public class AssetsService {
   private GoodsList goodsList;
   private List<GameServer> gameServers;
 
-  private Map<Integer, Card> cardLookup = new LinkedHashMap<Integer, Card>();
+  private Map<Integer, CardDef> cardLookup = new LinkedHashMap<Integer, CardDef>();
   private Map<Integer, Rune> runeLookup = new LinkedHashMap<Integer, Rune>();
   private Map<Integer, Skill> skillLookup = new LinkedHashMap<Integer, Skill>();
   private Map<Integer, MapStage> mapStageLookup = new LinkedHashMap<Integer, MapStage>();
@@ -52,14 +52,14 @@ public class AssetsService {
     updateGameServerLookup(gameServerAssets);
   }
 
-  public Map<Integer, Card> updateCardLookup(CardAssets cardAssets) {
+  public Map<Integer, CardDef> updateCardLookup(CardAssets cardAssets) {
     if(cardAssets == null) {
       return null;
     }
     cardLookup.clear();
     AllCard cards = cardAssets.getAsset();
-    List<Card> cardList = cards.getCards();
-    for(Card card : cardList) {
+    List<CardDef> cardList = cards.getCards();
+    for(CardDef card : cardList) {
       cardLookup.put(card.getCardId(), card);
     }
     return cardLookup;
@@ -131,7 +131,7 @@ public class AssetsService {
     return gameServerLookup;
   }
 
-  public Card findCard(int id) {
+  public CardDef findCard(int id) {
     return cardLookup.get(id);
   }
 
@@ -172,7 +172,7 @@ public class AssetsService {
     return ret;
   }
 
-  public Map<Integer, Card> saveAssets(AllCard cards) {
+  public Map<Integer, CardDef> saveAssets(AllCard cards) {
     this.cards = cards;
     CardAssets cardAssets = new CardAssets();
     cardAssets.setAsset(cards);
@@ -220,7 +220,7 @@ public class AssetsService {
     return updateGameServerLookup(gameServerAssets);
   }
 
-  public Map<Integer, Card> getCardLookup() {
+  public Map<Integer, CardDef> getCardLookup() {
     return cardLookup;
   }
 

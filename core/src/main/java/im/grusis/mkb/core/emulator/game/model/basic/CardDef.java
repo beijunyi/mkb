@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date 13-5-29
  * Time 下午1116
  */
-public class Card {
+public class CardDef {
   private int CardId;
   private String CardName;
   private int Cost;
