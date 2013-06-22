@@ -2,6 +2,16 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
 
   var view = $('div.mkb-view');
 
+  var race = function(cellvalue, options, rowObject) {
+    switch(cellvalue) {
+      case 1: return '王国';
+      case 2: return '森林';
+      case 3: return '蛮荒';
+      case 4: return '地狱';
+    }
+    return '魔神';
+  };
+
   var me = {
     username: $.cookie('account_username'),
     password: '',
@@ -21,19 +31,7 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
       colNames:['卡牌名称', '种族', '星级', 'Cost'],
       colModel:[
         {name: 'cardName', sorttype:'text'},
-        {name: 'race', sorttype:'int', formatter: function(cellvalue, options, rowObject) {
-          switch(cellvalue) {
-            case 1:
-              return '王国';
-            case 2:
-              return '森林';
-            case 3:
-              return '蛮荒';
-            case 4:
-              return '地狱';
-          }
-          return '魔神';
-        }},
+        {name: 'race', sorttype:'int', formatter: race},
         {name: 'color', sorttype:'int'},
         {name: 'cost', sorttype:'int'}
       ],
