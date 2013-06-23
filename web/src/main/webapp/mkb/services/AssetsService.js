@@ -12,7 +12,7 @@ var AssetsService = function ($resource) {
       return $resource('/api/assets/skills').query({}, {}, callback);
     },
     getCardDefs: function(callback) {
-      return $resource('/api/assets/cards').query({}, {}, callback);
+      return $resource('/api/assets/cards').get({}, callback);
     },
     getRuneDefs: function(callback) {
       return $resource('/api/assets/runes').query({}, {}, callback);

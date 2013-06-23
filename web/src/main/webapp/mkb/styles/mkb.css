@@ -11,12 +11,21 @@ a {
   padding: 8px 14px 8px 14px;
 }
 
+.span4 {
+  height: 100%;
+}
+
+.jq-grid {
+  height: 100%;
+}
+
 .label {
   margin-left:5px;
 }
 
 div.modal div.jq-grid {
   width: 560px;
+  height: 800px;
 }
 
 .ui-jqgrid .ui-jqgrid-view {

@@ -12,6 +12,13 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     return '魔神';
   };
 
+  var cardName = function(cellvalue, options, rowObject) {
+    if($scope.account.cardDefs.data[cellvalue])
+      return $scope.account.cardDefs.data[cellvalue].cardName;
+    else
+      return '*** UNKNOWN CARD ***' + cellvalue;
+  };
+
   var me = {
     username: $.cookie('account_username'),
     password: '',
@@ -24,16 +31,29 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     cardDefs: {
       data: [],
       datatype: "local",
-      height: 500,
       autowidth:true,
       rowNum: -1,
       scroll: true,
-      colNames:['卡牌名称', '种族', '星级', 'Cost'],
+      colNames:['卡牌名称', '种族', '强化等级', 'Cost'],
       colModel:[
         {name: 'cardName', sorttype:'text'},
         {name: 'race', sorttype:'int', formatter: race},
         {name: 'color', sorttype:'int'},
         {name: 'cost', sorttype:'int'}
+      ],
+      caption: '所有卡牌'
+    },
+
+    userCards: {
+      data: [],
+      datatype: "local",
+      autowidth:true,
+      rowNum: -1,
+      scroll: true,
+      colNames:['卡牌名称', '强化等级'],
+      colModel:[
+        {name: 'cardId', sorttype:'int', formatter: cardName},
+        {name: 'level', sorttype:'int'}
       ],
       caption: '所有卡牌'
     },
@@ -52,6 +72,7 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
         });
         AccountService.getCards(me.username, false, function(cards) {
           me.cards = cards;
+          me.userCards.data = cards;
         });
       });
     }
