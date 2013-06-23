@@ -8,21 +8,13 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     friends: [],
     cards: [],
 
-    mapDefs:{},
-    skillDefs: {},
-    cardDefs: {},
-    runeDefs: {},
-
     getAssets: function() {
-      me.mapDefs = AssetsService.getMapDefs();
-      me.skillDefs = AssetsService.getSkillDefs();
-      me.cardDefs = AssetsService.getCardDefs(function(cardDefs) {
-        me.cardDefsGrid = new AssetsCardDefsGrid($.map(cardDefs, function(def) {
-          if(typeof def == 'object') return def;
-          return null;
-        }));
+//      me.mapDefs = AssetsService.getMapDefs();
+//      me.skillDefs = AssetsService.getSkillDefs();
+      AssetsService.getCardDefs(function(cardDefs) {
+        me.cardDefsGrid = new AssetsCardDefsGrid(cardDefs);
       });
-      me.runeDefs = AssetsService.getRuneDefs();
+//      me.runeDefs = AssetsService.getRuneDefs();
     },
 
     refreshAssets: function(username) {
@@ -37,7 +29,9 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
         me.getAssets();
         me.user = user;
 
-        me.friends = AccountService.getFriends(me.username, false);
+        me.friends = AccountService.getFriends(me.username, false, function(friends) {
+          me.userFriendsGrid = new UserFriendsGrid(friends);
+        });
         me.cards = AccountService.getCards(me.username, false, function(cards) {
           AssetsService.getCardDefs(function(cardDefs) {
             me.userCardsGrid = new UserCardGrid(cards, cardDefs);

@@ -6,9 +6,26 @@ app.directive('jqGrid', function($window){
     },
     template: '<div class="jq-grid"><table class="jq-grid-table"></table><div class="jq-grid-pager"></div></div>',
     controller: function($scope, $element) {
-      $scope.$watch('options.data', function(data, old) {
+      $scope.$watch('options', function(options) {
+        if(options) {
+          var table = $element.find('table.jq-grid-table').uniqueId();
+          options.pager = $element.find('div.jq-grid-pager');
+          if(typeof options.data == 'object') {
+            options.data = $.map(options.data, function(def) {
+              if(typeof def == 'object') return def;
+              return null;
+            })
+          }
+          angular.element($window).bind('resize', function() {
+            table.setGridWidth($element.width()).setGridHeight($element.height() - 40);
+          });
+          table.jqGrid(options).setGridWidth($element.width()).setGridHeight($element.height() - 40);
+        }
+      });
+
+      $scope.$watch('options.data', function(data) {
         var table = $element.find('table.jq-grid-table');
-        if(data && data.length && data != old)
+        if(data && data.length)
         table.jqGrid('setGridParam', {
           data: data
         }).trigger('reloadGrid');
@@ -16,14 +33,7 @@ app.directive('jqGrid', function($window){
     },
     replace: true,
     link: function(scope, elem, attr) {
-      var table = elem.find('table.jq-grid-table').uniqueId();
-      var pager = elem.find('div.jq-grid-pager');
-      var options = scope.options;
-      options.pager = pager;
-      angular.element($window).bind('resize', function() {
-        table.setGridWidth(elem.width()).setGridHeight(elem.height() - 40);
-      });
-      table.jqGrid(options).setGridWidth(elem.width()).setGridHeight(elem.height() - 40);
+
     }
   };
 });

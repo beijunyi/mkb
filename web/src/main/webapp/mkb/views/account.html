@@ -3,18 +3,6 @@
   <div class="mkb-view row-fluid" ng-show="account.user.nickName" ng-controller="AssetsCtrl">
     <div class="span4">
       <jq-grid options="account.userCardsGrid"></jq-grid>
-      <!--<table class="table table-bordered table-striped">-->
-        <!--<thead>-->
-        <!--<tr>-->
-          <!--<th><strong>卡牌</strong></th>-->
-          <!--<th><strong>强化等级</strong></th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tr ng-repeat="card in account.cards">-->
-          <!--<td>{{assets.cards[card.cardId].cardName || '未知卡牌' + card.cardId}}</td>-->
-          <!--<td>{{card.level}}</td>-->
-        <!--</tr>-->
-      <!--</table>-->
     </div>
     <div class="span4">
       <table class="table table-bordered table-striped">
@@ -67,22 +55,25 @@
       </div>
 
     </div>
-    <div class="span4 mkb-table mkb-table-friends">
-      <table class="table table-bordered table-striped">
-        <tbody>
-        <thead>
-        <tr class="info">
-          <td><strong>昵称</strong></td>
-          <td><strong>竞技场排名</strong></td>
-        </tr>
-        </thead>
-        <tr ng-repeat="friend in account.friends">
-          <td>{{friend.nickName}} <span class="badge">LV:{{friend.level}}</span> <span ng-show="friend.legionName" class="badge">{{friend.legionName}}</span></td>
-          <td>{{friend.rank}} <span ng-show="friend.win + friend.lose" class="badge">{{(friend.win / (friend.win + friend.lose) * 100).toFixed(2)}}%</span></td>
-        </tr>
-        </tbody>
-      </table>
+    <div class="span4">
+      <jq-grid options="account.userFriendsGrid"></jq-grid>
     </div>
+    <!--<div class="span4 mkb-table mkb-table-friends">-->
+      <!--<table class="table table-bordered table-striped">-->
+        <!--<tbody>-->
+        <!--<thead>-->
+        <!--<tr class="info">-->
+          <!--<td><strong>昵称</strong></td>-->
+          <!--<td><strong>竞技场排名</strong></td>-->
+        <!--</tr>-->
+        <!--</thead>-->
+        <!--<tr ng-repeat="friend in account.friends">-->
+          <!--<td>{{friend.nickName}} <span class="badge">LV:{{friend.level}}</span> <span ng-show="friend.legionName" class="badge">{{friend.legionName}}</span></td>-->
+          <!--<td>{{friend.rank}} <span ng-show="friend.win + friend.lose" class="badge">{{(friend.win / (friend.win + friend.lose) * 100).toFixed(2)}}%</span></td>-->
+        <!--</tr>-->
+        <!--</tbody>-->
+      <!--</table>-->
+    <!--</div>-->
   </div>
 
   <div id="modal_assets_cards" class="modal hide fade" tabindex="-1" role="dialog">
