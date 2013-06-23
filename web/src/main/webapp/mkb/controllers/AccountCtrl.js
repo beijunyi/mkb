@@ -1,6 +1,14 @@
 app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountService, AssetsService) {
+  var accounts = $.cookie('mkb.accounts');
+  if(accounts) {
+    accounts = accounts.split(',');
+  } else {
+    accounts = [];
+  }
+
   var me = {
-    username: $.cookie('account_username'),
+    accounts: accounts,
+    username: $.cookie('mkb.username'),
     password: '',
     remember: true,
     maxTry: 5,
@@ -25,7 +33,14 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
 
     login: function() {
       AccountService.login(me.username, me.password, false, function(user) {
-        if(me.remember) $.cookie('account_username', me.username, {expires: 7});
+        me.switch = me.username;
+        if(me.remember) {
+          $.cookie('mkb.username', me.username, {expires: 7});
+          if($.inArray(me.username, me.accounts) == -1) {
+            me.accounts.push(me.username);
+            $.cookie('mkb.accounts', me.accounts, {expires: 7});
+          }
+        }
         me.getAssets();
         me.user = user;
 
@@ -42,9 +57,14 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
       });
     },
 
+    switchAccount: function() {
+      me.username = me.switch;
+      me.login();
+    },
+
     logout: function() {
       delete me.user;
-      $.removeCookie('account_username');
+      $.removeCookie('mkb.username');
     },
 
     refreshUserInfo: function(remote) {

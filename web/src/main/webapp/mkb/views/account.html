@@ -5,6 +5,14 @@
       <jq-grid options="account.userCardsGrid"></jq-grid>
     </div>
     <div class="span4">
+      <form>
+        <div class="input-append">
+          <label for="account_switch"></label>
+          <select ng-model="account.switch" ng-options="switch for switch in account.accounts" id="account_switch" type="text">
+          </select>
+          <button class="btn btn-success" ng-click="account.switchAccount()">切换</button>
+        </div>
+      </form>
       <table class="table table-bordered table-striped">
         <tbody>
         <tr>
@@ -112,25 +120,25 @@
     <div class="modal-body">
       <form class="form-horizontal">
         <div class="control-group">
-          <label class="control-label" for="account_username">Username</label>
+          <label class="control-label" for="account_username">用户名</label>
 
           <div class="controls">
-            <input type="text" ng-model="account.username" id="account_username" placeholder="Username">
+            <input type="text" ng-model="account.username" id="account_username" placeholder="用户名">
           </div>
         </div>
         <div class="control-group">
-          <label class="control-label" for="account_password">Password</label>
+          <label class="control-label" for="account_password">密码</label>
 
           <div class="controls">
-            <input type="password" ng-model="account.password" id="account_password" placeholder="Maybe I know it...?">
+            <input type="password" ng-model="account.password" id="account_password" placeholder="老用户免填">
           </div>
         </div>
         <div class="control-group">
           <div class="controls">
             <label class="checkbox">
-              <input ng-model="account.remember" type="checkbox"> Remember me
+              <input ng-model="account.remember" type="checkbox"> 记住我！
             </label>
-            <button type="submit" ng-click="account.login()" class="btn">Sign in</button>
+            <button type="submit" ng-click="account.login()" class="btn btn-success">登陆</button>
           </div>
         </div>
       </form>
