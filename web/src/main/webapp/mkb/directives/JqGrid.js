@@ -21,9 +21,9 @@ app.directive('jqGrid', function($window){
       var options = scope.options;
       options.pager = pager;
       angular.element($window).bind('resize', function() {
-        table.setGridWidth(elem.width());
+        table.setGridWidth(elem.width()).setGridHeight(elem.height() - 40);
       });
-      table.jqGrid(options).setGridWidth(elem.width());
+      table.jqGrid(options).setGridWidth(elem.width()).setGridHeight(elem.height() - 40);
     }
   };
 });
