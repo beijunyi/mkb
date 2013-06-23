@@ -1,6 +1,9 @@
 body {
-  padding-top: 60px;
-  padding-bottom: 40px;
+  padding: 60px 10px 40px;
+}
+
+label {
+  margin-bottom: 0;
 }
 
 a,
@@ -11,6 +14,10 @@ span.label[ng-click] {
 a.btn-mini {
   font-size: 12px;
   margin-left: 5px;
+}
+
+.input-append {
+  margin-bottom: 0;
 }
 
 .navbar a.brand {
@@ -29,10 +36,7 @@ a.btn-mini {
   padding: 8px 14px 8px 14px;
 }
 
-.span4 {
-  height: 100%;
-}
-
+.span4,
 .jq-grid {
   height: 100%;
 }
@@ -51,14 +55,11 @@ div.modal div.jq-grid {
 }
 
 
-div.mkb-view div.mkb-table {
-  overflow: auto;
+.account-legion .input-append {
+  margin-top: 10px;
 }
 
-div.mkb-view div.mkb-table-cards {
-  height:100%;
-}
-
-div.mkb-view div.mkb-table-friends {
-  height:100%;
+.jq-grid-account-friends {
+  height: 60%;
+  margin: 10px;
 }

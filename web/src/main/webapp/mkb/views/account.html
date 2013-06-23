@@ -74,7 +74,30 @@
 
     </div>
     <div class="span4">
-      <jq-grid options="account.userFriendsGrid"></jq-grid>
+      <div class="jq-grid-account-friends">
+        <jq-grid options="account.userFriendsGrid"></jq-grid>
+      </div>
+      <div class="account-legion alert alert-info">
+        <div class="row-fluid">
+          <button class="btn btn-info span3">军团</button>
+          <button class="btn btn-info span3">搜索团战</button>
+          <button class="btn btn-info span3">退出团战</button>
+          <button class="btn btn-danger span3">退出军团</button>
+        </div>
+        <div class="input-append">
+          <label for="legion_contribution"></label><input id="legion_contribution" type="text">
+          <div class="btn-group">
+            <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+              贡献
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a>军团资产</a></li>
+              <li><a>军团等级</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

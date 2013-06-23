@@ -35,8 +35,8 @@ public class MkbAccount {
   private long userChipUpdate;
   private Map<Long, Friend> friendMap;
   private long friendsUpdate;
-  private Legion legion;
-  private long legionUpdate;
+  private UserLegion userLegion;
+  private long userLegionUpdate;
 
   public MkbAccount(String username, String password, String mac) {
     this.username = username;
@@ -268,17 +268,17 @@ public class MkbAccount {
     return keys;
   }
 
-  public void setLegion(Legion legion) {
-    this.legion = legion;
-    legionUpdate = System.currentTimeMillis();
+  public void setUserLegion(UserLegion userLegion) {
+    this.userLegion = userLegion;
+    userLegionUpdate = System.currentTimeMillis();
   }
 
-  public Legion getLegion() {
-    return legion;
+  public UserLegion getUserLegion() {
+    return userLegion;
   }
 
-  public long getLegionUpdate() {
-    return legionUpdate;
+  public long getUserLegionUpdate() {
+    return userLegionUpdate;
   }
 
   public void setLevel(int level) {

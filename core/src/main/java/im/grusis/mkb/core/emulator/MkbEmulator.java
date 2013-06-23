@@ -907,24 +907,34 @@ public class MkbEmulator {
     return response.getData();
   }
 
+  public UserLegion gameGetUserLegion(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("Account {} {} is retrieving user legion information", username, nickname);
+    MkbAccount account = accountService.findAccountByUsername(username);
+    UserLegion userLegion;
+    if(refresh || (userLegion = account.getUserLegion()) == null) {
+      LegionGetUserLegionResponse response = gameDoAction(username, "legion.php", "GetUserLegion", null, LegionGetUserLegionResponse.class);
+      if(response.badRequest()) {
+        throw new UnknownErrorException();
+      }
+      userLegion = response.getData();
+      account.setUserLegion(userLegion);
+      accountService.saveAccount(account);
+    }
+    Log.debug("Account {} {} has successfully retrieved user legion information", username, nickname);
+    return userLegion;
+  }
+
   public Legions gameGetLegions(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    String nickname = gameGetUserInfo(username, false).getNickName();
+    Log.debug("Account {} {} is retrieving legions information", username, nickname);
     LegionGetLegionsResponse response = gameDoAction(username, "legion.php", "GetLegions", null, LegionGetLegionsResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
-    MkbAccount account = accountService.findAccountByUsername(username);
     Legions legions = response.getData();
-    account.setLegion(legions.getMyLegion());
+    Log.debug("Account {} {} has successfully retrieved legions information", username, nickname);
     return legions;
-  }
-
-  public Legion gameGetMyLegion(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    MkbAccount account = accountService.findAccountByUsername(username);
-    Legion legion;
-    if(refresh || (legion = account.getLegion()) == null) {
-      legion = gameGetLegions(username).getMyLegion();
-    }
-    return legion;
   }
 
   public Members gameGetLegionMembers(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {

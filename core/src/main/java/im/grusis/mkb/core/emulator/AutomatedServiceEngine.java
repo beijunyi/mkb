@@ -125,7 +125,7 @@ public class AutomatedServiceEngine {
     String legionName = null;
     if(toSameLegion) {
       sameLegion = new ArrayList<Long>();
-      legionName = emulator.gameGetMyLegion(username, false).getName();
+      legionName = emulator.gameGetUserLegion(username, false).getLegionName();
     }
     for(Friend friend : friendMap.values()) {
       if(toSameLegion && friend.getLegionName().equals(legionName)) {
