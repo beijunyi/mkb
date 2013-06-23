@@ -2,7 +2,7 @@
 
   <div class="mkb-view row-fluid" ng-show="account.user.nickName" ng-controller="AssetsCtrl">
     <div class="span4">
-      <jq-grid options="account.userCards"></jq-grid>
+      <jq-grid options="account.userCardsGrid"></jq-grid>
       <!--<table class="table table-bordered table-striped">-->
         <!--<thead>-->
         <!--<tr>-->
@@ -86,7 +86,7 @@
   </div>
 
   <div id="modal_assets_cards" class="modal hide fade" tabindex="-1" role="dialog">
-    <jq-grid options="account.cardDefs"></jq-grid>
+    <jq-grid options="account.cardDefsGrid"></jq-grid>
   </div>
 
   <div ng-hide="account.user.nickName" id="modal-login" class="modal show">

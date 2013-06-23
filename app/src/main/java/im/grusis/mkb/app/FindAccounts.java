@@ -7,7 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class FindAccounts {
 
-  public static void main(String[] args) throws Exception{
+  public static void main(String[] args) throws Exception {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MkbCoreConfig.class);
     ctx.start();
 

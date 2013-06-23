@@ -1,78 +1,47 @@
-app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountService) {
-
-  var view = $('div.mkb-view');
-
-  var race = function(cellvalue, options, rowObject) {
-    switch(cellvalue) {
-      case 1: return '王国';
-      case 2: return '森林';
-      case 3: return '蛮荒';
-      case 4: return '地狱';
-    }
-    return '魔神';
-  };
-
-  var cardName = function(cellvalue, options, rowObject) {
-    if($scope.account.cardDefs.data[cellvalue])
-      return $scope.account.cardDefs.data[cellvalue].cardName;
-    else
-      return '*** UNKNOWN CARD ***' + cellvalue;
-  };
-
+app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountService, AssetsService) {
   var me = {
     username: $.cookie('account_username'),
     password: '',
     remember: true,
 
-    user: new User(),
+    user: {},
     friends: [],
     cards: [],
 
-    cardDefs: {
-      data: [],
-      datatype: "local",
-      autowidth:true,
-      rowNum: -1,
-      scroll: true,
-      colNames:['卡牌名称', '种族', '强化等级', 'Cost'],
-      colModel:[
-        {name: 'cardName', sorttype:'text'},
-        {name: 'race', sorttype:'int', formatter: race},
-        {name: 'color', sorttype:'int'},
-        {name: 'cost', sorttype:'int'}
-      ],
-      caption: '所有卡牌'
+    mapDefs:{},
+    skillDefs: {},
+    cardDefs: {},
+    runeDefs: {},
+
+    getAssets: function() {
+      me.mapDefs = AssetsService.getMapDefs();
+      me.skillDefs = AssetsService.getSkillDefs();
+      me.cardDefs = AssetsService.getCardDefs(function(cardDefs) {
+        me.cardDefsGrid = new AssetsCardDefsGrid($.map(cardDefs, function(def) {
+          if(typeof def == 'object') return def;
+          return null;
+        }));
+      });
+      me.runeDefs = AssetsService.getRuneDefs();
     },
 
-    userCards: {
-      data: [],
-      datatype: "local",
-      autowidth:true,
-      rowNum: -1,
-      scroll: true,
-      colNames:['卡牌名称', '强化等级'],
-      colModel:[
-        {name: 'cardId', sorttype:'int', formatter: cardName},
-        {name: 'level', sorttype:'int'}
-      ],
-      caption: '所有卡牌'
+    refreshAssets: function(username) {
+      AssetsService.refreshAssets(username, function() {
+        me.getAssets();
+      });
     },
 
     login: function() {
       AccountService.login(me.username, me.password, false, function(user) {
-        if(me.remember) {
-          $.cookie('account_username', me.username, {expires: 7});
-        }
+        if(me.remember) $.cookie('account_username', me.username, {expires: 7});
+        me.getAssets();
         me.user = user;
 
-
-
-        AccountService.getFriends(me.username, false, function(friends) {
-          me.friends = friends;
-        });
-        AccountService.getCards(me.username, false, function(cards) {
-          me.cards = cards;
-          me.userCards.data = cards;
+        me.friends = AccountService.getFriends(me.username, false);
+        me.cards = AccountService.getCards(me.username, false, function(cards) {
+          AssetsService.getCardDefs(function(cardDefs) {
+            me.userCardsGrid = new UserCardGrid(cards, cardDefs);
+          });
         });
       });
     }
@@ -85,15 +54,12 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
 
   $scope.account = me;
 
+  // Set up view resize
+  var view = $('div.mkb-view');
   var resize = function() {
     view.height($(window).height() - (view.offset().top + 40));
   };
   angular.element($window).bind('resize', resize);
   resize();
-
-  $scope.$on('assets.cards', function(event, cards) {
-    me.cardDefs.data = cards;
-  });
-
 });
 
