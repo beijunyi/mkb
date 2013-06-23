@@ -7,17 +7,46 @@ var AccountService = function ($resource) {
         refresh: refresh
       }, callback);
     },
-    getFriends: function(username, refresh, callback) {
-      return $resource('/api/account/friends').query({
-        username: username,
-        refresh: refresh
-      }, {}, callback);
+
+    refreshUserInfo: function(username, callback) {
+      return $resource('/api/account/refresh').get({
+        username: username
+      }, callback);
     },
-    getCards: function(username, refresh, callback) {
-      return $resource('/api/account/cards').query({
+
+    getFriends: function(username, refresh, callback) {
+      return $resource('/api/account/friends').get({
         username: username,
         refresh: refresh
-      }, {}, callback);
+      }, callback);
+    },
+
+    getCards: function(username, refresh, callback) {
+      return $resource('/api/account/cards').get({
+        username: username,
+        refresh: refresh
+      }, callback);
+    },
+
+    getMazeStatus: function(username, callback) {
+      return $resource('/api/account/mazestatus').get({
+        username: username
+      }, callback);
+    },
+
+    resetMaze: function(username, id, callback) {
+      return $resource('/api/account/resetmaze').get({
+        username: username,
+        id: id
+      }, callback);
+    },
+
+    clearMaze: function(username, id, max, callback) {
+      return $resource('/api/account/clearmaze').get({
+        username: username,
+        id: id,
+        max: max
+      }, callback);
     }
   }
 };

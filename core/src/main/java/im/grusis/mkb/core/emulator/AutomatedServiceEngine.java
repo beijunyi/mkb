@@ -8,6 +8,7 @@ import im.grusis.mkb.core.exception.*;
 import im.grusis.mkb.core.repository.model.BattleRecord;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
+import im.grusis.mkb.core.service.AssetsService;
 import im.grusis.mkb.core.util.MacAddressHelper;
 import im.grusis.mkb.core.util.MkbDictionary;
 import org.slf4j.Logger;
@@ -27,39 +28,7 @@ public class AutomatedServiceEngine {
 
   @Autowired MkbEmulator emulator;
   @Autowired AccountService accountService;
-
-  private Map<Integer, Integer> mazeDependency;
-
-//  private Map<Integer, Integer> getMazeDependency(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-//    if(mazeDependency == null) {
-//      mazeDependency = new LinkedHashMap<Integer, Integer>();
-//      MapStageAll stages = core.gameGetMapStages(username, false);
-//      for(MapStage stage : stages) {
-//        List<MapStageDetail> details = stage.getMapStageDetails();
-//        boolean hasMaze = false;
-//        int boss = -1;
-//        for(MapStageDetail detail : details) {
-//          int type = detail.getType();
-//          if(type == MapStageDetail.MazeLevel) {
-//            hasMaze = true;
-//          } else if(type == MapStageDetail.BossLevel) {
-//            boss = detail.getMapStageDetailId();
-//          }
-//          if(hasMaze && boss != -1) {
-//            break;
-//          }
-//        }
-//        if(hasMaze) {
-//          if(boss == -1) {
-//            Log.error("Cannot find boss level for map stage {} {}", stage.getMapStageId(), stage.getName());
-//            throw new UnknownErrorException();
-//          }
-//          mazeDependency.put(stage.getMapStageId(), boss);
-//        }
-//      }
-//    }
-//    return mazeDependency;
-//  }
+  @Autowired AssetsService assetsService;
 
   private String getNickname(String username) throws MkbException {
     return emulator.gameGetUserInfo(username, false).getNickName();
@@ -71,6 +40,19 @@ public class AutomatedServiceEngine {
 
   private String getStageDetailName(String username, int stageDetailId) throws MkbException {
     return emulator.gameGetMapStageDetail(username, stageDetailId).getName();
+  }
+
+  public Map<Integer, MazeShow> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, UserMapStage> stages = emulator.gameGetUserMapStages(username, false);
+    Map<Integer, Integer> dependency = assetsService.getMazeDependency();
+    Map<Integer, MazeShow> ret = new TreeMap<Integer, MazeShow>();
+    for(Map.Entry<Integer, Integer> maze : dependency.entrySet()) {
+      if(stages.get(maze.getValue()).getFinishedStage() > 0) {
+        int mapId = maze.getKey();
+        ret.put(mapId, emulator.gameGetMaze(username, mapId));
+      }
+    }
+    return ret;
   }
 
   public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget) throws MkbException {

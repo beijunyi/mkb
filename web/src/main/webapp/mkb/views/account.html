@@ -44,13 +44,24 @@
       </table>
       <div class="alert alert-info">
         <strong>游戏设定</strong>
-        <a ng-click="assets.refreshAssets(account.username)"><i class="icon-refresh"></i></a>
+        <a ng-click="account.refreshAssets(account.username)"><i class="icon-refresh"></i></a>
 
         <div class="row-fluid">
-          <a class="btn btn-info span3">地图<span ng-show="assets.maps.length" class="label label-info">{{assets.maps.length}}</span></a>
-          <a class="btn btn-info span3">技能<span ng-show="assets.skills.length" class="label label-info">{{assets.skills.length}}</span></a>
-          <a href="#modal_assets_cards" role="button" data-toggle="modal" class="btn btn-info span3">卡牌<span ng-show="assets.cards.length" class="label label-info">{{assets.cards.length}}</span></a>
-          <a class="btn btn-info span3">符文<span ng-show="assets.runes.length" class="label label-info">{{assets.runes.length}}</span></a>
+          <a class="btn btn-info span3">地图</a>
+          <a class="btn btn-info span3">技能</a>
+          <a href="#modal_assets_cards" role="button" data-toggle="modal" class="btn btn-info span3">卡牌</a>
+          <a class="btn btn-info span3">符文</a>
+        </div>
+      </div>
+      <div class="alert alert-block">
+        <strong>一键操作</strong>
+
+        <div class="row-fluid">
+          <!--<a class="btn btn-warning span3" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫{{assets.maps.length}}</span></a>-->
+          <a class="btn btn-warning span3" ng-click="account.getMazeStatus()" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫{{assets.maps.length}}</span></a>
+          <a class="btn btn-warning span3">清理反攻{{assets.skills.length}}</span></a>
+          <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">购物</a>
+          <a class="btn btn-warning span3">强化卡牌</a>
         </div>
       </div>
 
@@ -58,26 +69,40 @@
     <div class="span4">
       <jq-grid options="account.userFriendsGrid"></jq-grid>
     </div>
-    <!--<div class="span4 mkb-table mkb-table-friends">-->
-      <!--<table class="table table-bordered table-striped">-->
-        <!--<tbody>-->
-        <!--<thead>-->
-        <!--<tr class="info">-->
-          <!--<td><strong>昵称</strong></td>-->
-          <!--<td><strong>竞技场排名</strong></td>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tr ng-repeat="friend in account.friends">-->
-          <!--<td>{{friend.nickName}} <span class="badge">LV:{{friend.level}}</span> <span ng-show="friend.legionName" class="badge">{{friend.legionName}}</span></td>-->
-          <!--<td>{{friend.rank}} <span ng-show="friend.win + friend.lose" class="badge">{{(friend.win / (friend.win + friend.lose) * 100).toFixed(2)}}%</span></td>-->
-        <!--</tr>-->
-        <!--</tbody>-->
-      <!--</table>-->
-    <!--</div>-->
   </div>
 
   <div id="modal_assets_cards" class="modal hide fade" tabindex="-1" role="dialog">
     <jq-grid options="account.cardDefsGrid"></jq-grid>
+  </div>
+
+  <div id="modal_account_maze" class="modal hide fade" tabindex="-1" role="dialog">
+    <table class="table table-bordered">
+      <tr ng-repeat="(id, value) in account.mazeStatus">
+        <td>{{value.name}}<span ng-show="value.freeReset" ng-click="account.resetMaze(id)" class="label label-success">免费重置</span><span ng-hide="value.freeReset" ng-click="account.resetMaze(id)" class="label label-warning">{{value.resetCash}}晶钻</span></td>
+        <td>当前进度：<strong ng-show="value.clear">已通关</strong><strong ng-hide="value.clear">第{{value.layer}}层</strong><a ng-hide="value.clear" ng-click="account.clearMaze(id)" class="btn btn-info btn-mini">继续</a></td>
+      </tr>
+    </table>
+
+    <form class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label" for="maze_max_try">允许战斗失败次数</label>
+        <div class="controls">
+          <input type="text" id="maze_max_try" ng-model="account.maxTry" required>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="maze_energy">行动点</label>
+        <div class="controls">
+          <input class="span3" id="maze_energy" ng-model="account.user.energy" type="text" disabled>
+          <button class="btn btn-warning" type="button">购买卡牌</button>
+          <button class="btn btn-info" type="button" ng-click="account.refreshUserInfo()">刷新</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  <div id="modal_account_goods" class="modal hide fade" tabindex="-1" role="dialog">
   </div>
 
   <div ng-hide="account.user.nickName" id="modal-login" class="modal show">

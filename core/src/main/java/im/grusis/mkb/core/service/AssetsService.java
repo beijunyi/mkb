@@ -5,8 +5,10 @@ import javax.annotation.PostConstruct;
 
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.emulator.web.model.basic.GameServer;
-import im.grusis.mkb.core.repository.model.*;
 import im.grusis.mkb.core.repository.AssetsRepository;
+import im.grusis.mkb.core.repository.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AssetsService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AssetsService.class);
 
   @Autowired private AssetsRepository assetsRepository;
 
@@ -32,6 +36,7 @@ public class AssetsService {
   private Map<Integer, SkillDef> skillLookup = new LinkedHashMap<Integer, SkillDef>();
   private Map<Integer, MapDef> mapStageLookup = new LinkedHashMap<Integer, MapDef>();
   private Map<Integer, MapStageDetail> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDetail>();
+  private Map<Integer, Integer> mazeDependency = new TreeMap<Integer, Integer>();
   private Map<Integer, Goods> goodsLookup = new LinkedHashMap<Integer, Goods>();
   private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
   private Map<String, GameServer> gameServerDescCache = new LinkedHashMap<String, GameServer>();
@@ -97,11 +102,27 @@ public class AssetsService {
     }
     mapStageLookup.clear();
     mapStageDetailLookup.clear();
-    MapStageAll mapStages = mapStageAssets.getAsset();
-    for(MapDef stage : mapStages) {
-      mapStageLookup.put(stage.getMapStageId(), stage);
-      for(MapStageDetail detail : stage.getMapStageDetails()) {
+    mazeDependency.clear();
+    MapStageAll maps = mapStageAssets.getAsset();
+    for(MapDef map : maps) {
+      mapStageLookup.put(map.getMapStageId(), map);
+      boolean hasMaze = false;
+      int boss = -1;
+      for(MapStageDetail detail : map.getMapStageDetails()) {
         mapStageDetailLookup.put(detail.getMapStageDetailId(), detail);
+        int type = detail.getType();
+        if(type == MapStageDetail.MazeLevel) {
+          hasMaze = true;
+        } else if(type == MapStageDetail.BossLevel) {
+          boss = detail.getMapStageDetailId();
+        }
+      }
+      if(hasMaze) {
+        if(boss == -1) {
+          LOG.warn("Cannot find boss level for map {} {}", map.getMapStageId(), map.getName());
+        } else {
+          mazeDependency.put(map.getMapStageId(), boss);
+        }
       }
     }
     return mapStageLookup;
@@ -238,6 +259,10 @@ public class AssetsService {
 
   public Map<Integer, MapStageDetail> getMapStageDetailLookup() {
     return mapStageDetailLookup;
+  }
+
+  public Map<Integer, Integer> getMazeDependency() {
+    return mazeDependency;
   }
 
   public Map<Integer, Goods> getGoodsLookup() {

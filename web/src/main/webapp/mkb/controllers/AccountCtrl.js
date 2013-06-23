@@ -3,6 +3,7 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     username: $.cookie('account_username'),
     password: '',
     remember: true,
+    maxTry: 5,
 
     user: {},
     friends: [],
@@ -29,15 +30,46 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
         me.getAssets();
         me.user = user;
 
-        me.friends = AccountService.getFriends(me.username, false, function(friends) {
+        AccountService.getFriends(me.username, false, function(friends) {
+          me.friends = friends;
           me.userFriendsGrid = new UserFriendsGrid(friends);
         });
-        me.cards = AccountService.getCards(me.username, false, function(cards) {
-          AssetsService.getCardDefs(function(cardDefs) {
+        AccountService.getCards(me.username, false, function(cards) {
+          me.cards = cards;
+            AssetsService.getCardDefs(function(cardDefs) {
             me.userCardsGrid = new UserCardGrid(cards, cardDefs);
           });
         });
       });
+    },
+
+    refreshUserInfo: function() {
+      AccountService.refreshUserInfo(me.username, function(user) {
+        me.user = user;
+      });
+    },
+
+    getMazeStatus: function() {
+      if(!me.mazeStatus) {
+        AccountService.getMazeStatus(me.username, function(status) {
+          me.mazeStatus = status;
+        });
+      }
+    },
+
+    resetMaze: function(id) {
+      AccountService.resetMaze(me.username, id, function(status) {
+        me.mazeStatus[id] = status;
+      });
+    },
+
+    clearMaze: function(id) {
+      AccountService.clearMaze(me.username, id, me.maxTry, function(status) {
+        me.mazeStatus[id] = status;
+      });
+    },
+
+    getGoodsList: function() {
     }
 
   };

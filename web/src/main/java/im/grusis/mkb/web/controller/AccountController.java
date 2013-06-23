@@ -1,14 +1,12 @@
 package im.grusis.mkb.web.controller;
 
-import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import im.grusis.mkb.core.emulator.AutomatedServiceEngine;
 import im.grusis.mkb.core.emulator.MkbEmulator;
-import im.grusis.mkb.core.emulator.game.model.basic.Friend;
-import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
@@ -28,6 +26,7 @@ public class AccountController {
 
   @Autowired private AccountService accountService;
   @Autowired private MkbEmulator emulator;
+  @Autowired private AutomatedServiceEngine autoService;
 
   @GET
   @Path("/login")
@@ -41,17 +40,44 @@ public class AccountController {
   }
 
   @GET
+  @Path("/refresh")
+  public Response refreshUserInfo(@QueryParam("username") String username) throws MkbException {
+    return Response.ok(emulator.gameGetUserInfo(username, true)).build();
+  }
+
+  @GET
   @Path("/friends")
   public Response getFriends(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
-    Collection<Friend> friends = emulator.gameGetFriends(username, refresh).values();
-    return Response.ok(friends).build();
+    return Response.ok(emulator.gameGetFriends(username, refresh)).build();
   }
 
   @GET
   @Path("/cards")
   public Response getCards(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
-    Collection<UserCard> cards = emulator.gameGetUserCards(username, refresh).values();
-    return Response.ok(cards).build();
+    return Response.ok(emulator.gameGetUserCards(username, refresh)).build();
   }
+
+  @GET
+  @Path("/mazestatus")
+  public Response getMazeStatus(@QueryParam("username") String username) throws MkbException {
+    return Response.ok(autoService.getMazeStatus(username)).build();
+  }
+
+  @GET
+  @Path("/resetmaze")
+  public Response resetMaze(@QueryParam("username") String username, @QueryParam("id") int id) throws MkbException {
+    if(emulator.gameResetMaze(username, id)) {
+      return Response.ok(emulator.gameGetMaze(username, id)).build();
+    }
+    return Response.status(Response.Status.BAD_REQUEST).build();
+  }
+
+  @GET
+  @Path("/clearmaze")
+  public Response clearMaze(@QueryParam("username") String username, @QueryParam("id") int id, @QueryParam("max") int max) throws MkbException {
+    autoService.clearMaze(username, id, max, false, 0);
+    return Response.ok(emulator.gameGetMaze(username, id)).build();
+  }
+
 
 }

@@ -3,8 +3,14 @@ body {
   padding-bottom: 40px;
 }
 
-a {
+a,
+span.label[ng-click] {
   cursor: pointer;
+}
+
+a.btn-mini {
+  font-size: 12px;
+  margin-left: 5px;
 }
 
 .alert {
