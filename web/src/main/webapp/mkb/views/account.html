@@ -9,7 +9,7 @@
         <tbody>
         <tr>
           <td><strong>昵称</strong></td>
-          <td>{{account.user.nickName}}</td>
+          <td>{{account.user.nickName}}<a class="btn btn-mini btn-info pull-right" ng-click="account.refreshUserInfo()">刷新</a><a class="btn btn-mini pull-right" ng-click="account.logout()">登出</a></td>
         </tr>
         <tr>
           <td><strong>等级</strong></td>

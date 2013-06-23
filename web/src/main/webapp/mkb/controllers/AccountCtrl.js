@@ -5,7 +5,6 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     remember: true,
     maxTry: 5,
 
-    user: {},
     friends: [],
     cards: [],
 
@@ -41,6 +40,11 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
           });
         });
       });
+    },
+
+    logout: function() {
+      delete me.user;
+      $.removeCookie('account_username');
     },
 
     refreshUserInfo: function() {
