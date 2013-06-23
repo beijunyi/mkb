@@ -41,8 +41,8 @@ public class AccountController {
 
   @GET
   @Path("/refresh")
-  public Response refreshUserInfo(@QueryParam("username") String username) throws MkbException {
-    return Response.ok(emulator.gameGetUserInfo(username, true)).build();
+  public Response refreshUserInfo(@QueryParam("username") String username, @QueryParam("remote") boolean remote) throws MkbException {
+    return Response.ok(emulator.gameGetUserInfo(username, remote)).build();
   }
 
   @GET

@@ -47,8 +47,8 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
       $.removeCookie('account_username');
     },
 
-    refreshUserInfo: function() {
-      AccountService.refreshUserInfo(me.username, function(user) {
+    refreshUserInfo: function(remote) {
+      AccountService.refreshUserInfo(me.username, remote, function(user) {
         me.user = user;
       });
     },
@@ -70,6 +70,7 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     clearMaze: function(id) {
       AccountService.clearMaze(me.username, id, me.maxTry, function(status) {
         me.mazeStatus[id] = status;
+        me.refreshUserInfo(false);
       });
     },
 

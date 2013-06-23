@@ -8,9 +8,10 @@ var AccountService = function ($resource) {
       }, callback);
     },
 
-    refreshUserInfo: function(username, callback) {
+    refreshUserInfo: function(username, remote, callback) {
       return $resource('/api/account/refresh').get({
-        username: username
+        username: username,
+        remote: remote
       }, callback);
     },
 

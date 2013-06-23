@@ -9,7 +9,7 @@
         <tbody>
         <tr>
           <td><strong>昵称</strong></td>
-          <td>{{account.user.nickName}}<a class="btn btn-mini btn-info pull-right" ng-click="account.refreshUserInfo()">刷新</a><a class="btn btn-mini pull-right" ng-click="account.logout()">登出</a></td>
+          <td>{{account.user.nickName}}<a class="btn btn-mini btn-info pull-right" ng-click="account.refreshUserInfo(true)">刷新</a><a class="btn btn-mini pull-right" ng-click="account.logout()">登出</a></td>
         </tr>
         <tr>
           <td><strong>等级</strong></td>
@@ -57,10 +57,9 @@
         <strong>一键操作</strong>
 
         <div class="row-fluid">
-          <!--<a class="btn btn-warning span3" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫{{assets.maps.length}}</span></a>-->
           <a class="btn btn-warning span3" ng-click="account.getMazeStatus()" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫{{assets.maps.length}}</span></a>
           <a class="btn btn-warning span3">清理反攻{{assets.skills.length}}</span></a>
-          <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">购物</a>
+          <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">购买卡牌</a>
           <a class="btn btn-warning span3">强化卡牌</a>
         </div>
       </div>
@@ -76,14 +75,15 @@
   </div>
 
   <div id="modal_account_maze" class="modal hide fade" tabindex="-1" role="dialog">
-    <table class="table table-bordered">
+    <h3 ng-hide="account.mazeStatus">正在读取迷宫进度……</h3>
+    <table ng-show="account.mazeStatus" class="table table-bordered">
       <tr ng-repeat="(id, value) in account.mazeStatus">
         <td>{{value.name}}<span ng-show="value.freeReset" ng-click="account.resetMaze(id)" class="label label-success">免费重置</span><span ng-hide="value.freeReset" ng-click="account.resetMaze(id)" class="label label-warning">{{value.resetCash}}晶钻</span></td>
         <td>当前进度：<strong ng-show="value.clear">已通关</strong><strong ng-hide="value.clear">第{{value.layer}}层</strong><a ng-hide="value.clear" ng-click="account.clearMaze(id)" class="btn btn-info btn-mini">继续</a></td>
       </tr>
     </table>
 
-    <form class="form-horizontal">
+    <form ng-show="account.mazeStatus" class="form-horizontal">
       <div class="control-group">
         <label class="control-label" for="maze_max_try">允许战斗失败次数</label>
         <div class="controls">
@@ -95,7 +95,7 @@
         <div class="controls">
           <input class="span3" id="maze_energy" ng-model="account.user.energy" type="text" disabled>
           <button class="btn btn-warning" type="button">购买卡牌</button>
-          <button class="btn btn-info" type="button" ng-click="account.refreshUserInfo()">刷新</button>
+          <button class="btn btn-info" type="button" ng-click="account.refreshUserInfo(true)">刷新</button>
         </div>
       </div>
     </form>
