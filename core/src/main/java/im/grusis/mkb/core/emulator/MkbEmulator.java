@@ -602,6 +602,9 @@ public class MkbEmulator {
   private void processBattleMapResult(String username, BattleMap result, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     String nickname = gameGetUserInfo(username, false).getNickName();
+    if(result.win()) {
+      gameGetUserMapStage(username, mapStageDetailId, false).clearCounterAttack();
+    }
     BattleMapExtData ext = result.getExtData();
     if(ext != null) {
       account.setLevel(ext.getUserLevel());

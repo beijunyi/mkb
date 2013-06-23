@@ -188,6 +188,18 @@ public class AutomatedServiceEngine {
     return accept;
   }
 
+  public Map<Integer, UserMapStage> getCounterAttacks(String username) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
+    Map<Integer, UserMapStage> stageMap = emulator.gameGetUserMapStages(username, true);
+    Collection<UserMapStage> stages = stageMap.values();
+    Map<Integer, UserMapStage> attacked = new TreeMap<Integer, UserMapStage>();
+    for(UserMapStage stage : stages) {
+      if(stage.getCounterAttackTime() != 0) {
+        attacked.put(stage.getMapStageDetailId(), stage);
+      }
+    }
+    return attacked;
+  }
+
   public boolean clearCounterAttacks(String username, int maxTry) throws MkbException {
     if(maxTry < 1) {
       Log.warn("Max try time {} is invalid. A valid value must be at least 1", maxTry);

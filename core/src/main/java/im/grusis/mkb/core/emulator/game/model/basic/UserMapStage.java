@@ -18,55 +18,35 @@ public class UserMapStage {
     return Uid;
   }
 
-  public void setUid(long uid) {
-    Uid = uid;
-  }
-
   public int getMapStageDetailId() {
     return MapStageDetailId;
-  }
-
-  public void setMapStageDetailId(int mapStageDetailId) {
-    MapStageDetailId = mapStageDetailId;
   }
 
   public int getType() {
     return Type;
   }
 
-  public void setType(int type) {
-    Type = type;
-  }
-
   public int getMapStageId() {
     return MapStageId;
-  }
-
-  public void setMapStageId(int mapStageId) {
-    MapStageId = mapStageId;
-  }
-
-  public String getLastFinishedTime() {
-    return LastFinishedTime;
-  }
-
-  public void setLastFinishedTime(String lastFinishedTime) {
-    LastFinishedTime = lastFinishedTime;
-  }
-
-  public long getCounterAttackTime() {
-    return CounterAttackTime;
-  }
-
-  public void setCounterAttackTime(long counterAttackTime) {
-    CounterAttackTime = counterAttackTime;
   }
 
   public int getFinishedStage() {
     return FinishedStage;
   }
 
-  public void setFinishedStage(int finishedStage) {
-    FinishedStage = finishedStage;
+  public String getLastFinishedTime() {
+    return LastFinishedTime;
+  }
+
+  public long getCounterAttackTime() {
+    return CounterAttackTime;
+  }
+
+  public void clearCounterAttack() {
+    CounterAttackTime = 0;
+  }
+
+  public void starUp() {
+    FinishedStage++;
   }
 }

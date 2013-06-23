@@ -79,5 +79,17 @@ public class AccountController {
     return Response.ok(emulator.gameGetMaze(username, id)).build();
   }
 
+  @GET
+  @Path("/counter")
+  public Response getCounterAttacks(@QueryParam("username") String username) throws MkbException {
+    return Response.ok(autoService.getCounterAttacks(username)).build();
+  }
 
+  @GET
+  @Path("/attack")
+  public Response attackStage(@QueryParam("username") String username, @QueryParam("id") int stageId) throws MkbException {
+    emulator.gameMapBattleAuto(username, stageId);
+    return Response.ok(emulator.gameGetMapStageDetail(username, stageId)).build();
+  }
 }
+
