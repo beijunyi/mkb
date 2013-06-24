@@ -223,7 +223,7 @@ jQuery.fn.searchFilter = function(fields, options) {
 
             /* original content - doesn't minify very well
             jQ
-            .html("") // clear any old content
+            .html("") // isClear any old content
             .addClass("ui-searchFilter") // add classes
             .append( // add content
             "\

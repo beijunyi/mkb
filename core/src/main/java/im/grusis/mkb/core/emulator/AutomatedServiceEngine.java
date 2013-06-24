@@ -39,17 +39,17 @@ public class AutomatedServiceEngine {
   }
 
   private String getStageDetailName(String username, int stageDetailId) throws MkbException {
-    return emulator.gameGetMapStageDetail(username, stageDetailId).getName();
+    return emulator.gameGetMapStageDef(username, stageDetailId).getName();
   }
 
-  public Map<Integer, MazeShow> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, MazeStatus> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, UserMapStage> stages = emulator.gameGetUserMapStages(username, false);
     Map<Integer, Integer> dependency = assetsService.getMazeDependency();
-    Map<Integer, MazeShow> ret = new TreeMap<Integer, MazeShow>();
+    Map<Integer, MazeStatus> ret = new TreeMap<Integer, MazeStatus>();
     for(Map.Entry<Integer, Integer> maze : dependency.entrySet()) {
       if(stages.get(maze.getValue()).getFinishedStage() > 0) {
         int mapId = maze.getKey();
-        ret.put(mapId, emulator.gameGetMaze(username, mapId));
+        ret.put(mapId, emulator.gameGetMazeStatus(username, mapId, false));
       }
     }
     return ret;
@@ -64,18 +64,18 @@ public class AutomatedServiceEngine {
       Log.warn("Reset budget {} is invalid. A valid value must be at least 0", resetBudget);
       resetBudget = 0;
     }
-    MazeShow maze = emulator.gameGetMaze(username, mapStageId);
-    if(maze.clear()) {
+    MazeStatus maze = emulator.gameGetMazeStatus(username, mapStageId, false);
+    if(maze.isClear()) {
       if(!reset) {
         Log.error("Maze {} {} is already cleared", mapStageId, maze.getName());
         return false;
       }
-      if(!maze.freeReset() && maze.getResetCash() > resetBudget) {
+      if(!maze.isFreeReset() && maze.getResetCash() > resetBudget) {
         Log.error("Cannot reset maze {} {}", mapStageId, maze.getName());
         return false;
       }
       emulator.gameResetMaze(username, mapStageId);
-      maze = emulator.gameGetMaze(username, mapStageId);
+      maze = emulator.gameGetMazeStatus(username, mapStageId, false);
     }
     int layer = maze.getLayer();
     MazeInfo currentLayer = emulator.gameGetMazeLayer(username, mapStageId, layer);
@@ -218,12 +218,12 @@ public class AutomatedServiceEngine {
       int count = 0;
       while(true) {
         String stageDetailName = getStageDetailName(username, stageDetailId);
-        BattleMap battle = emulator.gameMapBattleAuto(username, stageDetailId);
-        if(battle == null) {
+        UserMapStage userMapStage = emulator.gameMapBattleAuto(username, stageDetailId);
+        if(userMapStage == null) {
           Log.info("Cannot clear counter attack at {} {}. {} {} has insufficient energy", stageDetailId, stageDetailName, username, nickname);
           return false;
         }
-        if(battle.win()) {
+        if(!userMapStage.isCounterAttacked()) {
           Log.info("{} {} has cleared the counter attack at {} {}", username, nickname, stageDetailId, stageDetailName);
           break;
         } else {

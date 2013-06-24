@@ -38,4 +38,16 @@ public class Chip {
   public void setType(int type) {
     this.type = type;
   }
+
+  public void set() {
+    num = 1;
+  }
+
+  public void reset() {
+    num = 0;
+  }
+
+  public boolean obtained() {
+    return num == 1;
+  }
 }

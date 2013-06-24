@@ -18,7 +18,7 @@ public class UserInfo {
   private int Level;
   private long Exp;
   private long Coins;
-  private long Cash;
+  private int Cash;
   private int Ticket;
   private Map<Integer,Integer> FreshStep;
   private int Energy;
@@ -181,11 +181,11 @@ public class UserInfo {
     Coins = coins;
   }
 
-  public long getCash() {
+  public int getCash() {
     return Cash;
   }
 
-  public void setCash(long cash) {
+  public void setCash(int cash) {
     Cash = cash;
   }
 
@@ -491,5 +491,14 @@ public class UserInfo {
 
   public void setAppdriver(boolean appdriver) {
     this.appdriver = appdriver;
+  }
+
+  @Override
+  public String toString() {
+    return "Account " + UserName + " " + NickName;
+  }
+
+  public void consumeCash(int amount) {
+    Cash -= amount;
   }
 }

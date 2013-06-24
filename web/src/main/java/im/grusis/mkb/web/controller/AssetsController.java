@@ -30,7 +30,7 @@ public class AssetsController {
   @GET
   @Path("/refresh")
   public Response refreshAssets(@QueryParam("username") String username) throws MkbException {
-    emulator.gameGetMapStages(username, true);
+    emulator.gameGetMapDefs(username, true);
     emulator.gameGetSkills(username, true);
     emulator.gameGetCards(username, true);
     emulator.gameGetRunes(username, true);

@@ -22,72 +22,41 @@ public class Player {
     return Uid;
   }
 
-  public void setUid(long uid) {
-    Uid = uid;
-  }
-
   public String getNickName() {
     return NickName;
-  }
-
-  public void setNickName(String nickName) {
-    NickName = nickName;
   }
 
   public int getAvatar() {
     return Avatar;
   }
 
-  public void setAvatar(int avatar) {
-    Avatar = avatar;
-  }
-
   public int getSex() {
     return Sex;
-  }
-
-  public void setSex(int sex) {
-    Sex = sex;
   }
 
   public int getLevel() {
     return Level;
   }
 
-  public void setLevel(int level) {
-    Level = level;
-  }
-
   public int getHP() {
     return HP;
-  }
-
-  public void setHP(int HP) {
-    this.HP = HP;
   }
 
   public List<BattleCard> getCards() {
     return Cards;
   }
 
-  public void setCards(List<BattleCard> cards) {
-    Cards = cards;
-  }
-
   public List<BattleRune> getRunes() {
     return Runes;
-  }
-
-  public void setRunes(List<BattleRune> runes) {
-    Runes = runes;
   }
 
   public int getRemainHP() {
     return RemainHP;
   }
 
-  public void setRemainHP(int remainHP) {
-    RemainHP = remainHP;
+  @Override
+  public String toString() {
+    return "Player " + Uid + " " + NickName;
   }
 
   public class BattleCard {
@@ -106,80 +75,40 @@ public class Player {
       return UUID;
     }
 
-    public void setUUID(String UUID) {
-      this.UUID = UUID;
-    }
-
     public int getCardId() {
       return CardId;
-    }
-
-    public void setCardId(int cardId) {
-      CardId = cardId;
     }
 
     public long getUserCardId() {
       return UserCardId;
     }
 
-    public void setUserCardId(long userCardId) {
-      UserCardId = userCardId;
-    }
-
     public int getAttack() {
       return Attack;
-    }
-
-    public void setAttack(int attack) {
-      Attack = attack;
     }
 
     public int getHP() {
       return HP;
     }
 
-    public void setHP(int HP) {
-      this.HP = HP;
-    }
-
     public int getWait() {
       return Wait;
-    }
-
-    public void setWait(int wait) {
-      Wait = wait;
     }
 
     public int getLevel() {
       return Level;
     }
 
-    public void setLevel(int level) {
-      Level = level;
-    }
-
     public String getSkillNew() {
       return SkillNew;
-    }
-
-    public void setSkillNew(String skillNew) {
-      SkillNew = skillNew;
     }
 
     public String getEvolution() {
       return Evolution;
     }
 
-    public void setEvolution(String evolution) {
-      Evolution = evolution;
-    }
-
     public String getWashTime() {
       return WashTime;
-    }
-
-    public void setWashTime(String washTime) {
-      WashTime = washTime;
     }
   }
 
@@ -193,32 +122,16 @@ public class Player {
       return UUID;
     }
 
-    public void setUUID(String UUID) {
-      this.UUID = UUID;
-    }
-
     public int getRuneId() {
       return RuneId;
-    }
-
-    public void setRuneId(int runeId) {
-      RuneId = runeId;
     }
 
     public long getUserRuneId() {
       return UserRuneId;
     }
 
-    public void setUserRuneId(long userRuneId) {
-      UserRuneId = userRuneId;
-    }
-
     public int getLevel() {
       return Level;
-    }
-
-    public void setLevel(int level) {
-      Level = level;
     }
   }
 }

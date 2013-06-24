@@ -17,7 +17,7 @@ public class MapDef {
  private int NeedStar;
  private int Prev;
  private int Next;
- private List<MapStageDetail> MapStageDetails;
+ private List<MapStageDef> MapStageDetails;
 
   public int getMapStageId() {
     return MapStageId;
@@ -91,11 +91,11 @@ public class MapDef {
     Next = next;
   }
 
-  public List<MapStageDetail> getMapStageDetails() {
+  public List<MapStageDef> getMapStageDetails() {
     return MapStageDetails;
   }
 
-  public void setMapStageDetails(List<MapStageDetail> mapStageDetails) {
+  public void setMapStageDetails(List<MapStageDef> mapStageDetails) {
     MapStageDetails = mapStageDetails;
   }
 }

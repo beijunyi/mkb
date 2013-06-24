@@ -19,6 +19,7 @@ public class MkbAccount {
   private List<Integer> newCards;
   private Map<Long, Integer> energyRecord;
   private Map<Long, BattleRecord> battleRecordMap;
+  private Map<Integer, MazeStatus> mazeStatuses;
 
   private TemporaryProfile profile;
   private long lastAction;
@@ -31,7 +32,7 @@ public class MkbAccount {
   private long cardGroupUpdate;
   private Map<Integer, UserMapStage> userMapStages;
   private long userMapStagesUpdate;
-  private Map<Integer, Chip> userChip;
+  private ChipPuzzle userChip;
   private long userChipUpdate;
   private Map<Long, Friend> friendMap;
   private long friendsUpdate;
@@ -126,11 +127,11 @@ public class MkbAccount {
   }
 
 
-  public Map<Integer, Chip> getUserChip() {
+  public ChipPuzzle getUserChip() {
     return userChip;
   }
 
-  public void setUserChip(Map<Integer, Chip> userChip) {
+  public void setUserChip(ChipPuzzle userChip) {
     this.userChip = userChip;
     this.userChipUpdate = System.currentTimeMillis();
   }
@@ -147,18 +148,6 @@ public class MkbAccount {
     this.newCards = newCards;
   }
 
-  public void addCoins(long coins) {
-    if(userInfo != null) {
-      userInfo.addCoins(coins);
-    }
-  }
-
-  public void addExp(long exp) {
-    if(userInfo != null) {
-      userInfo.addExp(exp);
-    }
-  }
-
   public void addNewCard(int cardId) {
     if(newCards == null) {
       newCards = new ArrayList<Integer>();
@@ -166,14 +155,6 @@ public class MkbAccount {
     newCards.add(cardId);
   }
 
-  public void addChip(int chipId) {
-    if(userChip != null) {
-      Chip chip = userChip.get(chipId);
-      if(chip != null) {
-        chip.setNum(chip.getNum() + 1);
-      }
-    }
-  }
 
   public void consumeEnergy(int amount) {
     if(userInfo != null) {
@@ -281,12 +262,6 @@ public class MkbAccount {
     return userLegionUpdate;
   }
 
-  public void setLevel(int level) {
-    if(userInfo != null) {
-      userInfo.setLevel(level);
-    }
-  }
-
   public Map<Long, BattleRecord> getBattleRecordMap() {
     return battleRecordMap;
   }
@@ -305,6 +280,20 @@ public class MkbAccount {
     } else {
       battleRecord.lose();
     }
+  }
+
+  public void setMazeStatus(int mazeId, MazeStatus status) {
+    if(mazeStatuses == null) {
+      mazeStatuses = new TreeMap<Integer, MazeStatus>();
+    }
+    mazeStatuses.put(mazeId, status);
+  }
+
+  public MazeStatus getMazeStatus(int mazeId) {
+    if(mazeStatuses != null) {
+      return mazeStatuses.get(mazeId);
+    }
+    return null;
   }
 
   public void consumeCards(List<Long> userCardIds) {

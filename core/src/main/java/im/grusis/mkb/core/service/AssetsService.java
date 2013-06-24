@@ -35,7 +35,7 @@ public class AssetsService {
   private Map<Integer, RuneDef> runeLookup = new LinkedHashMap<Integer, RuneDef>();
   private Map<Integer, SkillDef> skillLookup = new LinkedHashMap<Integer, SkillDef>();
   private Map<Integer, MapDef> mapStageLookup = new LinkedHashMap<Integer, MapDef>();
-  private Map<Integer, MapStageDetail> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDetail>();
+  private Map<Integer, MapStageDef> mapStageDetailLookup = new LinkedHashMap<Integer, MapStageDef>();
   private Map<Integer, Integer> mazeDependency = new TreeMap<Integer, Integer>();
   private Map<Integer, Goods> goodsLookup = new LinkedHashMap<Integer, Goods>();
   private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
@@ -108,12 +108,12 @@ public class AssetsService {
       mapStageLookup.put(map.getMapStageId(), map);
       boolean hasMaze = false;
       int boss = -1;
-      for(MapStageDetail detail : map.getMapStageDetails()) {
+      for(MapStageDef detail : map.getMapStageDetails()) {
         mapStageDetailLookup.put(detail.getMapStageDetailId(), detail);
         int type = detail.getType();
-        if(type == MapStageDetail.MazeLevel) {
+        if(type == MapStageDef.MazeLevel) {
           hasMaze = true;
-        } else if(type == MapStageDetail.BossLevel) {
+        } else if(type == MapStageDef.BossLevel) {
           boss = detail.getMapStageDetailId();
         }
       }
@@ -168,7 +168,7 @@ public class AssetsService {
     return mapStageLookup.get(id);
   }
 
-  public MapStageDetail findMapStageDetail(int id) {
+  public MapStageDef findMapStageDetail(int id) {
     return mapStageDetailLookup.get(id);
   }
 
@@ -257,7 +257,7 @@ public class AssetsService {
     return mapStageLookup;
   }
 
-  public Map<Integer, MapStageDetail> getMapStageDetailLookup() {
+  public Map<Integer, MapStageDef> getMapStageDetailLookup() {
     return mapStageDetailLookup;
   }
 

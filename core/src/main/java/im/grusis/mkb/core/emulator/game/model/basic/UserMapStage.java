@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-6
  * Time: 下午10:29
  */
-public class UserMapStage {
+public class UserMapStage implements Comparable<UserMapStage> {
   private long Uid;
   private int MapStageDetailId;
   private int Type; // 1 = normal, 2 = boss, 0 = secret, 3 = tower
@@ -38,6 +38,15 @@ public class UserMapStage {
     return LastFinishedTime;
   }
 
+  @Override
+  public int compareTo(UserMapStage o) {
+    return Integer.compare(MapStageDetailId, o.getMapStageDetailId());
+  }
+
+  public boolean isCounterAttacked() {
+    return CounterAttackTime != 0;
+  }
+
   public long getCounterAttackTime() {
     return CounterAttackTime;
   }
@@ -46,7 +55,7 @@ public class UserMapStage {
     CounterAttackTime = 0;
   }
 
-  public void starUp() {
-    FinishedStage++;
+  public int starUp() {
+    return ++FinishedStage;
   }
 }

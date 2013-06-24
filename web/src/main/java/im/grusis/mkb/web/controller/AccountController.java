@@ -66,17 +66,14 @@ public class AccountController {
   @GET
   @Path("/resetmaze")
   public Response resetMaze(@QueryParam("username") String username, @QueryParam("id") int id) throws MkbException {
-    if(emulator.gameResetMaze(username, id)) {
-      return Response.ok(emulator.gameGetMaze(username, id)).build();
-    }
-    return Response.status(Response.Status.BAD_REQUEST).build();
+    return Response.ok(emulator.gameResetMaze(username, id)).build();
   }
 
   @GET
   @Path("/clearmaze")
   public Response clearMaze(@QueryParam("username") String username, @QueryParam("id") int id, @QueryParam("max") int max) throws MkbException {
     autoService.clearMaze(username, id, max, false, 0);
-    return Response.ok(emulator.gameGetMaze(username, id)).build();
+    return Response.ok(emulator.gameGetMazeStatus(username, id, false)).build();
   }
 
   @GET
@@ -89,7 +86,7 @@ public class AccountController {
   @Path("/attack")
   public Response attackStage(@QueryParam("username") String username, @QueryParam("id") int stageId) throws MkbException {
     emulator.gameMapBattleAuto(username, stageId);
-    return Response.ok(emulator.gameGetMapStageDetail(username, stageId)).build();
+    return Response.ok(emulator.gameGetMapStageDef(username, stageId)).build();
   }
 }
 

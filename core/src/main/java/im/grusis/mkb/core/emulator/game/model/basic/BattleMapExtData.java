@@ -6,8 +6,6 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Time: 下午10:25
  */
 public class BattleMapExtData extends BattleExtData {
-
-
   private Integer StarUp;
   private String[] Bonus;
   private String[] FirstBonusWin;
