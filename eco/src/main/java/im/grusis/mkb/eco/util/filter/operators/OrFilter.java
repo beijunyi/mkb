@@ -1,5 +1,9 @@
 package im.grusis.mkb.eco.util.filter.operators;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.util.AccountFilter;
 
@@ -10,12 +14,16 @@ import im.grusis.mkb.core.util.AccountFilter;
  */
 public class OrFilter implements AccountFilter {
 
-  private AccountFilter[] filters;
+  private List<AccountFilter> filters;
 
-  public OrFilter(AccountFilter... filters) {
+  public OrFilter(List<AccountFilter> filters) {
     this.filters = filters;
   }
 
+  public OrFilter(AccountFilter... filters) {
+    List<AccountFilter> accountFilters = new ArrayList<AccountFilter>();
+    Collections.addAll(accountFilters, filters);
+  }
   @Override
   public boolean accept(MkbAccount account) {
     for(AccountFilter filter : filters) {

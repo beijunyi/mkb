@@ -25,8 +25,8 @@ app.directive('jqGrid', function($window){
 
       $scope.$watch('options.data', function(data) {
         var table = $element.find('table.jq-grid-table');
-        if(data && data.length)
-        table.jqGrid('setGridParam', {
+        if(data)
+        table.jqGrid("clearGridData", true).jqGrid('setGridParam', {
           data: data
         }).trigger('reloadGrid');
       });

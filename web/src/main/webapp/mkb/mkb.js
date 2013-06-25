@@ -8,9 +8,9 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       templateUrl: 'mkb/views/account.html',
       controller: 'AccountCtrl'
     })
-    .when('/manual', {
-      templateUrl: 'mkb/views/manual.html',
-      controller: 'ManualAccessCtrl'
+    .when('/system', {
+      templateUrl: 'mkb/views/system.html',
+      controller: 'SystemCtrl'
     })
     .when('/auto', {
       templateUrl: 'mkb/views/auto.html',

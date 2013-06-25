@@ -39,7 +39,6 @@ public class AssetsService {
   private Map<Integer, Integer> mazeDependency = new TreeMap<Integer, Integer>();
   private Map<Integer, Goods> goodsLookup = new LinkedHashMap<Integer, Goods>();
   private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
-  private Map<String, GameServer> gameServerDescCache = new LinkedHashMap<String, GameServer>();
 
   @PostConstruct
   public void prepareLookups() {
@@ -147,7 +146,7 @@ public class AssetsService {
     gameServerLookup.clear();
     List<GameServer> gameServers = gameServerAssets.getAsset();
     for(GameServer gameServer : gameServers) {
-      gameServerLookup.put(gameServer.getGsName(), gameServer);
+      gameServerLookup.put(gameServer.getGsDesc(), gameServer);
     }
     return gameServerLookup;
   }
@@ -176,21 +175,8 @@ public class AssetsService {
     return goodsLookup.get(id);
   }
 
-  public GameServer findGameServerByName(String name) {
-    return gameServerLookup.get(name);
-  }
-
-  public GameServer findGameServerByDescription(String desc) {
-    GameServer ret = gameServerDescCache.get(desc);
-    Collection<GameServer> gameServers = gameServerLookup.values();
-    for(GameServer gameServer : gameServers) {
-      if(gameServer.getGsDesc().contains(desc)) {
-        gameServerDescCache.put(desc, gameServer);
-        ret = gameServer;
-        break;
-      }
-    }
-    return ret;
+  public GameServer findGameServer(String desc) {
+    return gameServerLookup.get(desc);
   }
 
   public Map<Integer, CardDef> saveAssets(AllCard cards) {

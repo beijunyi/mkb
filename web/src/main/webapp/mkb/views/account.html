@@ -2,7 +2,17 @@
 
   <div class="mkb-view row-fluid" ng-show="account.user.nickName" ng-controller="AssetsCtrl">
     <div class="span4">
-      <jq-grid options="account.userCardsGrid"></jq-grid>
+      <div class="account-legion alert alert-info">
+        <div class="row-fluid">
+          <button class="btn btn-info span3">刷新卡牌</button>
+          <button class="btn btn-info span3">一键购卡</button>
+          <button class="btn btn-info span3">一键强化</button>
+          <button class="btn btn-info span3">进化卡牌</button>
+        </div>
+      </div>
+      <div class="jq-grid-account-cards">
+        <jq-grid options="account.userCardsGrid"></jq-grid>
+      </div>
     </div>
     <div class="span4">
       <form>
@@ -65,10 +75,10 @@
         <strong>一键操作</strong>
 
         <div class="row-fluid">
-          <a class="btn btn-warning span3" ng-click="account.getMazeStatus()" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫{{assets.maps.length}}</span></a>
-          <a class="btn btn-warning span3">清理反攻{{assets.skills.length}}</span></a>
-          <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">购买卡牌</a>
-          <a class="btn btn-warning span3">强化卡牌</a>
+          <a class="btn btn-warning span3" ng-click="account.getMazeStatus()" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫</a>
+          <a class="btn btn-warning span3">清理反攻</a>
+          <a class="btn btn-warning span3">清理盗贼</a>
+          <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">领取宝箱</a>
         </div>
       </div>
 
@@ -76,9 +86,9 @@
     <div class="span4">
       <div class="account-legion alert alert-info">
         <div class="row-fluid">
-          <button class="btn btn-success span3">一键领取</button>
+          <button class="btn btn-info span3">刷新好友</button>
+          <button class="btn btn-info span3">一键领取</button>
           <button class="btn btn-info span3">一键赠送</button>
-          <button class="btn btn-info span3">赠送记录</button>
           <button class="btn btn-danger span3">删除好友</button>
         </div>
       </div>
@@ -93,7 +103,7 @@
           <button class="btn btn-danger span3">退出军团</button>
         </div>
         <div class="input-append">
-          <label for="legion_contribution"></label><input id="legion_contribution" type="text">
+          <label for="legion_contribution"></label><input id="legion_contribution" min="1" step="10000" type="number">
           <div class="btn-group">
             <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">
               贡献

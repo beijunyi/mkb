@@ -1,5 +1,9 @@
 package im.grusis.mkb.eco.util.filter.operators;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.util.AccountFilter;
 
@@ -10,10 +14,15 @@ import im.grusis.mkb.core.util.AccountFilter;
  */
 public class AndFilter implements AccountFilter {
 
-  private AccountFilter[] filters;
+  private List<AccountFilter> filters;
+
+  public AndFilter(List<AccountFilter> filters) {
+    this.filters = filters;
+  }
 
   public AndFilter(AccountFilter... filters) {
-    this.filters = filters;
+    List<AccountFilter> accountFilters = new ArrayList<AccountFilter>();
+    Collections.addAll(accountFilters, filters);
   }
 
   @Override

@@ -1,6 +1,5 @@
 package im.grusis.mkb.eco.util.filter.common;
 
-import java.util.List;
 import java.util.Map;
 
 import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
@@ -16,11 +15,11 @@ import im.grusis.mkb.eco.util.filter.util.CardUtils;
 public class CardNumberFilter implements AccountFilter {
 
   private CompareOperator compare;
-  private List<Map<Integer, Integer>> thresholdMaps;
+  private Map<Integer, Integer> thresholdMap;
 
-  public CardNumberFilter(CompareOperator compare, List<Map<Integer, Integer>> thresholdMaps) {
+  public CardNumberFilter(CompareOperator compare, Map<Integer, Integer> thresholdMap) {
     this.compare = compare;
-    this.thresholdMaps = thresholdMaps;
+    this.thresholdMap = thresholdMap;
   }
 
   @Override
@@ -30,11 +29,6 @@ public class CardNumberFilter implements AccountFilter {
       return false;
     }
     Map<Integer, Integer> cardCount = CardUtils.GetCardCount(cards.values());
-    for(Map<Integer, Integer> thresholdMap : thresholdMaps) {
-      if(!CardUtils.CompareCardCount(cardCount, thresholdMap, compare)) {
-        return false;
-      }
-    }
-    return true;
+    return CardUtils.CompareCardCount(cardCount, thresholdMap, compare);
   }
 }

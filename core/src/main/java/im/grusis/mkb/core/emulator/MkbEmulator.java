@@ -142,7 +142,7 @@ public class MkbEmulator {
     LoginInformation ret = loginInformation.getReturnObjs();
     if(!loginInformation.badRequest()) {
       archiveService.addUsername(username);
-      TemporaryProfile profile = new TemporaryProfile(ret.getGS_NAME(), ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp());
+      TemporaryProfile profile = new TemporaryProfile(ret.getGS_DESC(), ret.getGS_IP(), username, password, ret.getU_ID(), mac, ret.getKey(), ret.getTimestamp());
       profiles.put(username, profile);
       MkbAccount account = accountService.findAccountByUsername(username);
       if(account == null) {
@@ -150,7 +150,7 @@ public class MkbEmulator {
         archiveService.addUsername(username);
       }
       if(account.getServer() == null) {
-        account.setServer(ret.getGS_NAME());
+        account.setServer(ret.getGS_DESC());
       }
       account.setProfile(profile);
       accountService.saveAccount(account);
@@ -180,26 +180,19 @@ public class MkbEmulator {
     return true;
   }
 
-  public ServerInformation webGetGameServers() {
-    ServerInformation serverInformation = passportRequest(new ServerRequest(), ServerInformationResponse.class).getReturnObjs();
-    assetsService.saveAssets(serverInformation.getGAME_SERVER());
-    return serverInformation;
-  }
-
-  public GameServer webGetGameServerByName(String name) {
-    GameServer gameServer = assetsService.findGameServerByName(name);
-    if(gameServer == null) {
-      webGetGameServers();
-      gameServer = assetsService.findGameServerByName(name);
+  public Map<String, GameServer> webGetGameServers(boolean refresh) {
+    Map<String, GameServer> servers;
+    if(refresh || (servers = assetsService.getGameServerLookup()).isEmpty()) {
+      ServerInformation serverInformation = passportRequest(new ServerRequest(), ServerInformationResponse.class).getReturnObjs();
+      servers = assetsService.saveAssets(serverInformation.getGAME_SERVER());
     }
-    return gameServer;
+    return servers;
   }
 
   public GameServer webGetGameServerByDescription(String desc) {
-    GameServer gameServer = assetsService.findGameServerByDescription(desc);
+    GameServer gameServer = assetsService.findGameServer(desc);
     if(gameServer == null) {
-      webGetGameServers();
-      gameServer = assetsService.findGameServerByDescription(desc);
+      gameServer = webGetGameServers(true).get(desc);
     }
     return gameServer;
   }
