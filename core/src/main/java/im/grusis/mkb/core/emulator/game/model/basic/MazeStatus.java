@@ -31,7 +31,7 @@ public class MazeStatus {
     return ResetCash;
   }
 
-  public boolean isClear() {
+  public boolean isMazeClear() {
     return Clear != 0;
   }
 

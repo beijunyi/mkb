@@ -65,7 +65,7 @@ public class AutomatedServiceEngine {
       resetBudget = 0;
     }
     MazeStatus maze = emulator.gameGetMazeStatus(username, mapStageId, false);
-    if(maze.isClear()) {
+    if(maze.isMazeClear()) {
       if(!reset) {
         Log.error("Maze {} {} is already cleared", mapStageId, maze.getName());
         return false;

@@ -70,7 +70,7 @@ public class MapEngine {
     UserInfo userInfo = emulator.gameGetUserInfo(username, false);
     LOG.debug("{} is clearing maze {}", userInfo, mazeId);
     MazeStatus maze = emulator.gameGetMazeStatus(username, mazeId, false);
-    if(maze.isClear()) {
+    if(maze.isMazeClear()) {
       return maze;
     }
     int layer = maze.getLayer();
@@ -124,7 +124,7 @@ public class MapEngine {
     MazeStatus mazeStatus = emulator.gameGetMazeStatus(username, mazeId, false);
     int resetTotal = 0;
     while(true) {
-      if(mazeStatus.isClear()) {
+      if(mazeStatus.isMazeClear()) {
         if(mazeStatus.isFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
           resetTotal += mazeStatus.getResetCash();
           mazeStatus = emulator.gameResetMaze(username, mazeId);
@@ -132,12 +132,12 @@ public class MapEngine {
           break;
         }
       }
-      if(mazeStatus.isClear()) {
+      if(mazeStatus.isMazeClear()) {
         LOG.warn("{} cannot reset maze {} due to incorrect cash record", userInfo, mazeId);
         return mazeStatus;
       }
       mazeStatus = clearMaze(username, mazeId, maxTry);
-      if(!mazeStatus.isClear()) {
+      if(!mazeStatus.isMazeClear()) {
         break;
       }
     }
