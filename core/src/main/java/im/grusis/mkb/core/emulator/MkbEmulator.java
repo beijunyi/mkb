@@ -609,7 +609,6 @@ public class MkbEmulator {
     if(ext != null) {
       BattleNormalExtData.User user = ext.getUser();
       userInfo.setLevel(user.getLevel());
-      userInfo.addExp(user.getExp());
 
       BattleNormalExtData.Award award = ext.getAward();
       int coins = award.getCoins();
@@ -757,11 +756,10 @@ public class MkbEmulator {
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
-    if(!mazeStatus.isFreeReset()) {
+    if(!mazeStatus.allowFreeReset()) {
       userInfo.consumeCash(mazeStatus.getResetCash());
     }
-    mazeStatus.reset();
-    return mazeStatus;
+    return gameGetMazeStatus(username, mazeId, true);
   }
 
   public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {

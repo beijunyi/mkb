@@ -70,7 +70,7 @@ public class AutomatedServiceEngine {
         Log.error("Maze {} {} is already cleared", mapStageId, maze.getName());
         return false;
       }
-      if(!maze.isFreeReset() && maze.getResetCash() > resetBudget) {
+      if(!maze.allowFreeReset() && maze.getResetCash() > resetBudget) {
         Log.error("Cannot reset maze {} {}", mapStageId, maze.getName());
         return false;
       }

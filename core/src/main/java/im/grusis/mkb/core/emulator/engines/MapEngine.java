@@ -125,7 +125,7 @@ public class MapEngine {
     int resetTotal = 0;
     while(true) {
       if(mazeStatus.isMazeClear()) {
-        if(mazeStatus.isFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
+        if(mazeStatus.allowFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
           resetTotal += mazeStatus.getResetCash();
           mazeStatus = emulator.gameResetMaze(username, mazeId);
         } else {

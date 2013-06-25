@@ -39,17 +39,7 @@ public class MazeStatus {
     Clear = 1;
   }
 
-  public boolean isFreeReset() {
+  public boolean allowFreeReset() {
     return FreeReset != 0;
-  }
-
-  public void reset() {
-    if(FreeReset > 0) {
-      FreeReset = 0;
-    } else {
-      ResetCash += 20;
-    }
-    Layer = 1;
-    Clear = 0;
   }
 }
