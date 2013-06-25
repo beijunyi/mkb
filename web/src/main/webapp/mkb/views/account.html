@@ -4,7 +4,7 @@
     <div class="span4">
       <div class="account-legion alert alert-info">
         <div class="row-fluid">
-          <button class="btn btn-info span3">刷新卡牌</button>
+          <button class="btn btn-info span3" ng-click="account.refreshUserCard(true)">刷新卡牌</button>
           <button class="btn btn-info span3">一键购卡</button>
           <button class="btn btn-info span3">一键强化</button>
           <button class="btn btn-info span3">进化卡牌</button>
@@ -21,6 +21,7 @@
           <select ng-model="account.switch" ng-options="switch for switch in account.accounts" id="account_switch" type="text">
           </select>
           <button class="btn btn-success" ng-click="account.switchAccount()">切换</button>
+          <button class="btn btn-warning" ng-click="account.removeAccount()">清除</button>
         </div>
       </form>
       <table class="table table-bordered table-striped">

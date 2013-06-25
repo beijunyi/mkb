@@ -59,8 +59,13 @@ div.modal div.jq-grid {
   margin-top: 10px;
 }
 
-.jq-grid-account-cards,
-.jq-grid-account-friends {
+.mkb-account .jq-grid-account-cards,
+.mkb-account .jq-grid-account-friends {
+  height: 80%;
+  margin: 10px;
+}
+
+.mkb-system .jq-grid-system-accounts {
   height: 80%;
   margin: 10px;
 }

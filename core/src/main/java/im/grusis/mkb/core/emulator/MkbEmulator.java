@@ -652,7 +652,7 @@ public class MkbEmulator {
         mazeStatus.clear();
         account.setMazeStatus(mazeId, mazeStatus);
         accountService.saveAccount(account);
-        Log.info("{} has cleared maze {} and obtained {} coins and {} as clear maze reward", userInfo, coins, gameGetCardDetail(username, card));
+        Log.info("{} has cleared maze {} and obtained {} coins and {} as clear maze reward", userInfo, mazeId, coins, gameGetCardDetail(username, card));
       }
     }
     processBattleResult(username, result);

@@ -1,10 +1,10 @@
 <div class="mkb-system">
-  <div class="row-fluid">
+  <div class="mkb-view row-fluid">
     <div class="span4">
 
     </div>
     <div class="span4">
-      <div class="account-legion alert alert-info">
+      <div class="accounts-search alert alert-info">
         <form class="form-inline">
           <button type="submit" class="btn btn-info" ng-click="system.refreshAccounts()">刷新好友</button>
           <select class="span2" ng-model="system.search">
@@ -55,7 +55,12 @@
         </div>
       </div>
       <div class="jq-grid-system-accounts">
-        <jq-grid options="system.accountsGrid"></jq-grid>
+        <jq-grid options="system.accountsGrid" api="system.accountsApi"></jq-grid>
+      </div>
+      <div class="accounts-action alert alert-info">
+        <div class="row-fluid">
+          <a class="btn btn-success span3" ng-click="system.viewAccount()">账号详情</a>
+        </div>
       </div>
     </div>
     <div class="span4">

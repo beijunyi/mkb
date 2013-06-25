@@ -1,4 +1,4 @@
-app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountService, AssetsService) {
+app.controller('AccountCtrl', function($scope, $routeParams, $window, AccountService, AssetsService) {
   var accounts = $.cookie('mkb.accounts');
   if(accounts) {
     accounts = accounts.split(',');
@@ -8,7 +8,7 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
 
   var me = {
     accounts: accounts,
-    username: $.cookie('mkb.username'),
+    username: $routeParams.username || $.cookie('mkb.username'),
     password: '',
     remember: true,
     maxTry: 5,
@@ -62,6 +62,19 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
       me.login();
     },
 
+    removeAccount: function() {
+      me.accounts = $.grep(me.accounts, function(value) {
+        return value != me.switch;
+      });
+      $.cookie('mkb.accounts', me.accounts, {expires: 7});
+      if(me.switch != me.username) {
+        me.switch = me.username;
+      } else {
+        me.switch = '';
+        $.removeCookie('mkb.username');
+      }
+    },
+
     logout: function() {
       delete me.user;
       $.removeCookie('mkb.username');
@@ -70,6 +83,12 @@ app.controller('AccountCtrl', function($scope, $rootScope, $window, AccountServi
     refreshUserInfo: function(remote) {
       AccountService.refreshUserInfo(me.username, remote, function(user) {
         me.user = user;
+      });
+    },
+
+    refreshUserCard: function(remote) {
+      AccountService.getCards(me.username, remote, function(cards) {
+        me.cards = cards;
       });
     },
 

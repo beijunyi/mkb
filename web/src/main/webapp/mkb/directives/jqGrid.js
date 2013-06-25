@@ -2,11 +2,12 @@ app.directive('jqGrid', function($window){
   return {
     restrict: 'E',
     scope: {
-      options: '='
+      options: '=',
+      api: '='
     },
     template: '<div class="jq-grid"><table class="jq-grid-table"></table><div class="jq-grid-pager"></div></div>',
     controller: function($scope, $element) {
-      $scope.$watch('options', function(options) {
+      $scope.$watch('options', function(options, old) {
         if(options) {
           var table = $element.find('table.jq-grid-table').uniqueId();
           options.pager = $element.find('div.jq-grid-pager');
@@ -23,7 +24,7 @@ app.directive('jqGrid', function($window){
         }
       });
 
-      $scope.$watch('options.data', function(data) {
+      $scope.$watch('options.data', function(data, old) {
         var table = $element.find('table.jq-grid-table');
         if(data)
         table.jqGrid("clearGridData", true).jqGrid('setGridParam', {
@@ -33,7 +34,18 @@ app.directive('jqGrid', function($window){
     },
     replace: true,
     link: function(scope, elem, attr) {
-
+      if(!attr.api) return;
+      var table = elem.find('table.jq-grid-table');
+      scope.api = {
+        getSelectedRows: function() {
+          var rows = table.jqGrid('getGridParam','selarrrow');
+          var ret = [];
+          $.each(rows, function(index, value) {
+            ret.push(table.jqGrid('getRowData', value));
+          });
+          return ret;
+        }
+      }
     }
   };
 });
