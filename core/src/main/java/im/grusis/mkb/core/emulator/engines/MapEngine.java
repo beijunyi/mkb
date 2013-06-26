@@ -2,10 +2,13 @@ package im.grusis.mkb.core.emulator.engines;
 
 import java.util.*;
 
-import com.sun.deploy.util.StringUtils;
 import im.grusis.mkb.core.emulator.MkbEmulator;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
-import im.grusis.mkb.core.exception.*;
+import im.grusis.mkb.core.exception.ServerNotAvailableException;
+import im.grusis.mkb.core.exception.UnknownErrorException;
+import im.grusis.mkb.core.exception.WrongCredentialException;
+import im.grusis.mkb.core.service.AssetsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ public class MapEngine {
 
   private static final Logger LOG = LoggerFactory.getLogger(MapEngine.class);
 
+  @Autowired AssetsService assetsService;
   @Autowired MkbEmulator emulator;
 
   public Set<UserMapStage> findCounterAttackedMapStages(String username) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
@@ -35,10 +39,10 @@ public class MapEngine {
     return ret;
   }
 
-  public Map<Integer, UserMapStage> clearCounterAttackMapStages(String username, List<Integer> stageIds, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
+  public Set<UserMapStage> clearCounterAttackMapStages(String username, List<Integer> stageIds, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
     UserInfo userInfo = emulator.gameGetUserInfo(username, false);
     LOG.debug("{} is clearing counter attacks at stage {}", userInfo, StringUtils.join(stageIds, ", "));
-    Map<Integer, UserMapStage> ret = new TreeMap<Integer, UserMapStage>();
+    Set<UserMapStage> ret = new TreeSet<UserMapStage>();
     for(int sid : stageIds) {
       int count = 0;
       MapStageDef msd = emulator.gameGetMapStageDef(username, sid);
@@ -51,7 +55,7 @@ public class MapEngine {
         }
         if(!ums.isCounterAttacked()) {
           LOG.info("{} has cleared the counter attack at {}", userInfo, msd);
-          ret.put(sid, ums);
+          ret.add(ums);
           break;
         } else {
           count++;
@@ -63,6 +67,19 @@ public class MapEngine {
       }
     }
     LOG.debug("{} has cleared {}/{} counter attacks", userInfo, ret.size(), stageIds.size());
+    return ret;
+  }
+
+  public Map<Integer, MazeStatus> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<Integer, UserMapStage> stages = emulator.gameGetUserMapStages(username, false);
+    Map<Integer, Integer> dependency = assetsService.getMazeDependency();
+    Map<Integer, MazeStatus> ret = new TreeMap<Integer, MazeStatus>();
+    for(Map.Entry<Integer, Integer> maze : dependency.entrySet()) {
+      if(stages.get(maze.getValue()).getFinishedStage() > 0) {
+        int mapId = maze.getKey();
+        ret.put(mapId, emulator.gameGetMazeStatus(username, mapId, false));
+      }
+    }
     return ret;
   }
 

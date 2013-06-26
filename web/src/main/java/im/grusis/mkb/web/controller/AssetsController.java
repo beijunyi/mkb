@@ -45,6 +45,13 @@ public class AssetsController {
     return Response.ok(maps).build();
   }
 
+ @GET
+  @Path("/mapstages")
+  public Response getMapStageDefs() {
+    Map<Integer, MapStageDef> stages = assetsService.getMapStageDetailLookup();
+    return Response.ok(stages).build();
+  }
+
   @GET
   @Path("/skills")
   public Response getSkillDefs() {

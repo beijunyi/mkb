@@ -1,15 +1,15 @@
 package im.grusis.mkb.web.controller;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import im.grusis.mkb.core.emulator.AutomatedServiceEngine;
 import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.engines.MapEngine;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
+import im.grusis.mkb.web.model.ClearCounterAttackRequest;
+import im.grusis.mkb.web.model.ClearCounterAttackResponse;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class AccountController {
 
   @Autowired private AccountService accountService;
   @Autowired private MkbEmulator emulator;
-  @Autowired private AutomatedServiceEngine autoService;
+  @Autowired private MapEngine mapEngine;
 
   @GET
   @Path("/login")
@@ -60,7 +60,7 @@ public class AccountController {
   @GET
   @Path("/mazestatus")
   public Response getMazeStatus(@QueryParam("username") String username) throws MkbException {
-    return Response.ok(autoService.getMazeStatus(username)).build();
+    return Response.ok(mapEngine.getMazeStatus(username)).build();
   }
 
   @GET
@@ -78,14 +78,20 @@ public class AccountController {
   @GET
   @Path("/clearmaze")
   public Response clearMaze(@QueryParam("username") String username, @QueryParam("id") int id, @QueryParam("max") int max) throws MkbException {
-    autoService.clearMaze(username, id, max, false, 0);
+    mapEngine.clearMaze(username, id, max);
     return Response.ok(emulator.gameGetMazeStatus(username, id, false)).build();
   }
 
   @GET
-  @Path("/counter")
+  @Path("/counterattacks")
   public Response getCounterAttacks(@QueryParam("username") String username) throws MkbException {
-    return Response.ok(autoService.getCounterAttacks(username)).build();
+    return Response.ok(mapEngine.findCounterAttackedMapStages(username)).build();
+  }
+
+  @POST
+  @Path("/clearattacks")
+  public Response clearCounterAttacks(ClearCounterAttackRequest request) throws MkbException {
+    return Response.ok(new ClearCounterAttackResponse(mapEngine.clearCounterAttackMapStages(request.getUsername(), request.getStageIds(), request.getMaxTry()))).build();
   }
 
   @GET

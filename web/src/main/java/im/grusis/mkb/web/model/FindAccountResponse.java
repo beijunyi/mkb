@@ -1,5 +1,6 @@
 package im.grusis.mkb.web.model;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -8,13 +9,13 @@ import java.util.List;
  * Time: 下午9:18
  */
 public class FindAccountResponse {
-  private List<AccountView> accounts;
+  private Collection<AccountView> accounts;
 
   public FindAccountResponse(List<AccountView> accounts) {
     this.accounts = accounts;
   }
 
-  public List<AccountView> getAccounts() {
+  public Collection<AccountView> getAccounts() {
     return accounts;
   }
 }

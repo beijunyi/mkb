@@ -56,6 +56,20 @@ var AccountService = function ($resource) {
         id: id,
         max: max
       }, callback);
+    },
+
+    getCounterAttacks: function(username, callback) {
+      return $resource('/api/account/counterattacks').query({
+        username: username
+      }, callback);
+    },
+
+    clearCounterAttacks: function(username, stageIds, maxTry, callback) {
+      return $resource('/api/account/clearattacks').save({
+        username: username,
+        stageIds: stageIds,
+        maxTry: maxTry
+      }, callback);
     }
   }
 };

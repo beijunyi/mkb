@@ -21,6 +21,17 @@ var AssetsService = function ($resource) {
       });
     },
 
+    getMapStageDefs: function(callback) {
+      if(me.mapStageDefs) {
+        if(callback) callback(me.mapStageDefs);
+        return me.mapStageDefs;
+      }
+      return $resource('/api/assets/mapstages').get({}, function(mapStageDefs) {
+        me.mapStageDefs = mapStageDefs;
+        if(callback) callback(mapStageDefs);
+      });
+    },
+
     getSkillDefs: function(callback) {
       if(me.skillDefs) {
         if(callback) callback(me.skillDefs);

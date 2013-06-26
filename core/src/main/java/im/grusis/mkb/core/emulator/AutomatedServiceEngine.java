@@ -42,19 +42,6 @@ public class AutomatedServiceEngine {
     return emulator.gameGetMapStageDef(username, stageDetailId).getName();
   }
 
-  public Map<Integer, MazeStatus> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    Map<Integer, UserMapStage> stages = emulator.gameGetUserMapStages(username, false);
-    Map<Integer, Integer> dependency = assetsService.getMazeDependency();
-    Map<Integer, MazeStatus> ret = new TreeMap<Integer, MazeStatus>();
-    for(Map.Entry<Integer, Integer> maze : dependency.entrySet()) {
-      if(stages.get(maze.getValue()).getFinishedStage() > 0) {
-        int mapId = maze.getKey();
-        ret.put(mapId, emulator.gameGetMazeStatus(username, mapId, false));
-      }
-    }
-    return ret;
-  }
-
   public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget) throws MkbException {
     if(maxTry < 1) {
       Log.warn("Max try time {} is invalid. A valid value must be at least 1", maxTry);

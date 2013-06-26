@@ -77,7 +77,7 @@
 
         <div class="row-fluid">
           <a class="btn btn-warning span3" ng-click="account.getMazeStatus()" href="#modal_account_maze" role="button" data-toggle="modal">清理迷宫</a>
-          <a class="btn btn-warning span3">清理反攻</a>
+          <a class="btn btn-warning span3" ng-click="account.getCounterAttacks()" href="#modal_account_counterattack" role="button" data-toggle="modal">清理反攻</a>
           <a class="btn btn-warning span3">清理盗贼</a>
           <a class="btn btn-warning span3" ng-click="account.getGoodsList()" href="#modal_account_goods" role="button" data-toggle="modal">领取宝箱</a>
         </div>
@@ -126,7 +126,7 @@
   </div>
 
   <div id="modal_account_maze" class="modal hide fade" tabindex="-1" role="dialog">
-    <h3 ng-hide="account.mazeStatus">正在读取迷宫进度……</h3>
+    <h3 class="text-center" ng-hide="account.mazeStatus">正在读取迷宫进度……</h3>
     <table ng-show="account.mazeStatus" class="table table-bordered">
       <tr ng-repeat="(id, value) in account.mazeStatus">
         <td><a ng-click="account.refreshMaze(id, true)"><i class="icon-refresh"></i></a>{{value.name}}<span ng-show="value.freeReset" ng-click="account.resetMaze(id)" class="label label-success">免费重置</span><span ng-hide="value.freeReset" ng-click="account.resetMaze(id)" class="label label-warning">{{value.resetCash}}晶钻</span></td>
@@ -150,7 +150,42 @@
         </div>
       </div>
     </form>
+  </div>
 
+  <div id="modal_account_counterattack" class="modal hide fade" tabindex="-1" role="dialog">
+    <h3 class="text-center" ng-show="!account.counterAttacks">正在读取地图信息……</h3>
+    <h3 class="text-center" ng-show="account.counterAttacks && !account.attackDetails.length">未发现被反攻关卡</h3>
+    <table ng-show="account.attackDetails.length" class="table table-bordered">
+      <tr ng-repeat="attack in account.attackDetails">
+        <td><label class="checkbox"><input ng-model="attack.clear" type="checkbox"></label></td>
+        <td>{{attack.id}}</td>
+        <td>{{attack.stageName}}</td>
+        <td>{{attack.enemyLevel}}</td>
+        <td><select><option ng-repeat="card in attack.cards">{{card}}</option></select></td>
+      </tr>
+    </table>
+
+    <form ng-show="account.attackDetails.length" class="form-horizontal">
+      <div class="control-group">
+        <label class="control-label" for="counterattack_max_try">允许战斗失败次数</label>
+        <div class="controls">
+          <input type="text" id="counterattack_max_try" ng-model="account.maxTry" required>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="counterattack_energy">行动点</label>
+        <div class="controls">
+          <input class="span3" id="counterattack_energy" ng-model="account.user.energy" type="text" disabled>
+          <button class="btn btn-warning" type="button">购买</button>
+          <button class="btn btn-info" type="button" ng-click="account.refreshUserInfo(true)">刷新</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="controls">
+          <button class="btn btn-success" ng-click="account.clearCounterAttacks()">清理选中关卡</button>
+        </div>
+      </div>
+    </form>
   </div>
 
   <div id="modal_account_goods" class="modal hide fade" tabindex="-1" role="dialog">
