@@ -742,6 +742,8 @@ public class MkbEmulator {
       }
       mazeStatus = response.getData();
     }
+    account.setMazeStatus(mazeId, mazeStatus);
+    accountService.saveAccount(account);
     Log.info("{} has successfully retrieved maze status for maze {}", userInfo, mazeId);
     return mazeStatus;
   }
