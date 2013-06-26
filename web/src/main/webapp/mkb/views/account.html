@@ -129,7 +129,7 @@
     <h3 ng-hide="account.mazeStatus">正在读取迷宫进度……</h3>
     <table ng-show="account.mazeStatus" class="table table-bordered">
       <tr ng-repeat="(id, value) in account.mazeStatus">
-        <td>{{value.name}}<span ng-show="value.freeReset" ng-click="account.resetMaze(id)" class="label label-success">免费重置</span><span ng-hide="value.freeReset" ng-click="account.resetMaze(id)" class="label label-warning">{{value.resetCash}}晶钻</span></td>
+        <td><a ng-click="account.refreshMaze(id, true)"><i class="icon-refresh"></i></a>{{value.name}}<span ng-show="value.freeReset" ng-click="account.resetMaze(id)" class="label label-success">免费重置</span><span ng-hide="value.freeReset" ng-click="account.resetMaze(id)" class="label label-warning">{{value.resetCash}}晶钻</span></td>
         <td>当前进度：<strong ng-show="value.clear">已通关</strong><strong ng-hide="value.clear">第{{value.layer}}层</strong><a ng-hide="value.clear" ng-click="account.clearMaze(id)" class="btn btn-info btn-mini">继续</a></td>
       </tr>
     </table>

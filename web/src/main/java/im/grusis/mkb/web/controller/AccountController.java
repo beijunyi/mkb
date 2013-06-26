@@ -70,6 +70,12 @@ public class AccountController {
   }
 
   @GET
+  @Path("/refreshmaze")
+  public Response refreshMaze(@QueryParam("username") String username, @QueryParam("id") int id,  @QueryParam("refresh") boolean refresh) throws MkbException {
+    return Response.ok(emulator.gameGetMazeStatus(username, id, refresh)).build();
+  }
+
+  @GET
   @Path("/clearmaze")
   public Response clearMaze(@QueryParam("username") String username, @QueryParam("id") int id, @QueryParam("max") int max) throws MkbException {
     autoService.clearMaze(username, id, max, false, 0);

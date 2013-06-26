@@ -42,6 +42,14 @@ var AccountService = function ($resource) {
       }, callback);
     },
 
+    refreshMaze: function(username, id, refresh, callback) {
+      return $resource('/api/account/refreshmaze').get({
+        username: username,
+        id: id,
+        refresh: refresh
+      }, callback);
+    },
+
     clearMaze: function(username, id, max, callback) {
       return $resource('/api/account/clearmaze').get({
         username: username,

@@ -106,6 +106,12 @@ app.controller('AccountCtrl', function($scope, $routeParams, $window, AccountSer
       });
     },
 
+    refreshMaze: function(id, remote) {
+      AccountService.refreshMaze(me.username, id, remote, function(status) {
+        me.mazeStatus[id] = status;
+      })
+    },
+
     clearMaze: function(id) {
       AccountService.clearMaze(me.username, id, me.maxTry, function(status) {
         me.mazeStatus[id] = status;

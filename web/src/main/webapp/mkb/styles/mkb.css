@@ -6,6 +6,11 @@ label {
   margin-bottom: 0;
 }
 
+i {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 a,
 span.label[ng-click] {
   cursor: pointer;
