@@ -23,7 +23,7 @@
           </select>
           <input class="span2"  ng-show="system.search == 'level'" ng-model="system.levelValue" min="1" type="number">
 
-          <select class="span2"  ng-show="system.search == 'card'" ng-model="system.cardId" ng-options="card.cardId as card.cardName group by card.color for (cardId, card) in system.cardDefs">
+          <select class="span3"  ng-show="system.search == 'card'" ng-model="system.cardId" ng-options="card.cardId as card.cardName group by card.color for (cardId, card) in system.cardDefs">
           </select>
           <input class="span2"  ng-show="system.search == 'card'" ng-model="system.cardNumber" min="1" type="number" placeholder="数量">
 
@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="jq-grid-system-accounts">
-        <jq-grid options="system.accountsGrid" api="system.accountsApi"></jq-grid>
+        <jq-grid grid="system.accountsGrid"></jq-grid>
       </div>
       <div class="accounts-action alert alert-info">
         <div class="row-fluid">

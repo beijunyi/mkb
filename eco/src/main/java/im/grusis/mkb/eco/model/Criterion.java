@@ -22,16 +22,8 @@ public abstract class Criterion<T extends Criteria> {
     return name;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Map<Integer, T> getCriterion() {
-    return criterion;
-  }
-
-  public void setCriterion(Map<Integer, T> criterion) {
-    this.criterion = criterion;
+  public Collection<T> getCriterion() {
+    return criterion.values();
   }
 
   public void addCriteria(T criteria) {

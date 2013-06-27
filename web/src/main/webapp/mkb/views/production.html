@@ -3,13 +3,20 @@
     <div class="span4">
       <div class="criterion-create alert alert-info">
         <form class="form-inline">
-          <button type="submit" class="btn btn-info" ng-click="production.refreshCriterion()">刷新好友</button>
-
+          <button type="submit" class="btn btn-info" ng-click="production.refreshCriterion()">刷新开局条件</button>
+          <select class="span3" ng-model="production.cardId" ng-options="card.cardId as card.cardName group by card.color for (cardId, card) in production.cardDefs">
+          </select>
+          <input class="span2" ng-model="production.cardNumber" min="1" type="number" placeholder="数量">
+          <button type="submit" class="btn btn-success" ng-disabled="!production.cardNumber || !production.cardId" ng-click="production.addFilter()">添加</button>
         </form>
-        <div>
-          <span class="label" ng-repeat="filter in system.accountFilters" ng-click="system.removeFilter(filter)">{{system.readFilter(filter)}}</span>
-          <a ng-show="system.accountFilters.length" class="btn btn-small btn-danger" ng-click="system.clearFilters()">清除所有</a>
+        <div ng-show="production.hasFilter()" >
+          <span class="label" ng-repeat="(cardId, cardNumber) in production.cardFilters" ng-click="production.removeFilter(cardId)">{{production.readFilter(cardId, cardNumber)}}</span>
+          <a class="btn btn-small btn-danger" ng-click="production.clearFilters()">清除所有</a>
+          <a class="btn btn-small btn-success" ng-click="production.addCriteria()">加入条件</a>
         </div>
+      </div>
+      <div class="jq-grid-production-criterion">
+        <jq-grid grid="production.criterionGrid"></jq-grid>
       </div>
     </div>
     <div class="span4">

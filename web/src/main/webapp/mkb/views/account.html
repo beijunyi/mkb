@@ -1,6 +1,6 @@
 <div class="mkb-account">
 
-  <div class="mkb-view row-fluid" ng-show="account.user.nickName" ng-controller="AssetsCtrl">
+  <div class="mkb-view row-fluid" ng-show="account.user.nickName">
     <div class="span4">
       <div class="account-legion alert alert-info">
         <div class="row-fluid">
@@ -11,7 +11,7 @@
         </div>
       </div>
       <div class="jq-grid-account-cards">
-        <jq-grid options="account.userCardsGrid"></jq-grid>
+        <jq-grid grid="account.userCardsGrid"></jq-grid>
       </div>
     </div>
     <div class="span4">
@@ -94,7 +94,7 @@
         </div>
       </div>
       <div class="jq-grid-account-friends">
-        <jq-grid options="account.userFriendsGrid"></jq-grid>
+        <jq-grid grid="account.userFriendsGrid"></jq-grid>
       </div>
       <div class="account-legion alert alert-info">
         <div class="row-fluid">
@@ -122,7 +122,7 @@
   </div>
 
   <div id="modal_assets_cards" class="modal hide fade" tabindex="-1" role="dialog">
-    <jq-grid options="account.cardDefsGrid"></jq-grid>
+    <jq-grid grid="account.cardDefsGrid"></jq-grid>
   </div>
 
   <div id="modal_account_maze" class="modal hide fade" tabindex="-1" role="dialog">
