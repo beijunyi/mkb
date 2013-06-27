@@ -41,7 +41,7 @@ public class AssetsService {
   private Map<String, GameServer> gameServerLookup = new LinkedHashMap<String, GameServer>();
 
   @PostConstruct
-  public void prepareLookups() {
+  public void init() {
     CardAssets cardAssets = assetsRepository.getAssets(CardAssets.AssetName, CardAssets.class);
     updateCardLookup(cardAssets);
     RuneAssets runeAssets = assetsRepository.getAssets(RuneAssets.AssetName, RuneAssets.class);

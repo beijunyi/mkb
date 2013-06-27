@@ -1,7 +1,8 @@
 app.controller('AutomatedProductionCtrl', function($scope) {
 
-  $scope.auto = {
+  var me = {
 
-  }
+  };
 
+  $scope.production = me;
 });

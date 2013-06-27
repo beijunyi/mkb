@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +24,7 @@ public abstract class MkbRepository<T> {
   private static final String MkbRepositoryDirectoryName = ".mkb";
   private static final String FileSuffix = ".mkb";
 
-  protected Gson gson = new Gson();
+  protected Gson gson = new GsonBuilder().setPrettyPrinting().create();
   protected Class<T> clazz;
 
   protected String repositoryDirectory;

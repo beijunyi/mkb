@@ -1,0 +1,22 @@
+<div class="mkb-production">
+  <div class="mkb-view row-fluid">
+    <div class="span4">
+      <div class="criterion-create alert alert-info">
+        <form class="form-inline">
+          <button type="submit" class="btn btn-info" ng-click="production.refreshCriterion()">刷新好友</button>
+
+        </form>
+        <div>
+          <span class="label" ng-repeat="filter in system.accountFilters" ng-click="system.removeFilter(filter)">{{system.readFilter(filter)}}</span>
+          <a ng-show="system.accountFilters.length" class="btn btn-small btn-danger" ng-click="system.clearFilters()">清除所有</a>
+        </div>
+      </div>
+    </div>
+    <div class="span4">
+
+    </div>
+    <div class="span4">
+
+    </div>
+  </div>
+</div>

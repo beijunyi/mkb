@@ -5,13 +5,10 @@ package im.grusis.mkb.core.repository.model;
  * Date: 13-6-5
  * Time: 下午8:06
  */
-public class MkbAssets<T> {
+public abstract class MkbAssets<T> {
 
   private String assetName;
   private T asset;
-
-  public MkbAssets() {
-  }
 
   public MkbAssets(String assetName) {
     this.assetName = assetName;
