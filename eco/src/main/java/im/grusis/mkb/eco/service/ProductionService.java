@@ -26,6 +26,10 @@ public class ProductionService {
     productionCriterion = criterionRepository.getCriterion(ProductionCriterion.PRODUCTION, ProductionCriterion.class);
   }
 
+  public ProductionCriterion getProductionCriterion() {
+    return productionCriterion;
+  }
+
   public ProductionCriterion addProductionCriteria(Map<Integer, Integer> cardCount) {
     if(productionCriterion == null) {
       productionCriterion = new ProductionCriterion();
