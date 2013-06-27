@@ -17,7 +17,7 @@ public class BuyStrengResources {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MkbCoreConfig.class);
     ctx.start();
 
-    String username = "tug100";
+    String username = "urnmso90377";
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 

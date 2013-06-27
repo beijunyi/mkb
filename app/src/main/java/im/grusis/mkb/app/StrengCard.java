@@ -21,9 +21,9 @@ public class StrengCard {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MkbCoreConfig.class);
     ctx.start();
 
-    String username = "tug100";
-    String cardName = "堕落精灵";
-    int cardLevel = 12;
+    String username = "urnmso90377";
+    String cardName = "熊人";
+    int cardLevel = 14;
     int targetLevel = 15;
 
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
