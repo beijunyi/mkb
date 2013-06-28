@@ -3,4 +3,7 @@ out/*
 build/*
 classes/*
 target/*
+*/target/*
 META-INF/*
+*.iml
+*.ipr
