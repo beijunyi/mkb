@@ -1,7 +1,7 @@
 package im.grusis.mkb.core.bot;
 
-
 import java.util.*;
+import java.util.concurrent.Executor;
 
 import im.grusis.mkb.core.emulator.MkbEmulator;
 import im.grusis.mkb.core.emulator.game.model.basic.Group;
@@ -19,31 +19,22 @@ public class StrengCardBot extends MkbBot {
 
   private static final Logger LOG = LoggerFactory.getLogger(StrengCardBot.class);
 
-  private String username;
-  private long userCardId;
-  private MkbEmulator emulator;
-
-  public StrengCardBot(String username, long userCardId, MkbEmulator emulator) {
-    this.username = username;
-    this.userCardId = userCardId;
-    this.emulator = emulator;
+  public StrengCardBot(String username, MkbEmulator emulator) {
+    super(username, emulator);
   }
 
   @Override
-  public void run() {
-    try {
-      Map<Long, UserCard> userCards = emulator.gameGetUserCards(username, true);
-      Map<Long, Group> groups = emulator.gameGetCardGroup(username, true);
-      Set<Long> inUse = new HashSet<Long>();
-      for(Group group : groups.values()) {
-        List<UserCard> cards = group.getUserCardInfo();
-        for(UserCard card : cards) {
-          inUse.add(card.getUserCardId());
-        }
+  protected Object bot() throws MkbException {
+    Map<Long, UserCard> userCards = emulator.gameGetUserCards(username, true);
+    Map<Long, Group> groups = emulator.gameGetCardGroup(username, true);
+    Set<Long> inUse = new HashSet<Long>();
+    for(Group group : groups.values()) {
+      List<UserCard> cards = group.getUserCardInfo();
+      for(UserCard card : cards) {
+        inUse.add(card.getUserCardId());
       }
-
-    } catch(MkbException e) {
-      LOG.error("*** UNKNOWN ERROR ***", e);
     }
+    return null;
   }
+
 }

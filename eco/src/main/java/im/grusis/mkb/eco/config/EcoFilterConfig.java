@@ -6,11 +6,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-/**
- * User: Mothership
- * Date: 13-6-15
- * Time: 上午12:26
- */
 @Configuration
 @PropertySource("classpath:/eco_filter.properties")
 public class EcoFilterConfig {

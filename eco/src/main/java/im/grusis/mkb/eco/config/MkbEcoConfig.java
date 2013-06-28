@@ -1,6 +1,7 @@
 package im.grusis.mkb.eco.config;
 
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.annotation.PostConstruct;
@@ -15,13 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-/**
- * User: Junyi BEI
- * Date: 18/01/2013
- * Time: 22:58
- */
 @Configuration
 //@EnableScheduling
 @PropertySource("classpath:/eco.properties")
@@ -32,6 +29,7 @@ public class MkbEcoConfig implements SchedulingConfigurer {
   private static final Logger Log = LoggerFactory.getLogger(MkbEcoConfig.class);
 
   @Autowired private Environment env;
+  @Autowired private Executor executor;
 
   @Value("${system.timezone}") private String timezone;
 
@@ -42,14 +40,9 @@ public class MkbEcoConfig implements SchedulingConfigurer {
   }
 
 
-  @Bean(destroyMethod="shutdown")
-  public ScheduledExecutorService taskScheduler() {
-    return Executors.newScheduledThreadPool(42);
-  }
-
   @Override
   public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-    taskRegistrar.setScheduler(taskScheduler());
+    taskRegistrar.setScheduler(executor);
   }
 
 

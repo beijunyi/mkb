@@ -13,11 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-/**
- * User: Junyi BEI
- * Date: 18/01/2013
- * Time: 22:58
- */
 @Configuration
 @PropertySource("classpath:/eco_util.properties")
 public class EcoUtilConfig {

@@ -979,7 +979,10 @@ public class MkbEmulator {
   public BossFight gameBossFight(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     BossFightResponse response = gameDoAction(username, "boss.php", "Fight", null, BossFightResponse.class);
     if(response.badRequest()) {
-      if(response.alreadyInQueue()) {
+      if(response.isAlreadyInQueue()) {
+        return null;
+      }
+      if(response.isBossDown()) {
         return null;
       }
       throw new UnknownErrorException();

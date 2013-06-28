@@ -7,11 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-/**
- * User: Mothership
- * Date: 13-6-13
- * Time: 下午10:58
- */
 @Configuration
 @PropertySource("classpath:/eco_profile.properties")
 public class EcoProfileConfig {
