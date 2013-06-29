@@ -25,8 +25,8 @@ public class EmulatorMaze {
   @Autowired EmulatorUser user;
   @Autowired ResultProcessor resultProcessor;
 
-  public BattleNormal gameMazeBattleAuto(String username, int mazeId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public BattleNormal battle(String username, int mazeId, int layer, int itemIndex) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is starting maze battle against maze {}, layer {}, item {}", userInfo, mazeId, layer, itemIndex);
     MkbAccount account = accountService.findAccountByUsername(username);
     Map<String, String> params = new LinkedHashMap<String, String>();
@@ -50,8 +50,8 @@ public class EmulatorMaze {
     return result;
   }
 
-  public MazeInfo gameGetMazeLayer(String username, int mazeId, int level) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MazeInfo info(String username, int mazeId, int level) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving maze level status for maze {} level {}", userInfo, mazeId, level);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mazeId));
@@ -60,13 +60,13 @@ public class EmulatorMaze {
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
-    gameGetMazeStatus(username, mazeId, false).setLayer(level);
+    show(username, mazeId, false).setLayer(level);
     LOG.info("{} has successfully retrieved maze level status for maze {} level {}", userInfo, mazeId, level);
     return response.getData();
   }
 
-  public MazeStatus gameGetMazeStatus(String username, int mazeId, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MazeStatus show(String username, int mazeId, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving maze status for maze {}", userInfo, mazeId);
     MazeStatus mazeStatus;
     MkbAccount account = accountService.findAccountByUsername(username);
@@ -85,10 +85,10 @@ public class EmulatorMaze {
     return mazeStatus;
   }
 
-  public MazeStatus gameResetMaze(String username, int mazeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MazeStatus reset(String username, int mazeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is resetting maze {}", userInfo, mazeId);
-    MazeStatus mazeStatus = gameGetMazeStatus(username, mazeId, false);
+    MazeStatus mazeStatus = show(username, mazeId, false);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mazeId));
     MazeResetResponse response = core.gameDoAction(username, "maze.php", "Reset", params, MazeResetResponse.class);
@@ -98,7 +98,7 @@ public class EmulatorMaze {
     if(!mazeStatus.allowFreeReset()) {
       userInfo.consumeCash(mazeStatus.getResetCash());
     }
-    return gameGetMazeStatus(username, mazeId, true);
+    return show(username, mazeId, true);
   }
 
 }

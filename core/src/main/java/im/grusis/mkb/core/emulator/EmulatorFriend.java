@@ -32,7 +32,7 @@ public class EmulatorFriend {
   @Autowired EmulatorCore core;
   @Autowired EmulatorUser user;
 
-  public Map<Long, Friend> gameGetFriends(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, Friend> getFriends(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     Map<Long, Friend> friends;
     if(refresh || (friends = account.getFriendMap()) == null) {
@@ -46,11 +46,11 @@ public class EmulatorFriend {
     return friends;
   }
 
-  public Friend gameGetFriend(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    return gameGetFriends(username, false).get(fid);
+  public Friend getFriend(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    return getFriends(username, false).get(fid);
   }
 
-  public FriendApplys gameGetFriendApplies(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public FriendApplys getFriendApplys(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     FriendGetFriendApplysResponse response = core.gameDoAction(username, "friend.php", "GetFriendApplys", null, FriendGetFriendApplysResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -58,7 +58,7 @@ public class EmulatorFriend {
     return response.getData();
   }
 
-  public boolean gameDisposeFriendApply(String username, long friendId, boolean accept) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean disposeFriendApply(String username, long friendId, boolean accept) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     String type;
     if(accept) {

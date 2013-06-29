@@ -28,7 +28,7 @@ public class EmulatorRune {
   @Autowired AccountService accountService;
   @Autowired EmulatorCore core;
 
-  public Map<Integer, RuneDef> gameGetRunes(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, RuneDef> getAllRune(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, RuneDef> runes;
     if(refresh || (runes = assetsService.getRuneLookup()).isEmpty()) {
       RuneGetAllRuneResponse response = core.gameDoAction(username, "rune.php", "GetAllRune", null, RuneGetAllRuneResponse.class);
@@ -40,10 +40,10 @@ public class EmulatorRune {
     return runes;
   }
 
-  public RuneDef gameGetRuneDetail(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public RuneDef getRune(String username, int runeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     RuneDef rune = assetsService.findRune(runeId);
     if(rune == null) {
-      rune = gameGetRunes(username, true).get(runeId);
+      rune = getAllRune(username, true).get(runeId);
       if(rune == null) {
         throw new UnknownErrorException();
       }

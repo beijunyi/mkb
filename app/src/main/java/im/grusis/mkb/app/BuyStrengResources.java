@@ -22,7 +22,7 @@ public class BuyStrengResources {
     EmulatorShop shop = ctx.getBean(EmulatorShop.class);
 
     for(int i = 0; i < 100; i++) {
-      shop.gamePurchase(username, ItemCode.Coins);
+      shop.buy(username, ItemCode.Coins);
     }
 
   }

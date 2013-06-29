@@ -33,11 +33,11 @@ public class AssetsController {
   @GET
   @Path("/refresh")
   public Response refreshAssets(@QueryParam("username") String username) throws MkbException {
-    mapStage.gameGetMapDefs(username, true);
-    card.gameGetSkills(username, true);
-    card.gameGetCards(username, true);
-    rune.gameGetRunes(username, true);
-    shop.gameShopGetGoodsList(username, true);
+    mapStage.getMapStageAll(username, true);
+    card.getAllSkill(username, true);
+    card.getAllCard(username, true);
+    rune.getAllRune(username, true);
+    shop.getGoods(username, true);
     return Response.ok().build();
   }
 

@@ -25,7 +25,7 @@ public class EmulatorChip {
   @Autowired AccountService accountService;
   @Autowired EmulatorCore core;
 
-  public ChipPuzzle gameGetUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public ChipPuzzle getUserChip(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     ChipPuzzle userChip;
     if(refresh || (userChip = account.getUserChip()) == null) {

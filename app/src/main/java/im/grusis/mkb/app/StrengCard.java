@@ -32,7 +32,7 @@ public class StrengCard {
     EmulatorStreng streng = ctx.getBean(EmulatorStreng.class);
 
     CardDef cardDef = null;
-    Map<Integer, CardDef> allCard = card.gameGetCards(username, true);
+    Map<Integer, CardDef> allCard = card.getAllCard(username, true);
     for(CardDef c : allCard.values()) {
       if(c.getCardName().contains(cardName)) {
         cardDef = c;
@@ -43,7 +43,7 @@ public class StrengCard {
       return;
     }
     UserCard uc = null;
-    Map<Long, UserCard> userCards = card.gameGetUserCards(username, true);
+    Map<Long, UserCard> userCards = card.getUserCards(username, true);
     for(UserCard userCard : userCards.values()) {
       if(userCard.getCardId() == cardDef.getCardId() && userCard.getLevel() == cardLevel) {
         uc = userCard;
@@ -79,7 +79,7 @@ public class StrengCard {
         size = resources.size();
       }
       List<Long> sub = resources.subList(0, size);
-      streng.gameUpgradeCard(username, uc.getUserCardId(), sub);
+      streng.card(username, uc.getUserCardId(), sub);
       resources.removeAll(sub);
     }
 

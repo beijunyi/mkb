@@ -1,6 +1,6 @@
 package im.grusis.mkb.core.config;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import im.grusis.mkb.core.MkbCoreMarker;
@@ -24,7 +24,7 @@ public class MkbCoreConfig {
   }
 
   @Bean(destroyMethod = "shutdown")
-  public Executor getTaskExecutors() {
+  public ExecutorService getTaskExecutors() {
     return Executors.newScheduledThreadPool(20);
   }
 }

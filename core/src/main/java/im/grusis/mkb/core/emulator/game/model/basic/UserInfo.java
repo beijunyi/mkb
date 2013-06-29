@@ -501,4 +501,8 @@ public class UserInfo {
   public void consumeCash(int amount) {
     Cash -= amount;
   }
+
+  public void addInviteNum() {
+    InviteNum++;
+  }
 }

@@ -30,7 +30,7 @@ public class EmulatorLogin {
   @Autowired EmulatorWeb web;
   @Autowired EmulatorUser user;
 
-  public PassportLogin gamePassportLogin(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public PassportLogin passportLogin(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     LOG.debug("Starting passport login for account {}", username);
     LoginToken token = core.getLoginToken(username);
     if(token == null) {
@@ -42,7 +42,7 @@ public class EmulatorLogin {
         core.setLoginToken(username, token);
       } else {
         LOG.debug("Login token for account {} is not found. Now try web login", username);
-        token = web.webLogin(username);
+        token = web.login(username);
       }
     }
     LOG.debug("Obtained login token for account {} as login token", username);
@@ -57,10 +57,10 @@ public class EmulatorLogin {
     LoginPassportLoginResponse response = core.gameDoAction(username, "login.php", "PassportLogin", paramMap, LoginPassportLoginResponse.class);
     if(response.badRequest()) {
       LOG.info("Passport login for account {} has failed. Now try web login", username);
-      web.webLogin(username);
-      return gamePassportLogin(username);
+      web.login(username);
+      return passportLogin(username);
     }
-    user.gameGetUserInfo(username, true);
+    user.getUserInfo(username, true);
     return response.getData();
   }
 

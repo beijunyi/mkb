@@ -29,7 +29,7 @@ public class EmulatorCard {
   @Autowired AccountService accountService;
   @Autowired EmulatorCore core;
 
-  public Map<Long, UserCard> gameGetUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, UserCard> getUserCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     Map<Long, UserCard> cards;
     if(refresh || (cards = account.getUserCards()) == null) {
@@ -48,7 +48,7 @@ public class EmulatorCard {
     return cards;
   }
 
-  public Map<Long, Group> gameGetCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, Group> getCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     Map<Long, Group> cardGroup;
     if(refresh || (cardGroup = account.getCardGroup()) == null) {
@@ -68,7 +68,7 @@ public class EmulatorCard {
   }
 
 
-  public Map<Integer, SkillDef> gameGetSkills(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, SkillDef> getAllSkill(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, SkillDef> skills;
     if(refresh || (skills = assetsService.getSkillLookup()).isEmpty()) {
       CardGetAllSkillResponse response = core.gameDoAction(username, "card.php", "GetAllSkill", null, CardGetAllSkillResponse.class);
@@ -80,10 +80,10 @@ public class EmulatorCard {
     return skills;
   }
 
-  public SkillDef gameGetSkillDetail(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public SkillDef getSkill(String username, int skillId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     SkillDef skill = assetsService.findSkill(skillId);
     if(skill == null) {
-      skill = gameGetSkills(username, true).get(skillId);
+      skill = getAllSkill(username, true).get(skillId);
       if(skill == null) {
         throw new UnknownErrorException();
       }
@@ -91,7 +91,7 @@ public class EmulatorCard {
     return skill;
   }
 
-  public Map<Integer, CardDef> gameGetCards(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, CardDef> getAllCard(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, CardDef> cards;
     if(refresh || (cards = assetsService.getCardLookup()).isEmpty()) {
       CardGetAllCardResponse response = core.gameDoAction(username, "card.php", "GetAllCard", null, CardGetAllCardResponse.class);
@@ -103,13 +103,13 @@ public class EmulatorCard {
     return cards;
   }
 
-  public CardDef gameGetCardDetail(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public CardDef getCard(String username, int cardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     if(cardId <= 0) {
       LOG.error("{} is an invalid card id. Card id must be positive integer", cardId);
     }
     CardDef card = assetsService.findCard(cardId);
     if(card == null) {
-      gameGetCards(username, true);
+      getAllCard(username, true);
       card = assetsService.findCard(cardId);
       if(card == null) {
         throw new UnknownErrorException();

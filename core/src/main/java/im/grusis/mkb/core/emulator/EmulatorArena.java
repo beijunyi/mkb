@@ -33,8 +33,8 @@ public class EmulatorArena {
   @Autowired EmulatorCore core;
   @Autowired EmulatorUser user;
 
-  public ArenaCompetitors gameArenaGetCompetitors(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public ArenaCompetitors getCompetitors(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving arena competitor list", userInfo);
     ArenaGetCompetitorsResponse response = core.gameDoAction(username, "arena.php", "GetCompetitors", null, ArenaGetCompetitorsResponse.class);
     if(response.badRequest()) {
@@ -45,8 +45,8 @@ public class EmulatorArena {
     return competitors;
   }
 
-  public BattleNormal gameArenaFreeFightAuto(String username, long competitor, boolean forChip) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public BattleNormal freeFight(String username, long competitor, boolean forChip) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is starting arena free fight against {}", userInfo, competitor);
     Map<String, String> params = new LinkedHashMap<String, String>();
     if(!forChip) {
@@ -71,8 +71,8 @@ public class EmulatorArena {
     return battle;
   }
 
-  public BattleNormal gameArenaRankFight(String username, int rank) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public BattleNormal rankFight(String username, int rank) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is starting arena rank fight against competitor ranked {}", userInfo);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("CompetitorRank", Integer.toString(rank));
@@ -95,7 +95,7 @@ public class EmulatorArena {
     return battle;
   }
 
-  public Map<Long, ThievesInfo> gameGetThieves(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Long, ThievesInfo> getThieves(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     ArenaGetThievesResponse response = core.gameDoAction(username, "arena.php", "GetThieves", null, ArenaGetThievesResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();

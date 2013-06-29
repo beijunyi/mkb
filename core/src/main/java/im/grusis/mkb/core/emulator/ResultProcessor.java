@@ -1,5 +1,8 @@
 package im.grusis.mkb.core.emulator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.exception.ServerNotAvailableException;
 import im.grusis.mkb.core.exception.UnknownErrorException;
@@ -29,25 +32,29 @@ public class ResultProcessor {
   @Autowired EmulatorMaze maze;
   @Autowired EmulatorMapStage mapStage;
 
-  public void processGoodsPurchaseResult(String username, String result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public List<Integer> processGoodsPurchaseResult(String username, String result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("Processing purchase result {} for {}", result, userInfo);
     MkbAccount account = accountService.findAccountByUsername(username);
     String[] cardIdArray = result.split("_");
     StringBuilder sb = new StringBuilder();
+    List<Integer> ret = new ArrayList<Integer>();
     for(String id : cardIdArray) {
       if(sb.length() > 0) {
         sb.append(", ");
       }
       int cardId = Integer.parseInt(id);
+      ret.add(cardId);
       account.addNewCard(cardId);
-      sb.append(card.gameGetCardDetail(username, cardId));
+      sb.append(card.getCard(username, cardId));
     }
+    accountService.saveAccount(account);
     LOG.info("{} has obtained {}", userInfo, sb.toString());
+    return ret;
   }
 
   public void processBattleResult(String username, BattleNormal result) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     BattleNormalExtData ext = result.getExtData();
     if(ext != null) {
       BattleNormalExtData.User user = ext.getUser();
@@ -65,10 +72,10 @@ public class ResultProcessor {
         MkbAccount account = accountService.findAccountByUsername(username);
         if(cardId > 0) {
           account.addNewCard(award.getCardId());
-          LOG.info("{} has obtained {} as maze battle reward", userInfo, card.gameGetCardDetail(username, cardId));
+          LOG.info("{} has obtained {} as maze battle reward", userInfo, card.getCard(username, cardId));
         }
         if(chipId > 0) {
-          ChipPuzzle chipPuzzle = chip.gameGetUserChip(username, false);
+          ChipPuzzle chipPuzzle = chip.getUserChip(username, false);
           if(chipPuzzle.addChip(chipId)) {
             userInfo.addTicket();
             LOG.info("{} has obtained chip fragment {} finishing chip collection and gain 1 ticket", userInfo, chipId);
@@ -81,7 +88,7 @@ public class ResultProcessor {
   }
 
   public void processBonus(String username, String... bonuses) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("Processing bonus {} for {}", bonuses, userInfo);
     MkbAccount account = accountService.findAccountByUsername(username);
     for(String bonus : bonuses) {
@@ -96,9 +103,9 @@ public class ResultProcessor {
         LOG.info("{} has obtained {} coins", userInfo, value);
       } else if(key.contains("card")) {
         account.addNewCard(value);
-        LOG.info("{} has obtained {}", userInfo, card.gameGetCardDetail(username, value));
+        LOG.info("{} has obtained {}", userInfo, card.getCard(username, value));
       } else if(key.contains("chip")) {
-        ChipPuzzle chipPuzzle = chip.gameGetUserChip(username, false);
+        ChipPuzzle chipPuzzle = chip.getUserChip(username, false);
         if(chipPuzzle.addChip(value)) {
           userInfo.addTicket();
           LOG.info("{} has obtained chip fragment {} finishing chip collection and gain 1 ticket", userInfo, value);
@@ -112,9 +119,9 @@ public class ResultProcessor {
   }
 
   public UserMapStage processBattleMapResult(String username, BattleMap result, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
-    MapStageDef mapStageDef = mapStage.gameGetMapStageDef(username, mapStageDetailId);
-    UserMapStage userMapStage = mapStage.gameGetUserMapStage(username, mapStageDetailId, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
+    MapStageDef mapStageDef = mapStage.getMapStageDetail(username, mapStageDetailId);
+    UserMapStage userMapStage = mapStage.getUserMapStage(username, mapStageDetailId, false);
     if(result.win()) {
       userMapStage.clearCounterAttack();
     }
@@ -139,9 +146,9 @@ public class ResultProcessor {
 
 
   public MazeStatus processBattleMazeResult(String username, BattleNormal result, int mazeId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     BattleNormalExtData ext = result.getExtData();
-    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mazeId, false);
+    MazeStatus mazeStatus = maze.show(username, mazeId, false);
     if(ext != null) {
       BattleNormalExtData.Clear clear = ext.getClear();
       if(clear != null && clear.getIsClear() > 0) {
@@ -153,7 +160,7 @@ public class ResultProcessor {
         mazeStatus.clear();
         account.setMazeStatus(mazeId, mazeStatus);
         accountService.saveAccount(account);
-        LOG.info("{} has cleared maze {} and obtained {} coins and {} as clear maze reward", userInfo, mazeId, coins, card.gameGetCardDetail(username, cardId));
+        LOG.info("{} has cleared maze {} and obtained {} coins and {} as clear maze reward", userInfo, mazeId, coins, card.getCard(username, cardId));
       }
     }
     processBattleResult(username, result);

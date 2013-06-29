@@ -36,7 +36,7 @@ public class ActionScheduler {
   public void claimReward() throws MkbException {
     Iterable<MkbAccount> accounts = accountService.findAll(hasReward);
     for(MkbAccount account : accounts) {
-      user.gameFetchSalary(account.getUsername());
+      user.getUserSalary(account.getUsername());
     }
   }
 

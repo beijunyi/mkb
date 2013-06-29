@@ -68,9 +68,9 @@ public class EmulatorCore {
         profile = account.getProfile();
         if(profile == null) {
           LOG.error("Cannot find history profile for account {}. Now try to do web login", username);
-          profile = web.webLogin(username);
+          profile = web.login(username);
         }
-        login.gamePassportLogin(username);
+        login.passportLogin(username);
       }
       core = new MkbGame(profile.getHost(), getHttpClient(username), gameVersion.getPlatform(), gameVersion.getLanguage(), gameVersion.getVersionClient(), gameVersion.getVersionBuild());
       cores.put(username, core);
@@ -94,7 +94,7 @@ public class EmulatorCore {
           return response;
         }
         LOG.debug("Previous session is no longer valid. Now try passport login", username);
-        login.gamePassportLogin(username);
+        login.passportLogin(username);
         return gameDoAction(username, service, action, paramMap, clazz);
       }
       LOG.error("*** ERROR *** {}", responseString);

@@ -29,7 +29,7 @@ public class EmulatorMelee {
   @Autowired EmulatorUser user;
   @Autowired EmulatorCard card;
 
-  public boolean gameSetMeleeCardGroup(String username, int type, int prizeCardId, int... otherCardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean setCardGroup(String username, int type, int prizeCardId, int... otherCardId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     StringBuilder sb = new StringBuilder();
     for(int id : otherCardId) {
@@ -48,8 +48,8 @@ public class EmulatorMelee {
     return true;
   }
 
-  public MeleeInfo gameMeleeGetInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MeleeInfo getInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving melee event information", userInfo);
     MeleeGetInfoResponse response = core.gameDoAction(username, "melee.php", "GetInfo", null, MeleeGetInfoResponse.class);
     if(response.badRequest()) {
@@ -60,8 +60,8 @@ public class EmulatorMelee {
     return info;
   }
 
-  public MeleeApplyResult gameMeleeApply(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MeleeApplyResult apply(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is applying for a type {} melee event", userInfo, type);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("type", Integer.toString(type));
@@ -76,14 +76,14 @@ public class EmulatorMelee {
       if(sb.length() > 0) {
         sb.append(", ");
       }
-      sb.append(id).append(' ').append(card.gameGetCardDetail(username, Integer.parseInt(id)).getCardName());
+      sb.append(id).append(' ').append(card.getCard(username, Integer.parseInt(id)).getCardName());
     }
     LOG.info("{} obtained {} from type {} melee event", userInfo, sb, type);
     return result;
   }
 
-  public MeleeCardGroup gameMeleeGetCardGroup(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public MeleeCardGroup getCardGroup(String username, int type) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving type {} melee event card group information", userInfo, type);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("type", Integer.toString(type));

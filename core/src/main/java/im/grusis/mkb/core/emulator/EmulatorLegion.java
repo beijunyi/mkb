@@ -26,7 +26,7 @@ public class EmulatorLegion {
   @Autowired EmulatorCore core;
   @Autowired EmulatorUser user;
 
-  public Tech gameGetLegionTechs(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Tech getTech(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     LegionGetTechResponse response = core.gameDoAction(username, "legion.php", "GetTech", null, LegionGetTechResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -34,8 +34,8 @@ public class EmulatorLegion {
     return response.getData();
   }
 
-  public UserLegion gameGetUserLegion(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public UserLegion getUserLegion(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving user legion information", userInfo);
     MkbAccount account = accountService.findAccountByUsername(username);
     UserLegion userLegion;
@@ -52,8 +52,8 @@ public class EmulatorLegion {
     return userLegion;
   }
 
-  public Legions gameGetLegions(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public Legions getLegions(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving legions information", userInfo);
     LegionGetLegionsResponse response = core.gameDoAction(username, "legion.php", "GetLegions", null, LegionGetLegionsResponse.class);
     if(response.badRequest()) {
@@ -64,7 +64,7 @@ public class EmulatorLegion {
     return legions;
   }
 
-  public Members gameGetLegionMembers(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Members getMember(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     LegionGetMemberResponse response = core.gameDoAction(username, "legion.php", "GetMember", null, LegionGetMemberResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();

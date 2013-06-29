@@ -30,7 +30,7 @@ public class EmulatorStreng {
   @Autowired EmulatorUser user;
 
 
-  public Streng gameUpgradeCard(String username, long targetUserCardId, List<Long> sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Streng card(String username, long targetUserCardId, List<Long> sourceUserCardIds) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     StringBuilder sb = new StringBuilder();
     for(long sourceId : sourceUserCardIds) {

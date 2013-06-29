@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.bot;
+package im.grusis.mkb.eco.bot;
 
 import java.util.concurrent.Callable;
 
@@ -9,12 +9,6 @@ import org.slf4j.LoggerFactory;
 public abstract class MkbBot<T> implements Callable<T> {
 
   private static final Logger LOG = LoggerFactory.getLogger(MkbBot.class);
-
-  protected String username;
-
-  protected MkbBot(String username) {
-    this.username = username;
-  }
 
   protected abstract T bot() throws MkbException;
 

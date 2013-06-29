@@ -6,6 +6,10 @@ var ProductionService = function ($resource) {
 
     addProductionCriteria: function(cardCount, callback) {
       return $resource('/api/production/addcriteria').save(cardCount, callback);
+    },
+
+    getServers: function(callbeck) {
+      return $resource('/api/production/servers').get({}, callbeck);
     }
   }
 };

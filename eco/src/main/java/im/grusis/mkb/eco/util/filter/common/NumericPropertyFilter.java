@@ -41,6 +41,9 @@ public class NumericPropertyFilter implements AccountFilter {
       case Ticket:
         value = userInfo.getTicket();
         break;
+      case InviteNumber:
+        value = userInfo.getInviteNum();
+        break;
       default:
         return false;
     }

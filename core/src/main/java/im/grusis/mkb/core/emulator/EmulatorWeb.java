@@ -45,16 +45,16 @@ public class EmulatorWeb {
     return helper.sendRequest(passportRequest, clazz);
   }
 
-  public LoginToken webLogin(String username) throws WrongCredentialException {
+  public LoginToken login(String username) throws WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     if(account == null) {
       LOG.error("Cannot login account {}. There is no credential record in the database for this account.", username);
       throw new WrongCredentialException();
     }
-    return webLogin(username, account.getPassword(), account.getMac());
+    return login(username, account.getPassword(), account.getMac());
   }
 
-  public LoginToken webLogin(String username, String password) throws WrongCredentialException {
+  public LoginToken login(String username, String password) throws WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     String mac;
     if(account != null) {
@@ -62,10 +62,10 @@ public class EmulatorWeb {
     } else {
       mac = MacAddressHelper.getMacAddress();
     }
-    return webLogin(username, password, mac);
+    return login(username, password, mac);
   }
 
-  public LoginToken webLogin(String username, String password, String mac) throws WrongCredentialException {
+  public LoginToken login(String username, String password, String mac) throws WrongCredentialException {
     LOG.debug("Starting web login for account {}", username);
     if(username == null) {
       LOG.error("Cannot login account without a username");
@@ -101,7 +101,7 @@ public class EmulatorWeb {
     throw new WrongCredentialException();
   }
 
-  public boolean webReg(String username, String password, String mac, long serverId) throws UnknownErrorException {
+  public boolean register(String username, String password, String mac, long serverId) throws UnknownErrorException {
     if(archiveService.existUsername(username)) {
       LOG.debug("Cannot register account. Username {} is already in use", username);
       return false;
@@ -121,7 +121,7 @@ public class EmulatorWeb {
     return true;
   }
 
-  public Map<String, GameServer> webGetGameServers(boolean refresh) {
+  public Map<String, GameServer> getServers(boolean refresh) {
     Map<String, GameServer> servers;
     if(refresh || (servers = assetsService.getGameServerLookup()).isEmpty()) {
       ServerInformation serverInformation = passportRequest(new ServerRequest(), ServerInformationResponse.class).getReturnObjs();
@@ -133,7 +133,7 @@ public class EmulatorWeb {
   public GameServer webGetGameServerByDescription(String desc) {
     GameServer gameServer = assetsService.findGameServer(desc);
     if(gameServer == null) {
-      gameServer = webGetGameServers(true).get(desc);
+      gameServer = getServers(true).get(desc);
     }
     return gameServer;
   }

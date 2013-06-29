@@ -21,9 +21,9 @@ app.directive('jqGrid', function($window){
           };
 
           angular.element($window).bind('resize', function() {
-            table.setGridWidth($element.width() - 2).setGridHeight($element.height() - 55);
+            table.setGridWidth($element.width() - 2).setGridHeight($element.height() - 56);
           });
-          table.jqGrid(grid).setGridWidth($element.width() - 2).setGridHeight($element.height() - 55);
+          table.jqGrid(grid).setGridWidth($element.width() - 2).setGridHeight($element.height() - 56);
         }
       });
 

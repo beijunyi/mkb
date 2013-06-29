@@ -30,7 +30,7 @@ public class EmulatorUser {
   @Autowired ArchiveService archiveService;
   @Autowired EmulatorCore core;
 
-  public boolean gameSetNickname(String username, int sex, String inviteCode, String nickname) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean editNickName(String username, int sex, String inviteCode, String nickname) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     LoginToken token = core.getLoginToken(username);
     if(archiveService.existNickname(token.getServerName(), nickname)) {
       LOG.debug("Cannot set nickname for account {}. {} is already in use", username, nickname);
@@ -56,7 +56,7 @@ public class EmulatorUser {
     return true;
   }
 
-  public boolean gameSkipTutorial(String username, int type, int stage) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean editFresh(String username, int type, int stage) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
     paramMap.put("FreshStep", type + "_" + stage);
     UserEditFreshResponse response = core.gameDoAction(username, "user.php", "EditFresh", paramMap, UserEditFreshResponse.class);
@@ -71,7 +71,7 @@ public class EmulatorUser {
     return true;
   }
 
-  public boolean gameFetchSalary(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean getUserSalary(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserGetUserSalaryResponse response = core.gameDoAction(username, "user.php", "GetUserSalary", null, UserGetUserSalaryResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -79,7 +79,7 @@ public class EmulatorUser {
     return true;
   }
 
-  public boolean gameAcceptSalary(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean awardSalary(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserAwardSalaryResponse response = core.gameDoAction(username, "user.php", "AwardSalary", null, UserAwardSalaryResponse.class);
     if(response.badRequest()) {
       throw new UnknownErrorException();
@@ -87,7 +87,7 @@ public class EmulatorUser {
     return true;
   }
 
-  public UserInfo gameGetUserInfo(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public UserInfo getUserInfo(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MkbAccount account = accountService.findAccountByUsername(username);
     UserInfo userInfo;
     if(refresh || (userInfo = account.getUserInfo()) == null) {

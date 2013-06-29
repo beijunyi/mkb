@@ -32,7 +32,7 @@ public class EventScheduler {
     Collection<MkbAccount> mkbAccounts = accountService.getAll();
     int count = 0;
     for(MkbAccount account : mkbAccounts) {
-      UserInfo userInfo = user.gameGetUserInfo(account.getUsername(), false);
+      UserInfo userInfo = user.getUserInfo(account.getUsername(), false);
       if(userInfo != null) {
         int energy = userInfo.getEnergy();
         if(energy < 50) {
@@ -51,7 +51,7 @@ public class EventScheduler {
     Collection<MkbAccount> mkbAccounts = accountService.getAll();
     int count = 0;
     for(MkbAccount account : mkbAccounts) {
-      UserInfo userInfo = user.gameGetUserInfo(account.getUsername(), false);
+      UserInfo userInfo = user.getUserInfo(account.getUsername(), false);
       int energy = userInfo.getEnergy();
       if(energy < 70) {
         energy += 20;

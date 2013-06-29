@@ -26,7 +26,7 @@ public class UpdateScheduler {
   public void refreshUserInfo() throws MkbException {
     Iterable<MkbAccount> mkbAccounts = accountService.getAll();
     for(MkbAccount account : mkbAccounts) {
-      user.gameGetUserInfo(account.getUsername(), true);
+      user.getUserInfo(account.getUsername(), true);
     }
   }
 
@@ -34,7 +34,7 @@ public class UpdateScheduler {
   public void refreshCardGroup() throws MkbException {
     Iterable<MkbAccount> mkbAccounts = accountService.getAll();
     for(MkbAccount account : mkbAccounts) {
-      card.gameGetUserCards(account.getUsername(), true);
+      card.getUserCards(account.getUsername(), true);
     }
   }
 
@@ -50,7 +50,7 @@ public class UpdateScheduler {
   public void refreshChip() throws MkbException {
     Iterable<MkbAccount> accounts = accountService.getAll();
     for(MkbAccount account : accounts) {
-      chip.gameGetUserChip(account.getUsername(), true);
+      chip.getUserChip(account.getUsername(), true);
     }
   }
 

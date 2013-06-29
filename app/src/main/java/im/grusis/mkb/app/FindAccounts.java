@@ -20,14 +20,14 @@ public class FindAccounts {
     EmulatorMaze maze = ctx.getBean(EmulatorMaze.class);
     EmulatorUser user = ctx.getBean(EmulatorUser.class);
 
-//    core.webLogin("tug100", "mewhome123", MacAddressHelper.getMacAddress());
-//    core.gameGetUserInfo(username, true);
+//    core.login("tug100", "mewhome123", MacAddressHelper.getMacAddress());
+//    core.getUserInfo(username, true);
 //    ase.clearCounterAttacks(username, 5);
-    maze.gameGetMazeStatus(username, 8, true);
-    maze.gameGetMazeStatus(username, 7, true);
-    maze.gameGetMazeStatus(username, 6, true);
-    maze.gameGetMazeStatus(username, 5, true);
-    user.gameAcceptSalary(username);
+    maze.show(username, 8, true);
+    maze.show(username, 7, true);
+    maze.show(username, 6, true);
+    maze.show(username, 5, true);
+    user.awardSalary(username);
     ase.clearMaze(username,8, 2, true, 0);
     ase.clearMaze(username,7, 2, true, 0);
     ase.clearMaze(username,6, 2, true, 0);

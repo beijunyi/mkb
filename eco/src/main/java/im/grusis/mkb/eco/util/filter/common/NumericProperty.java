@@ -9,5 +9,6 @@ public enum NumericProperty {
   Level,
   Coins,
   Cash,
-  Ticket
+  Ticket,
+  InviteNumber,
 }

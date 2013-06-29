@@ -24,8 +24,8 @@ public class EmulatorLegionAttack {
   @Autowired EmulatorCore core;
   @Autowired EmulatorUser user;
 
-  public LegionAttackInfo gameLegionAttackInfo(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+  public LegionAttackInfo info(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is retrieving legion attack info", userInfo);
     LegionAttackInfoResponse response = core.gameDoAction(username, "legionattack.php", "info", null, LegionAttackInfoResponse.class);
     if(response.badRequest()) {

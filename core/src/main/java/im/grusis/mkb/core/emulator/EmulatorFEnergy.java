@@ -30,7 +30,7 @@ public class EmulatorFEnergy {
   @Autowired EmulatorUser user;
   @Autowired EmulatorFriend friend;
 
-  public boolean gameSendEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean sendFEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("Fid", Long.toString(fid));
     FEnergySendFEnergyResponse response = core.gameDoAction(username, "fenergy.php", "SendFEnergy", params, FEnergySendFEnergyResponse.class);
@@ -43,11 +43,11 @@ public class EmulatorFEnergy {
       }
       throw new UnknownErrorException();
     }
-    friend.gameGetFriend(username, fid).setFEnergySend(0);
+    friend.getFriend(username, fid).setFEnergySend(0);
     return true;
   }
 
-  public boolean gameAcceptEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean getFEnergy(String username, long fid) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("Fid", Long.toString(fid));
     FEnergyGetFEnergyResponse response = core.gameDoAction(username, "fenergy.php", "GetFEnergy", params, FEnergyGetFEnergyResponse.class);
@@ -60,7 +60,7 @@ public class EmulatorFEnergy {
       }
       throw new UnknownErrorException();
     }
-    friend.gameGetFriend(username, fid).setFEnergySurplus(0);
+    friend.getFriend(username, fid).setFEnergySurplus(0);
     MkbAccount account = accountService.findAccountByUsername(username);
     account.acceptEnergyFrom(fid);
     accountService.saveAccount(account);

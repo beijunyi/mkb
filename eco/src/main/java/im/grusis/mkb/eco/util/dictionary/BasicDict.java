@@ -23,6 +23,7 @@ public class BasicDict implements MkbDictionary {
     this.lengthMax = lengthMax;
   }
 
+
   @Override
   public void init() {
     int flex = MkbDictionary.MaxUsernameLength - prefix.length();
@@ -54,4 +55,15 @@ public class BasicDict implements MkbDictionary {
     return prefix + sb.toString();
   }
 
+  public String getPrefix() {
+    return prefix;
+  }
+
+  public void setCount(int count) {
+    this.count = count;
+  }
+
+  public int getCount() {
+    return count;
+  }
 }

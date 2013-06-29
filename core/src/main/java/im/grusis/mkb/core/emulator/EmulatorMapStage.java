@@ -25,10 +25,10 @@ public class EmulatorMapStage {
   @Autowired EmulatorCore core;
   @Autowired ResultProcessor resultProcessor;
 
-  public MapStageDef gameGetMapStageDef(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public MapStageDef getMapStageDetail(String username, int stageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStageDef mapStageDef = assetsService.findMapStageDetail(stageDetailId);
     if(mapStageDef == null) {
-      gameGetMapDefs(username, true);
+      getMapStageAll(username, true);
       mapStageDef = assetsService.findMapStageDetail(stageDetailId);
       if(mapStageDef == null) {
         throw new UnknownErrorException();
@@ -37,17 +37,14 @@ public class EmulatorMapStage {
     return mapStageDef;
   }
 
-  public UserMapStage gameGetUserMapStage(String username, int userMapStageDetailId, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public UserMapStage getUserMapStage(String username, int userMapStageDetailId, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, UserMapStage> stages = gameGetUserMapStages(username, refresh);
     return stages.get(userMapStageDetailId);
   }
 
-
-
-
-  private Level gameFindLevel(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    MapStageDef stage = gameGetMapStageDef(username, mapStageDetailId);
-    UserMapStage userStage = gameGetUserMapStage(username, mapStageDetailId, false);
+  private Level findCurrentLevel(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    MapStageDef stage = getMapStageDetail(username, mapStageDetailId);
+    UserMapStage userStage = getUserMapStage(username, mapStageDetailId, false);
     List<Level> levels = stage.getLevels();
     int finished = userStage.getFinishedStage();
     if(finished >= levels.size()) {
@@ -72,7 +69,7 @@ public class EmulatorMapStage {
     return stages;
   }
 
-  public UserMapStage gameMapBattleAuto(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public UserMapStage editUserMapStages(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     params.put("isManual", Integer.toString(0));
@@ -84,13 +81,13 @@ public class EmulatorMapStage {
       throw new UnknownErrorException();
     }
     MkbAccount account = accountService.findAccountByUsername(username);
-    account.consumeEnergy(gameFindLevel(username, mapStageDetailId).getEnergyExpend());
+    account.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExpend());
     BattleMap result = response.getData();
     resultProcessor.processBattleMapResult(username, result, mapStageDetailId);
-    return gameGetUserMapStage(username, mapStageDetailId, false);
+    return getUserMapStage(username, mapStageDetailId, false);
   }
 
-  public boolean gameAcceptStageClearReward(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public boolean awardClear(String username, int mapStageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageId", Integer.toString(mapStageId));
     MapStageAwardClearResponse response = core.gameDoAction(username, "mapstage.php", "AwardClear", params, MapStageAwardClearResponse.class);
@@ -100,19 +97,19 @@ public class EmulatorMapStage {
     return true;
   }
 
-  public Explore gameExplore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Explore explore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     MapStageExploreResponse response = core.gameDoAction(username, "mapstage.php", "Explore", params, MapStageExploreResponse.class);
     MkbAccount account = accountService.findAccountByUsername(username);
-    account.consumeEnergy(gameFindLevel(username, mapStageDetailId).getEnergyExplore());
+    account.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExplore());
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }
     return response.getData();
   }
 
-  public Map<Integer, MapDef> gameGetMapDefs(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Map<Integer, MapDef> getMapStageAll(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, MapDef> stages;
     if(refresh || (stages = assetsService.getMapStageLookup()).isEmpty()) {
       MapStageGetMapStageAllResponse response = core.gameDoAction(username, "mapstage.php", "GetMapStageALL&stageNum=" + gameVersion.getMapMax(), null, MapStageGetMapStageAllResponse.class);
@@ -124,10 +121,10 @@ public class EmulatorMapStage {
     return stages;
   }
 
-  public MapDef gameGetMapDef(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public MapDef getMapStage(String username, int stageId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapDef mapStage = assetsService.findMapStage(stageId);
     if(mapStage == null) {
-      mapStage = gameGetMapDefs(username, true).get(stageId);
+      mapStage = getMapStageAll(username, true).get(stageId);
       if(mapStage == null) {
         throw new UnknownErrorException();
       }

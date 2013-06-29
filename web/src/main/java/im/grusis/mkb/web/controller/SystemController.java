@@ -71,10 +71,10 @@ public class SystemController {
   @Path("/accounts")
   public Response findAccounts(FindAccountRequest request) throws MkbException {
     List<AccountView> ret = new ArrayList<AccountView>();
-    Map<String, GameServer> servers = web.webGetGameServers(false);
+    Map<String, GameServer> servers = web.getServers(false);
     for(MkbAccount a : accountService.findAll(createFilter(request.getFilters()))) {
       String un = a.getUsername();
-      UserInfo ui = user.gameGetUserInfo(un, false);
+      UserInfo ui = user.getUserInfo(un, false);
       ret.add(new AccountView(servers.get(a.getServer()).getGsName(), un, ui.getNickName(), ui.getLevel()));
     }
     return Response.ok(new FindAccountResponse(ret)).build();

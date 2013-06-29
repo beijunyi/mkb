@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.bot;
+package im.grusis.mkb.eco.bot;
 
 import im.grusis.mkb.core.emulator.EmulatorBoss;
 import im.grusis.mkb.core.emulator.game.model.basic.BossFight;
@@ -11,10 +11,11 @@ public class BossBot extends MkbBot<BossUpdate> {
 
   private final static Logger LOG = LoggerFactory.getLogger(BossBot.class);
 
+  private String username;
   private EmulatorBoss boss;
 
   public BossBot(String username, EmulatorBoss boss) {
-    super(username);
+    this.username = username;
     this.boss = boss;
   }
 
@@ -22,7 +23,7 @@ public class BossBot extends MkbBot<BossUpdate> {
   synchronized protected BossUpdate bot() throws MkbException {
     BossUpdate bossUpdate = null;
     do {
-      BossFight bossFight = boss.gameBossFight(username);
+      BossFight bossFight = boss.fight(username);
       if(bossFight != null) {
         int interval = bossFight.getCanFightTime();
         try {
@@ -31,7 +32,7 @@ public class BossBot extends MkbBot<BossUpdate> {
           LOG.error("*** UNKNOWN ERROR ***", e);
         }
       } else {
-        bossUpdate = boss.gameBossGetBoss(username);
+        bossUpdate = boss.getBoss(username);
       }
     } while(bossUpdate == null || (bossUpdate.getBoss().getBossCurrentHp() > 0 && bossUpdate.getBossFleeTime() > 0));
     return bossUpdate;

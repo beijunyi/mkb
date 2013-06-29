@@ -1,7 +1,6 @@
 package im.grusis.mkb.core.emulator;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import im.grusis.mkb.core.emulator.game.model.basic.Goods;
 import im.grusis.mkb.core.emulator.game.model.basic.GoodsList;
@@ -11,7 +10,6 @@ import im.grusis.mkb.core.emulator.game.model.response.ShopGetGoodsResponse;
 import im.grusis.mkb.core.exception.ServerNotAvailableException;
 import im.grusis.mkb.core.exception.UnknownErrorException;
 import im.grusis.mkb.core.exception.WrongCredentialException;
-import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.service.AssetsService;
 import org.slf4j.Logger;
@@ -28,10 +26,11 @@ public class EmulatorShop {
   @Autowired AssetsService assetsService;
   @Autowired EmulatorCore core;
   @Autowired EmulatorUser user;
+  @Autowired ResultProcessor resultProcessor;
 
 
 
-  public GoodsList gameShopGetGoodsList(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public GoodsList getGoods(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     GoodsList goodsList;
     if(refresh || (goodsList = assetsService.getGoods()) == null) {
       ShopGetGoodsResponse response = core.gameDoAction(username, "shop.php", "GetGoods", null, ShopGetGoodsResponse.class);
@@ -44,10 +43,10 @@ public class EmulatorShop {
     return goodsList;
   }
 
-  public Goods gameShopGetGoods(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+  public Goods getGoods(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Goods goods = assetsService.findGoods(goodsId);
     if(goods == null) {
-      gameShopGetGoodsList(username, true);
+      getGoods(username, true);
       goods = assetsService.findGoods(goodsId);
       if(goods == null) {
         throw new UnknownErrorException();
@@ -56,9 +55,9 @@ public class EmulatorShop {
     return goods;
   }
 
-  public String gamePurchase(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
-    Goods goods = gameShopGetGoods(username, goodsId);
+  public List<Integer> buy(String username, int goodsId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
+    Goods goods = getGoods(username, goodsId);
     LOG.info("{} is purchasing {}", userInfo, goods);
 
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
@@ -73,7 +72,7 @@ public class EmulatorShop {
       return null;
     }
     LOG.info("{} has successfully purchased {} for {}", userInfo, goods, goods.getCostDescription());
-    return response.getData();
+    return resultProcessor.processGoodsPurchaseResult(username, response.getData());
   }
 
 }

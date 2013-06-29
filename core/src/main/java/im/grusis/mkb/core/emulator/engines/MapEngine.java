@@ -44,17 +44,17 @@ public class MapEngine {
   }
 
   public Set<UserMapStage> clearCounterAttackMapStages(String username, List<Integer> stageIds, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is clearing counter attacks at stage {}", userInfo, StringUtils.join(stageIds, ", "));
     Set<UserMapStage> ret = new TreeSet<UserMapStage>();
     for(int sid : stageIds) {
       int count = 0;
-      MapStageDef msd = mapStage.gameGetMapStageDef(username, sid);
+      MapStageDef msd = mapStage.getMapStageDetail(username, sid);
       while(true) {
-        UserMapStage ums = mapStage.gameMapBattleAuto(username, sid);
+        UserMapStage ums = mapStage.editUserMapStages(username, sid);
         if(ums == null) {
           LOG.warn("{} cannot clear counter attack at {} due to insufficient energy and incorrect energy record", userInfo, ums);
-          user.gameGetUserInfo(username, true);
+          user.getUserInfo(username, true);
           return ret;
         }
         if(!ums.isCounterAttacked()) {
@@ -81,21 +81,21 @@ public class MapEngine {
     for(Map.Entry<Integer, Integer> m : dependency.entrySet()) {
       if(stages.get(m.getValue()).getFinishedStage() > 0) {
         int mapId = m.getKey();
-        ret.put(mapId, maze.gameGetMazeStatus(username, mapId, false));
+        ret.put(mapId, maze.show(username, mapId, false));
       }
     }
     return ret;
   }
 
   public MazeStatus clearMaze(String username, int mazeId, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is clearing maze {}", userInfo, mazeId);
-    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mazeId, false);
+    MazeStatus mazeStatus = maze.show(username, mazeId, false);
     if(mazeStatus.isMazeClear()) {
       return mazeStatus;
     }
     int layer = mazeStatus.getLayer();
-    MazeInfo currentLayer = maze.gameGetMazeLayer(username, mazeId, layer);
+    MazeInfo currentLayer = maze.info(username, mazeId, layer);
     int maxLayer = currentLayer.getTotalLayer();
     while(true) {
       List<Integer> enemies = currentLayer.getEnemyIndices();
@@ -106,7 +106,7 @@ public class MapEngine {
         }
         int count = 0;
         while(true) {
-          BattleNormal battle = maze.gameMazeBattleAuto(username, mazeId, layer, e);
+          BattleNormal battle = maze.battle(username, mazeId, layer, e);
           if(battle == null) {
             LOG.info("{} cannot clear maze {} due to insufficient energy", userInfo, mazeId);
             return mazeStatus;
@@ -131,24 +131,24 @@ public class MapEngine {
       if(layer > maxLayer) {
         layer = 1;
       }
-      currentLayer = maze.gameGetMazeLayer(username, mazeId, layer);
+      currentLayer = maze.info(username, mazeId, layer);
     }
   }
 
   public MazeStatus resetAndClearMaze(String username, int mazeId, int maxTry, int resetBudget) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = user.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.getUserInfo(username, false);
     LOG.debug("{} is starting automatic maze reset and clear process at maze {} with reset budget", userInfo, mazeId, resetBudget);
     if(userInfo.getCash() < resetBudget) {
       resetBudget = userInfo.getCash();
       LOG.debug("{} has a reset budget that is higher than the cash it owns", userInfo, mazeId, resetBudget);
     }
-    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mazeId, false);
+    MazeStatus mazeStatus = maze.show(username, mazeId, false);
     int resetTotal = 0;
     while(true) {
       if(mazeStatus.isMazeClear()) {
         if(mazeStatus.allowFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
           resetTotal += mazeStatus.getResetCash();
-          mazeStatus = maze.gameResetMaze(username, mazeId);
+          mazeStatus = maze.reset(username, mazeId);
         } else {
           break;
         }
