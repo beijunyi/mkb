@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator;
  * Date: 13-6-1
  * Time: 上午12:34
  */
-public class TemporaryProfile {
+public class LoginToken {
   private String serverName;
   private String host;
   private String username;
@@ -15,7 +15,7 @@ public class TemporaryProfile {
   private String key;
   private long time;
 
-  public TemporaryProfile(String serverName, String host, String username, String password, long uid, String mac, String key, long time) {
+  public LoginToken(String serverName, String host, String username, String password, long uid, String mac, String key, long time) {
     this.serverName = serverName;
     this.host = host;
     this.username = username;

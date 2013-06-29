@@ -2,7 +2,9 @@ package im.grusis.mkb.core.emulator.engines;
 
 import java.util.*;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorMapStage;
+import im.grusis.mkb.core.emulator.EmulatorMaze;
+import im.grusis.mkb.core.emulator.EmulatorUser;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.exception.ServerNotAvailableException;
 import im.grusis.mkb.core.exception.UnknownErrorException;
@@ -25,10 +27,12 @@ public class MapEngine {
   private static final Logger LOG = LoggerFactory.getLogger(MapEngine.class);
 
   @Autowired AssetsService assetsService;
-  @Autowired MkbEmulator emulator;
+  @Autowired EmulatorMapStage mapStage;
+  @Autowired EmulatorUser user;
+  @Autowired EmulatorMaze maze;
 
   public Set<UserMapStage> findCounterAttackedMapStages(String username) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    Map<Integer, UserMapStage> stageMap = emulator.gameGetUserMapStages(username, true);
+    Map<Integer, UserMapStage> stageMap = mapStage.gameGetUserMapStages(username, true);
     Collection<UserMapStage> stages = stageMap.values();
     Set<UserMapStage> ret = new TreeSet<UserMapStage>();
     for(UserMapStage s : stages) {
@@ -40,17 +44,17 @@ public class MapEngine {
   }
 
   public Set<UserMapStage> clearCounterAttackMapStages(String username, List<Integer> stageIds, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = emulator.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.gameGetUserInfo(username, false);
     LOG.debug("{} is clearing counter attacks at stage {}", userInfo, StringUtils.join(stageIds, ", "));
     Set<UserMapStage> ret = new TreeSet<UserMapStage>();
     for(int sid : stageIds) {
       int count = 0;
-      MapStageDef msd = emulator.gameGetMapStageDef(username, sid);
+      MapStageDef msd = mapStage.gameGetMapStageDef(username, sid);
       while(true) {
-        UserMapStage ums = emulator.gameMapBattleAuto(username, sid);
+        UserMapStage ums = mapStage.gameMapBattleAuto(username, sid);
         if(ums == null) {
           LOG.warn("{} cannot clear counter attack at {} due to insufficient energy and incorrect energy record", userInfo, ums);
-          emulator.gameGetUserInfo(username, true);
+          user.gameGetUserInfo(username, true);
           return ret;
         }
         if(!ums.isCounterAttacked()) {
@@ -71,53 +75,53 @@ public class MapEngine {
   }
 
   public Map<Integer, MazeStatus> getMazeStatus(String username) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    Map<Integer, UserMapStage> stages = emulator.gameGetUserMapStages(username, false);
+    Map<Integer, UserMapStage> stages = mapStage.gameGetUserMapStages(username, false);
     Map<Integer, Integer> dependency = assetsService.getMazeDependency();
     Map<Integer, MazeStatus> ret = new TreeMap<Integer, MazeStatus>();
-    for(Map.Entry<Integer, Integer> maze : dependency.entrySet()) {
-      if(stages.get(maze.getValue()).getFinishedStage() > 0) {
-        int mapId = maze.getKey();
-        ret.put(mapId, emulator.gameGetMazeStatus(username, mapId, false));
+    for(Map.Entry<Integer, Integer> m : dependency.entrySet()) {
+      if(stages.get(m.getValue()).getFinishedStage() > 0) {
+        int mapId = m.getKey();
+        ret.put(mapId, maze.gameGetMazeStatus(username, mapId, false));
       }
     }
     return ret;
   }
 
   public MazeStatus clearMaze(String username, int mazeId, int maxTry) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = emulator.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.gameGetUserInfo(username, false);
     LOG.debug("{} is clearing maze {}", userInfo, mazeId);
-    MazeStatus maze = emulator.gameGetMazeStatus(username, mazeId, false);
-    if(maze.isMazeClear()) {
-      return maze;
+    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mazeId, false);
+    if(mazeStatus.isMazeClear()) {
+      return mazeStatus;
     }
-    int layer = maze.getLayer();
-    MazeInfo currentLayer = emulator.gameGetMazeLayer(username, mazeId, layer);
+    int layer = mazeStatus.getLayer();
+    MazeInfo currentLayer = maze.gameGetMazeLayer(username, mazeId, layer);
     int maxLayer = currentLayer.getTotalLayer();
     while(true) {
       List<Integer> enemies = currentLayer.getEnemyIndices();
       for(int e : enemies) {
         if(userInfo.getEnergy() < MazeInfo.EnergyExpend) {
           LOG.info("{} cannot clear maze {} due to insufficient energy", userInfo, mazeId);
-          return maze;
+          return mazeStatus;
         }
         int count = 0;
         while(true) {
-          BattleNormal battle = emulator.gameMazeBattleAuto(username, mazeId, layer, e);
+          BattleNormal battle = maze.gameMazeBattleAuto(username, mazeId, layer, e);
           if(battle == null) {
             LOG.info("{} cannot clear maze {} due to insufficient energy", userInfo, mazeId);
-            return maze;
+            return mazeStatus;
           }
           if(battle.lost()) {
             count++;
             if(count > maxTry) {
               LOG.info("{} cannot clear maze {} due to maximum try times {}", userInfo, mazeId, maxTry);
-              return maze;
+              return mazeStatus;
             }
           } else {
             LOG.info("{} has defeated enemy {} on level {}", userInfo, battle.getDefendPlayer(), layer);
             if(battle.mazeClear()) {
               LOG.info("{} has cleared maze {}", userInfo, mazeId);
-              return maze;
+              return mazeStatus;
             }
             break;
           }
@@ -127,24 +131,24 @@ public class MapEngine {
       if(layer > maxLayer) {
         layer = 1;
       }
-      currentLayer = emulator.gameGetMazeLayer(username, mazeId, layer);
+      currentLayer = maze.gameGetMazeLayer(username, mazeId, layer);
     }
   }
 
   public MazeStatus resetAndClearMaze(String username, int mazeId, int maxTry, int resetBudget) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    UserInfo userInfo = emulator.gameGetUserInfo(username, false);
+    UserInfo userInfo = user.gameGetUserInfo(username, false);
     LOG.debug("{} is starting automatic maze reset and clear process at maze {} with reset budget", userInfo, mazeId, resetBudget);
     if(userInfo.getCash() < resetBudget) {
       resetBudget = userInfo.getCash();
       LOG.debug("{} has a reset budget that is higher than the cash it owns", userInfo, mazeId, resetBudget);
     }
-    MazeStatus mazeStatus = emulator.gameGetMazeStatus(username, mazeId, false);
+    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mazeId, false);
     int resetTotal = 0;
     while(true) {
       if(mazeStatus.isMazeClear()) {
         if(mazeStatus.allowFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
           resetTotal += mazeStatus.getResetCash();
-          mazeStatus = emulator.gameResetMaze(username, mazeId);
+          mazeStatus = maze.gameResetMaze(username, mazeId);
         } else {
           break;
         }

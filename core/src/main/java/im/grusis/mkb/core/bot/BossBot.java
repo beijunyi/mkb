@@ -1,38 +1,39 @@
 package im.grusis.mkb.core.bot;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorBoss;
 import im.grusis.mkb.core.emulator.game.model.basic.BossFight;
 import im.grusis.mkb.core.emulator.game.model.basic.BossUpdate;
-import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
 import im.grusis.mkb.core.exception.MkbException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BossBot extends MkbBot<Integer> {
+public class BossBot extends MkbBot<BossUpdate> {
 
   private final static Logger LOG = LoggerFactory.getLogger(BossBot.class);
 
-  public BossBot(String username, MkbEmulator emulator) {
-    super(username, emulator);
+  private EmulatorBoss boss;
+
+  public BossBot(String username, EmulatorBoss boss) {
+    super(username);
+    this.boss = boss;
   }
 
   @Override
-  synchronized protected Integer bot() throws MkbException {
+  synchronized protected BossUpdate bot() throws MkbException {
     BossUpdate bossUpdate = null;
     do {
-      BossFight bossFight = emulator.gameBossFight(username);
+      BossFight bossFight = boss.gameBossFight(username);
       if(bossFight != null) {
         int interval = bossFight.getCanFightTime();
         try {
           wait(interval * 1000);
         } catch(InterruptedException e) {
-          UserInfo userInfo = emulator.gameGetUserInfo(username, false);
-          LOG.error(userInfo + " cannot continue with boss bot", e);
+          LOG.error("*** UNKNOWN ERROR ***", e);
         }
       } else {
-        bossUpdate = emulator.gameGetBossUpdate(username);
+        bossUpdate = boss.gameBossGetBoss(username);
       }
-    } while(bossUpdate == null || false);
-    return null;
+    } while(bossUpdate == null || (bossUpdate.getBoss().getBossCurrentHp() > 0 && bossUpdate.getBossFleeTime() > 0));
+    return bossUpdate;
   }
 }

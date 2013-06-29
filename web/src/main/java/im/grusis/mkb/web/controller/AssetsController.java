@@ -6,7 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.*;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.service.AssetsService;
@@ -24,17 +24,20 @@ import org.springframework.stereotype.Controller;
 public class AssetsController {
   private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(AssetsController.class);
 
-  @Autowired MkbEmulator emulator;
+  @Autowired EmulatorMapStage mapStage;
+  @Autowired EmulatorCard card;
+  @Autowired EmulatorRune rune;
+  @Autowired EmulatorShop shop;
   @Autowired AssetsService assetsService;
 
   @GET
   @Path("/refresh")
   public Response refreshAssets(@QueryParam("username") String username) throws MkbException {
-    emulator.gameGetMapDefs(username, true);
-    emulator.gameGetSkills(username, true);
-    emulator.gameGetCards(username, true);
-    emulator.gameGetRunes(username, true);
-    emulator.gameShopGetGoodsList(username, true);
+    mapStage.gameGetMapDefs(username, true);
+    card.gameGetSkills(username, true);
+    card.gameGetCards(username, true);
+    rune.gameGetRunes(username, true);
+    shop.gameShopGetGoodsList(username, true);
     return Response.ok().build();
   }
 

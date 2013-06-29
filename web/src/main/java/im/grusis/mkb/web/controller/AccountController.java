@@ -3,7 +3,7 @@ package im.grusis.mkb.web.controller;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.*;
 import im.grusis.mkb.core.emulator.engines.MapEngine;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
@@ -25,7 +25,13 @@ public class AccountController {
   private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(AccountController.class);
 
   @Autowired private AccountService accountService;
-  @Autowired private MkbEmulator emulator;
+  @Autowired private EmulatorWeb web;
+  @Autowired private EmulatorLogin login;
+  @Autowired private EmulatorUser user;
+  @Autowired private EmulatorFriend friend;
+  @Autowired private EmulatorCard card;
+  @Autowired private EmulatorMaze maze;
+  @Autowired private EmulatorMapStage mapStage;
   @Autowired private MapEngine mapEngine;
 
   @GET
@@ -33,28 +39,28 @@ public class AccountController {
   public Response login(@QueryParam("username") String username, @QueryParam("password") String password, @QueryParam("refresh") boolean refresh) throws MkbException {
     MkbAccount account = accountService.findAccountByUsername(username);
     if(account == null || (!account.getPassword().equals(password) && !password.isEmpty())) {
-      emulator.webLogin(username, password);
-      emulator.gamePassportLogin(username);
+      web.webLogin(username, password);
+      login.gamePassportLogin(username);
     }
-    return Response.ok(emulator.gameGetUserInfo(username, false)).build();
+    return Response.ok(user.gameGetUserInfo(username, false)).build();
   }
 
   @GET
   @Path("/refresh")
   public Response refreshUserInfo(@QueryParam("username") String username, @QueryParam("remote") boolean remote) throws MkbException {
-    return Response.ok(emulator.gameGetUserInfo(username, remote)).build();
+    return Response.ok(user.gameGetUserInfo(username, remote)).build();
   }
 
   @GET
   @Path("/friends")
   public Response getFriends(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
-    return Response.ok(emulator.gameGetFriends(username, refresh)).build();
+    return Response.ok(friend.gameGetFriends(username, refresh)).build();
   }
 
   @GET
   @Path("/cards")
   public Response getCards(@QueryParam("username") String username, @QueryParam("refresh") boolean refresh) throws MkbException {
-    return Response.ok(emulator.gameGetUserCards(username, refresh)).build();
+    return Response.ok(card.gameGetUserCards(username, refresh)).build();
   }
 
   @GET
@@ -66,20 +72,20 @@ public class AccountController {
   @GET
   @Path("/resetmaze")
   public Response resetMaze(@QueryParam("username") String username, @QueryParam("id") int id) throws MkbException {
-    return Response.ok(emulator.gameResetMaze(username, id)).build();
+    return Response.ok(maze.gameResetMaze(username, id)).build();
   }
 
   @GET
   @Path("/refreshmaze")
   public Response refreshMaze(@QueryParam("username") String username, @QueryParam("id") int id,  @QueryParam("refresh") boolean refresh) throws MkbException {
-    return Response.ok(emulator.gameGetMazeStatus(username, id, refresh)).build();
+    return Response.ok(maze.gameGetMazeStatus(username, id, refresh)).build();
   }
 
   @GET
   @Path("/clearmaze")
   public Response clearMaze(@QueryParam("username") String username, @QueryParam("id") int id, @QueryParam("max") int max) throws MkbException {
     mapEngine.clearMaze(username, id, max);
-    return Response.ok(emulator.gameGetMazeStatus(username, id, false)).build();
+    return Response.ok(maze.gameGetMazeStatus(username, id, false)).build();
   }
 
   @GET
@@ -97,8 +103,8 @@ public class AccountController {
   @GET
   @Path("/attack")
   public Response attackStage(@QueryParam("username") String username, @QueryParam("id") int stageId) throws MkbException {
-    emulator.gameMapBattleAuto(username, stageId);
-    return Response.ok(emulator.gameGetMapStageDef(username, stageId)).build();
+    mapStage.gameMapBattleAuto(username, stageId);
+    return Response.ok(mapStage.gameGetMapStageDef(username, stageId)).build();
   }
 }
 

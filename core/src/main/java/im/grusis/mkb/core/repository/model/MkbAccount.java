@@ -2,7 +2,7 @@ package im.grusis.mkb.core.repository.model;
 
 import java.util.*;
 
-import im.grusis.mkb.core.emulator.TemporaryProfile;
+import im.grusis.mkb.core.emulator.LoginToken;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 
 /**
@@ -21,7 +21,7 @@ public class MkbAccount {
   private Map<Long, BattleRecord> battleRecordMap;
   private Map<Integer, MazeStatus> mazeStatuses;
 
-  private TemporaryProfile profile;
+  private LoginToken profile;
   private long lastAction;
 
   private UserInfo userInfo;
@@ -162,11 +162,11 @@ public class MkbAccount {
     }
   }
 
-  public TemporaryProfile getProfile() {
+  public LoginToken getProfile() {
     return profile;
   }
 
-  public void setProfile(TemporaryProfile profile) {
+  public void setProfile(LoginToken profile) {
     this.profile = profile;
   }
 

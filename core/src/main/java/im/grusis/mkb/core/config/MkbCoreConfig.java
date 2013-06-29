@@ -15,6 +15,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @Configuration
 @PropertySource("classpath:/core.properties")
 @ComponentScan(basePackageClasses = MkbCoreMarker.class)
+@Import(EmulatorConfig.class)
 public class MkbCoreConfig {
 
   @Bean

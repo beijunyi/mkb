@@ -5,7 +5,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorUser;
+import im.grusis.mkb.core.emulator.EmulatorWeb;
 import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
 import im.grusis.mkb.core.emulator.web.model.basic.GameServer;
 import im.grusis.mkb.core.exception.MkbException;
@@ -31,7 +32,8 @@ import org.springframework.stereotype.Controller;
 public class SystemController {
 
   @Autowired AccountService accountService;
-  @Autowired MkbEmulator emulator;
+  @Autowired EmulatorUser user;
+  @Autowired EmulatorWeb web;
   @Autowired ArchiveService archiveService;
 
   private AccountFilter createFilter(List<Map<String, String>> filterMap) {
@@ -69,10 +71,10 @@ public class SystemController {
   @Path("/accounts")
   public Response findAccounts(FindAccountRequest request) throws MkbException {
     List<AccountView> ret = new ArrayList<AccountView>();
-    Map<String, GameServer> servers = emulator.webGetGameServers(false);
+    Map<String, GameServer> servers = web.webGetGameServers(false);
     for(MkbAccount a : accountService.findAll(createFilter(request.getFilters()))) {
       String un = a.getUsername();
-      UserInfo ui = emulator.gameGetUserInfo(un, false);
+      UserInfo ui = user.gameGetUserInfo(un, false);
       ret.add(new AccountView(servers.get(a.getServer()).getGsName(), un, ui.getNickName(), ui.getLevel()));
     }
     return Response.ok(new FindAccountResponse(ret)).build();

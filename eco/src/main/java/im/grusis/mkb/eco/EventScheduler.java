@@ -2,7 +2,7 @@ package im.grusis.mkb.eco;
 
 import java.util.Collection;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorUser;
 import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
@@ -23,7 +23,7 @@ public class EventScheduler {
 
   private static final Logger Log = LoggerFactory.getLogger(EventScheduler.class);
 
-  @Autowired MkbEmulator emulator;
+  @Autowired EmulatorUser user;
   @Autowired AccountService accountService;
 
   @Scheduled(cron = "0 1/10 * * * *")
@@ -32,7 +32,7 @@ public class EventScheduler {
     Collection<MkbAccount> mkbAccounts = accountService.getAll();
     int count = 0;
     for(MkbAccount account : mkbAccounts) {
-      UserInfo userInfo = emulator.gameGetUserInfo(account.getUsername(), false);
+      UserInfo userInfo = user.gameGetUserInfo(account.getUsername(), false);
       if(userInfo != null) {
         int energy = userInfo.getEnergy();
         if(energy < 50) {
@@ -51,7 +51,7 @@ public class EventScheduler {
     Collection<MkbAccount> mkbAccounts = accountService.getAll();
     int count = 0;
     for(MkbAccount account : mkbAccounts) {
-      UserInfo userInfo = emulator.gameGetUserInfo(account.getUsername(), false);
+      UserInfo userInfo = user.gameGetUserInfo(account.getUsername(), false);
       int energy = userInfo.getEnergy();
       if(energy < 70) {
         energy += 20;

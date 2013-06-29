@@ -6,7 +6,8 @@ import java.util.Map;
 
 import im.grusis.mkb.core.config.MkbCoreConfig;
 import im.grusis.mkb.core.emulator.AutomatedServiceEngine;
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorCard;
+import im.grusis.mkb.core.emulator.EmulatorStreng;
 import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
 import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -27,23 +28,24 @@ public class StrengCard {
     int targetLevel = 15;
 
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
-    MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
+    EmulatorCard card = ctx.getBean(EmulatorCard.class);
+    EmulatorStreng streng = ctx.getBean(EmulatorStreng.class);
 
-    CardDef card = null;
-    Map<Integer, CardDef> allCard = emulator.gameGetCards(username, true);
+    CardDef cardDef = null;
+    Map<Integer, CardDef> allCard = card.gameGetCards(username, true);
     for(CardDef c : allCard.values()) {
       if(c.getCardName().contains(cardName)) {
-        card = c;
+        cardDef = c;
         break;
       }
     }
-    if(card == null) {
+    if(cardDef == null) {
       return;
     }
     UserCard uc = null;
-    Map<Long, UserCard> userCards = emulator.gameGetUserCards(username, true);
+    Map<Long, UserCard> userCards = card.gameGetUserCards(username, true);
     for(UserCard userCard : userCards.values()) {
-      if(userCard.getCardId() == card.getCardId() && userCard.getLevel() == cardLevel) {
+      if(userCard.getCardId() == cardDef.getCardId() && userCard.getLevel() == cardLevel) {
         uc = userCard;
         break;
       }
@@ -52,7 +54,7 @@ public class StrengCard {
       return;
     }
 
-    long expNeeded = card.getExpArray()[targetLevel] - uc.getExp();
+    long expNeeded = cardDef.getExpArray()[targetLevel] - uc.getExp();
     long exp = 0;
     List<Long> resources = new ArrayList<Long>();
     for(UserCard userCard : userCards.values()) {
@@ -77,7 +79,7 @@ public class StrengCard {
         size = resources.size();
       }
       List<Long> sub = resources.subList(0, size);
-      emulator.gameUpgradeCard(username, uc.getUserCardId(), sub);
+      streng.gameUpgradeCard(username, uc.getUserCardId(), sub);
       resources.removeAll(sub);
     }
 

@@ -2,8 +2,8 @@ package im.grusis.mkb.app;
 
 import im.grusis.mkb.core.config.MkbCoreConfig;
 import im.grusis.mkb.core.emulator.AutomatedServiceEngine;
+import im.grusis.mkb.core.emulator.EmulatorShop;
 import im.grusis.mkb.core.emulator.ItemCode;
-import im.grusis.mkb.core.emulator.MkbEmulator;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
@@ -19,10 +19,10 @@ public class BuyStrengResources {
 
     String username = "urnmso90377";
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
-    MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
+    EmulatorShop shop = ctx.getBean(EmulatorShop.class);
 
     for(int i = 0; i < 100; i++) {
-      emulator.gamePurchase(username, ItemCode.Coins);
+      shop.gamePurchase(username, ItemCode.Coins);
     }
 
   }

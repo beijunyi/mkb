@@ -26,20 +26,29 @@ public class AutomatedServiceEngine {
   private static final Logger Log = LoggerFactory.getLogger(AutomatedServiceEngine.class);
 
 
-  @Autowired MkbEmulator emulator;
   @Autowired AccountService accountService;
   @Autowired AssetsService assetsService;
+  @Autowired EmulatorUser user;
+  @Autowired EmulatorMapStage mapStage;
+  @Autowired EmulatorMaze maze;
+  @Autowired EmulatorShop shop;
+  @Autowired EmulatorWeb web;
+  @Autowired EmulatorLogin login;
+  @Autowired EmulatorFriend friend;
+  @Autowired EmulatorFEnergy fEnergy;
+  @Autowired EmulatorLegion legion;
+  @Autowired EmulatorArena arena;
 
   private String getNickname(String username) throws MkbException {
-    return emulator.gameGetUserInfo(username, false).getNickName();
+    return user.gameGetUserInfo(username, false).getNickName();
   }
 
   private int getEnergy(String username) throws MkbException {
-    return emulator.gameGetUserInfo(username, false).getEnergy();
+    return user.gameGetUserInfo(username, false).getEnergy();
   }
 
   private String getStageDetailName(String username, int stageDetailId) throws MkbException {
-    return emulator.gameGetMapStageDef(username, stageDetailId).getName();
+    return mapStage.gameGetMapStageDef(username, stageDetailId).getName();
   }
 
   public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget) throws MkbException {
@@ -51,46 +60,46 @@ public class AutomatedServiceEngine {
       Log.warn("Reset budget {} is invalid. A valid value must be at least 0", resetBudget);
       resetBudget = 0;
     }
-    MazeStatus maze = emulator.gameGetMazeStatus(username, mapStageId, false);
-    if(maze.isMazeClear()) {
+    MazeStatus mazeStatus = maze.gameGetMazeStatus(username, mapStageId, false);
+    if(mazeStatus.isMazeClear()) {
       if(!reset) {
-        Log.error("Maze {} {} is already cleared", mapStageId, maze.getName());
+        Log.error("Maze {} {} is already cleared", mapStageId, mazeStatus.getName());
         return false;
       }
-      if(!maze.allowFreeReset() && maze.getResetCash() > resetBudget) {
-        Log.error("Cannot reset maze {} {}", mapStageId, maze.getName());
+      if(!mazeStatus.allowFreeReset() && mazeStatus.getResetCash() > resetBudget) {
+        Log.error("Cannot reset maze {} {}", mapStageId, mazeStatus.getName());
         return false;
       }
-      emulator.gameResetMaze(username, mapStageId);
-      maze = emulator.gameGetMazeStatus(username, mapStageId, false);
+      maze.gameResetMaze(username, mapStageId);
+      mazeStatus = maze.gameGetMazeStatus(username, mapStageId, false);
     }
-    int layer = maze.getLayer();
-    MazeInfo currentLayer = emulator.gameGetMazeLayer(username, mapStageId, layer);
+    int layer = mazeStatus.getLayer();
+    MazeInfo currentLayer = maze.gameGetMazeLayer(username, mapStageId, layer);
     int maxLayer = currentLayer.getTotalLayer();
     while(true) {
       List<Integer> enemies = currentLayer.getEnemyIndices();
       for(int e : enemies) {
         if(getEnergy(username) < MazeInfo.EnergyExpend) {
-          Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, getNickname(username));
+          Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, mazeStatus.getName(), username, getNickname(username));
           return false;
         }
         int count = 0;
         while(true) {
-          BattleNormal battle = emulator.gameMazeBattleAuto(username, mapStageId, layer, e);
+          BattleNormal battle = maze.gameMazeBattleAuto(username, mapStageId, layer, e);
           if(battle == null) {
-            Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, maze.getName(), username, getNickname(username));
+            Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, mazeStatus.getName(), username, getNickname(username));
             return false;
           }
           if(battle.lost()) {
             count++;
             if(count > maxTry) {
-              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, maze.getName(), username, getNickname(username), e, battle.getDefendPlayer().getNickName(), currentLayer.getName());
+              Log.info("Cannot clear maze {} {}. {} {} cannot defeat enemy {} {} on level {}", mapStageId, mazeStatus.getName(), username, getNickname(username), e, battle.getDefendPlayer().getNickName(), currentLayer.getName());
               return false;
             }
           } else {
             Log.info("{} {} has defeated enemy {} {} on level {}", username, getNickname(username), e, battle.getDefendPlayer().getNickName(), layer);
             if(battle.mazeClear()) {
-              Log.info("{} {} has cleared maze {} {}", username, getNickname(username), mapStageId, maze.getName());
+              Log.info("{} {} has cleared maze {} {}", username, getNickname(username), mapStageId, mazeStatus.getName());
               return true;
             }
             break;
@@ -101,25 +110,25 @@ public class AutomatedServiceEngine {
       if(layer > maxLayer) {
         layer = 1;
       }
-      currentLayer = emulator.gameGetMazeLayer(username, mapStageId, layer);
+      currentLayer = maze.gameGetMazeLayer(username, mapStageId, layer);
     }
   }
 
   public int collectAndSendEnergy(String username, boolean toSameLegion, boolean sendMax) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
-    final Map<Long, Friend> friendMap = emulator.gameGetFriends(username, true);
+    final Map<Long, Friend> friendMap = friend.gameGetFriends(username, true);
     int accept = 0;
     List<Long> sameLegion = null;
     String legionName = null;
     if(toSameLegion) {
       sameLegion = new ArrayList<Long>();
-      legionName = emulator.gameGetUserLegion(username, false).getLegionName();
+      legionName = legion.gameGetUserLegion(username, false).getLegionName();
     }
     for(Friend friend : friendMap.values()) {
       if(toSameLegion && friend.getLegionName().equals(legionName)) {
         sameLegion.add(friend.getUid());
       }
       if(friend.getFEnergySurplus() != 0) {
-        if(!emulator.gameAcceptEnergy(username, friend.getUid())) {
+        if(!fEnergy.gameAcceptEnergy(username, friend.getUid())) {
           break;
         }
         accept++;
@@ -129,13 +138,13 @@ public class AutomatedServiceEngine {
     List<Long> sendList = account.getEnergySenderList();
     boolean max = false;
     for(long fid : sendList) {
-      Friend friend = emulator.gameGetFriend(username, fid);
-      if(friend == null) {
+      Friend f = friend.gameGetFriend(username, fid);
+      if(f == null) {
         account.removeSender(fid);
         accountService.saveAccount(account);
       } else {
-        if(friend.getFEnergySend() != 0) {
-          if(!emulator.gameSendEnergy(username, fid)) {
+        if(f.getFEnergySend() != 0) {
+          if(!fEnergy.gameSendEnergy(username, fid)) {
             max = true;
             break;
           }
@@ -148,8 +157,8 @@ public class AutomatedServiceEngine {
     }
     if(toSameLegion) {
       for(long fid : sameLegion) {
-        if(emulator.gameGetFriend(username, fid).getFEnergySend() != 0) {
-          if(!emulator.gameSendEnergy(username, fid)) {
+        if(friend.gameGetFriend(username, fid).getFEnergySend() != 0) {
+          if(!fEnergy.gameSendEnergy(username, fid)) {
             max = true;
             break;
           }
@@ -165,8 +174,8 @@ public class AutomatedServiceEngine {
         }
       });
       for(long fid : rankList) {
-        if(emulator.gameGetFriend(username, fid).getFEnergySend() != 0) {
-          if(!emulator.gameSendEnergy(username, fid)) {
+        if(friend.gameGetFriend(username, fid).getFEnergySend() != 0) {
+          if(!fEnergy.gameSendEnergy(username, fid)) {
             break;
           }
         }
@@ -176,7 +185,7 @@ public class AutomatedServiceEngine {
   }
 
   public Map<Integer, UserMapStage> getCounterAttacks(String username) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
-    Map<Integer, UserMapStage> stageMap = emulator.gameGetUserMapStages(username, true);
+    Map<Integer, UserMapStage> stageMap = mapStage.gameGetUserMapStages(username, true);
     Collection<UserMapStage> stages = stageMap.values();
     Map<Integer, UserMapStage> attacked = new TreeMap<Integer, UserMapStage>();
     for(UserMapStage stage : stages) {
@@ -193,7 +202,7 @@ public class AutomatedServiceEngine {
       maxTry = 1;
     }
     String nickname = getNickname(username);
-    Map<Integer, UserMapStage> stageMap = emulator.gameGetUserMapStages(username, true);
+    Map<Integer, UserMapStage> stageMap = mapStage.gameGetUserMapStages(username, true);
     Collection<UserMapStage> stages = stageMap.values();
     List<Integer> attacked = new ArrayList<Integer>();
     for(UserMapStage stage : stages) {
@@ -205,7 +214,7 @@ public class AutomatedServiceEngine {
       int count = 0;
       while(true) {
         String stageDetailName = getStageDetailName(username, stageDetailId);
-        UserMapStage userMapStage = emulator.gameMapBattleAuto(username, stageDetailId);
+        UserMapStage userMapStage = mapStage.gameMapBattleAuto(username, stageDetailId);
         if(userMapStage == null) {
           Log.info("Cannot clear counter attack at {} {}. {} {} has insufficient energy", stageDetailId, stageDetailName, username, nickname);
           return false;
@@ -230,7 +239,7 @@ public class AutomatedServiceEngine {
     int count = 0;
     List<ArenaCompetitor> chipCompetitors = new ArrayList<ArenaCompetitor>();
     while(chipCompetitors.isEmpty() && count < maxRefresh) {
-      ArenaCompetitors competitors = emulator.gameArenaGetCompetitors(username);
+      ArenaCompetitors competitors = arena.gameArenaGetCompetitors(username);
       if(competitors.getCountdown() > 0) {
         return false;
       }
@@ -262,7 +271,7 @@ public class AutomatedServiceEngine {
       }
     });
     ArenaCompetitor competitor = chipCompetitors.get(0);
-    emulator.gameArenaFreeFightAuto(username, competitor.getUid(), true);
+    arena.gameArenaFreeFightAuto(username, competitor.getUid(), true);
     return true;
   }
 
@@ -274,16 +283,16 @@ public class AutomatedServiceEngine {
         mac = newMac;
       }
     }
-    GameServer gameServer = emulator.webGetGameServerByDescription(serverDesc);
-    if(!emulator.webReg(username, password, mac, gameServer.getGsId())) {
+    GameServer gameServer = web.webGetGameServerByDescription(serverDesc);
+    if(!web.webReg(username, password, mac, gameServer.getGsId())) {
       return false;
     }
-    emulator.webLogin(username);
-    emulator.gamePassportLogin(username);
+    web.webLogin(username);
+    login.gamePassportLogin(username);
     String nickname = null;
     while(nickname == null && nicknameDictionary.hasNext()) {
       String newNickname = nicknameDictionary.next();
-      if(emulator.gameSetNickname(username, sex, inviteCode, newNickname)) {
+      if(user.gameSetNickname(username, sex, inviteCode, newNickname)) {
         nickname = newNickname;
       }
     }
@@ -291,12 +300,12 @@ public class AutomatedServiceEngine {
       Log.error("Nickname dictionary has no more usable instance");
       return false;
     }
-    emulator.gameMapBattleAuto(username, 1);
-    emulator.gameMapBattleAuto(username, 2);
-    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Fight, ItemCode.Tutorial_Fight_Stages[0]);
-    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[0]);
-    emulator.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[1]);
-    emulator.gamePurchase(username, ItemCode.Ticket);
+    mapStage.gameMapBattleAuto(username, 1);
+    mapStage.gameMapBattleAuto(username, 2);
+    user.gameSkipTutorial(username, ItemCode.Tutorial_Fight, ItemCode.Tutorial_Fight_Stages[0]);
+    user.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[0]);
+    user.gameSkipTutorial(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[1]);
+    shop.gamePurchase(username, ItemCode.Ticket);
     return true;
   }
 

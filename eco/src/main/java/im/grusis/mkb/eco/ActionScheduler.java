@@ -1,6 +1,6 @@
 package im.grusis.mkb.eco;
 
-import im.grusis.mkb.core.emulator.MkbEmulator;
+import im.grusis.mkb.core.emulator.EmulatorUser;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
@@ -26,7 +26,7 @@ public class ActionScheduler {
 //  @Autowired BeginnerConfigList beginnerConfigList;
 
   @Autowired AccountService accountService;
-  @Autowired MkbEmulator emulator;
+  @Autowired EmulatorUser user;
 
   @Autowired HasReward hasReward;
   @Autowired ShallDoFreeFight shallDoFreeFight;
@@ -36,7 +36,7 @@ public class ActionScheduler {
   public void claimReward() throws MkbException {
     Iterable<MkbAccount> accounts = accountService.findAll(hasReward);
     for(MkbAccount account : accounts) {
-      emulator.gameFetchSalary(account.getUsername());
+      user.gameFetchSalary(account.getUsername());
     }
   }
 
