@@ -1,6 +1,7 @@
 package im.grusis.mkb.eco.util.filter.common;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import im.grusis.mkb.core.emulator.game.model.basic.UserCard;
 import im.grusis.mkb.core.repository.model.MkbAccount;
@@ -25,10 +26,22 @@ public class CardNumberFilter implements AccountFilter {
   @Override
   public boolean accept(MkbAccount account) {
     Map<Long, UserCard> cards = account.getUserCards();
-    if(cards == null) {
-      return false;
+    Map<Integer, Integer> cardCount;
+    if(cards != null) {
+      cardCount = CardUtils.GetCardCount(cards.values());
+    } else {
+      cardCount = new TreeMap<Integer, Integer>();
     }
-    Map<Integer, Integer> cardCount = CardUtils.GetCardCount(cards.values());
+    if(account.getNewCards() != null) {
+      for(int cardId: account.getNewCards()) {
+        Integer count = cardCount.get(cardId);
+        if(count == null) {
+          cardCount.put(cardId, 1);
+        } else {
+          cardCount.put(cardId, count + 1);
+        }
+      }
+    }
     return CardUtils.CompareCardCount(cardCount, thresholdMap, compare);
   }
 }

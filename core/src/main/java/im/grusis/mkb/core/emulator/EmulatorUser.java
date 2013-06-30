@@ -93,6 +93,9 @@ public class EmulatorUser {
     if(refresh || (userInfo = account.getUserInfo()) == null) {
       UserGetUserInfoResponse response = core.gameDoAction(username, "user.php", "GetUserinfo", null, UserGetUserInfoResponse.class);
       if(response.badRequest()) {
+        if(response.isRequireNickName()) {
+          return null;
+        }
         throw new UnknownErrorException();
       }
       userInfo = response.getData();

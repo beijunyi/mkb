@@ -189,7 +189,7 @@ public class AutomatedServiceEngine {
     Collection<UserMapStage> stages = stageMap.values();
     Map<Integer, UserMapStage> attacked = new TreeMap<Integer, UserMapStage>();
     for(UserMapStage stage : stages) {
-      if(stage.getCounterAttackTime() != 0) {
+      if(stage.isCounterAttacked()) {
         attacked.put(stage.getMapStageDetailId(), stage);
       }
     }
@@ -206,7 +206,7 @@ public class AutomatedServiceEngine {
     Collection<UserMapStage> stages = stageMap.values();
     List<Integer> attacked = new ArrayList<Integer>();
     for(UserMapStage stage : stages) {
-      if(stage.getCounterAttackTime() != 0) {
+      if(stage.isCounterAttacked()) {
         attacked.add(stage.getMapStageDetailId());
       }
     }

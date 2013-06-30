@@ -121,15 +121,12 @@ public class ResultProcessor {
   public UserMapStage processBattleMapResult(String username, BattleMap result, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     UserInfo userInfo = user.getUserInfo(username, false);
     MapStageDef mapStageDef = mapStage.getMapStageDetail(username, mapStageDetailId);
-    UserMapStage userMapStage = mapStage.getUserMapStage(username, mapStageDetailId, false);
-    if(result.win()) {
-      userMapStage.clearCounterAttack();
-    }
+    UserMapStage userMapStage = mapStage.getUserMapStage(username, mapStageDetailId, true);
     BattleMapExtData ext = result.getExtData();
     if(ext != null) {
       userInfo.setLevel(ext.getUserLevel());
       if(ext.getStarUp() > 0) {
-        LOG.info("{} has conquered {} difficulty {}", userInfo, mapStageDef, userMapStage.starUp());
+        LOG.info("{} has conquered {} difficulty {}", userInfo, mapStageDef, userMapStage.getFinishedStage());
       }
       String[] bonuses = ext.getBonus();
       if(bonuses != null) {

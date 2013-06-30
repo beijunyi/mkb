@@ -1,12 +1,17 @@
-package im.grusis.mkb.core.emulator.engines;
+package im.grusis.mkb.eco.engines;
 
 import im.grusis.mkb.core.emulator.*;
 import im.grusis.mkb.core.exception.ServerNotAvailableException;
 import im.grusis.mkb.core.exception.UnknownErrorException;
 import im.grusis.mkb.core.exception.WrongCredentialException;
+import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
+import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.core.util.MacAddressHelper;
 import im.grusis.mkb.core.util.MkbDictionary;
+import im.grusis.mkb.eco.util.filter.common.*;
+import im.grusis.mkb.eco.util.filter.operators.AndFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,28 @@ public class ProductionEngine {
     }
     web.login(username);
     login.passportLogin(username);
+    MkbAccount newAccount = accountService.findAccountByUsername(username);
+    AccountFilter sameServer = new ServerFilter(newAccount.getServer());
+    if(StringUtils.trimToNull(inviteCode) == null) {
+      AccountFilter level10 = new NumericPropertyFilter(NumericProperty.Level, CompareOperator.GreaterThanOrEqualTo, 10);
+      AccountFilter inviteCount20 = new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.LessThan, 20);
+      MkbAccount invitorAccount = accountService.findFirst(new AndFilter(sameServer, level10, inviteCount20));
+      if(invitorAccount != null) {
+        inviteCode = invitorAccount.getUserInfo().getInviteCode();
+      }
+    }
+    if(StringUtils.trimToNull(inviteCode) == null) {
+      MkbAccount invitorAccount = accountService.findFirst(new AndFilter(sameServer, new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.LessThan, 1)));
+      if(invitorAccount != null) {
+        inviteCode = invitorAccount.getUserInfo().getInviteCode();
+      }
+    }
+    if(StringUtils.trimToNull(inviteCode) == null) {
+      MkbAccount invitorAccount = accountService.findFirst(new AndFilter(sameServer, new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.GreaterThanOrEqualTo, 1)));
+      if(invitorAccount != null) {
+        inviteCode = invitorAccount.getUserInfo().getInviteCode();
+      }
+    }
     String nickname = null;
     while(nickname == null && nicknameDictionary.hasNext()) {
       String newNickname = nicknameDictionary.next();
@@ -58,7 +85,9 @@ public class ProductionEngine {
     user.editFresh(username, ItemCode.Tutorial_Fight, ItemCode.Tutorial_Fight_Stages[0]);
     user.editFresh(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[0]);
     user.editFresh(username, ItemCode.Tutorial_Card, ItemCode.Tutorial_Card_Stages[1]);
-    shop.buy(username, ItemCode.Ticket);
+    if(StringUtils.trimToNull(inviteCode) != null) {
+      shop.buy(username, ItemCode.Ticket);
+    }
     return true;
   }
 

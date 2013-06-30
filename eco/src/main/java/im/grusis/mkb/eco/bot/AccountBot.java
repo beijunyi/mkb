@@ -2,21 +2,15 @@ package im.grusis.mkb.eco.bot;
 
 import im.grusis.mkb.core.emulator.ItemCode;
 import im.grusis.mkb.core.emulator.MkbEmulator;
-import im.grusis.mkb.core.emulator.engines.ProductionEngine;
+import im.grusis.mkb.eco.engines.ProductionEngine;
 import im.grusis.mkb.core.emulator.game.model.basic.UserInfo;
 import im.grusis.mkb.core.exception.MkbException;
-import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
-import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.eco.bot.model.AccountBotProgress;
 import im.grusis.mkb.eco.bot.model.AccountBotSettings;
 import im.grusis.mkb.eco.service.DictionaryService;
 import im.grusis.mkb.eco.util.dictionary.BasicNicknameDict;
 import im.grusis.mkb.eco.util.dictionary.BasicUsernameDict;
-import im.grusis.mkb.eco.util.filter.common.CompareOperator;
-import im.grusis.mkb.eco.util.filter.common.NumericProperty;
-import im.grusis.mkb.eco.util.filter.common.NumericPropertyFilter;
-import im.grusis.mkb.eco.util.filter.operators.AndFilter;
 import im.grusis.mkb.eco.util.password.HashPasswordGenerator;
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,29 +46,6 @@ public class AccountBot extends MkbBot<AccountBotProgress> {
     HashPasswordGenerator passwordGenerator = new HashPasswordGenerator();
     String invitor = null;
     String inviteCode = settings.getInviteCode();
-    if(StringUtils.trimToNull(inviteCode) == null) {
-      AccountFilter level = new NumericPropertyFilter(NumericProperty.Level, CompareOperator.GreaterThanOrEqualTo, 10);
-      AccountFilter inviteCount = new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.LessThan, 20);
-      MkbAccount account = accountService.findFirst(new AndFilter(level, inviteCount));
-      if(account != null) {
-        invitor = account.getUsername();
-        inviteCode = account.getUserInfo().getInviteCode();
-      }
-    }
-    if(StringUtils.trimToNull(inviteCode) == null) {
-      MkbAccount account = accountService.findFirst(new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.LessThan, 1));
-      if(account != null) {
-        invitor = account.getUsername();
-        inviteCode = account.getUserInfo().getInviteCode();
-      }
-    }
-    if(StringUtils.trimToNull(inviteCode) == null) {
-      MkbAccount account = accountService.findFirst(new NumericPropertyFilter(NumericProperty.InviteNumber, CompareOperator.GreaterThanOrEqualTo, 1));
-      if(account != null) {
-        invitor = account.getUsername();
-        inviteCode = account.getUserInfo().getInviteCode();
-      }
-    }
     while(progress.getAccounts().size() < settings.getTotal() && usernameDict.hasNext() && nicknameDict.hasNext()) {
       String username = usernameDict.next();
       String password;
@@ -90,7 +61,8 @@ public class AccountBot extends MkbBot<AccountBotProgress> {
           UserInfo invitorInfo = emulator.user().getUserInfo(username, false);
           invitorInfo.addInviteNum();
           if(invitorInfo.getInviteNum() == 1) {
-            emulator.shop().buy(username, ItemCode.Ticket);
+            emulator.user().awardSalary(invitor);
+            emulator.shop().buy(invitor, ItemCode.Ticket);
           }
         }
         if(!settings.isUseSameInviteCode()) {
@@ -99,6 +71,7 @@ public class AccountBot extends MkbBot<AccountBotProgress> {
         }
       }
     }
+    progress.finish();
     dictionaryService.updateBasicUsernameDictRecord(usernameDict);
     dictionaryService.updateBasicNicknameDictRecord(nicknameDict);
     return progress;

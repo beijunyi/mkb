@@ -4,7 +4,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.core.emulator.*;
-import im.grusis.mkb.core.emulator.engines.MapEngine;
+import im.grusis.mkb.eco.engines.MapEngine;
 import im.grusis.mkb.core.exception.MkbException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;

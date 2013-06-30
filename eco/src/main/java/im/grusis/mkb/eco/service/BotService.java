@@ -1,7 +1,7 @@
 package im.grusis.mkb.eco.service;
 
 import im.grusis.mkb.core.emulator.MkbEmulator;
-import im.grusis.mkb.core.emulator.engines.ProductionEngine;
+import im.grusis.mkb.eco.engines.ProductionEngine;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.eco.bot.AccountBot;
 import im.grusis.mkb.eco.bot.model.AccountBotProgress;

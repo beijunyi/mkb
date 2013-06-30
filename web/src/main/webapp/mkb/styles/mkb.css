@@ -83,3 +83,8 @@ div.modal div.jq-grid {
   height: 80%;
   margin: 10px;
 }
+
+.mkb-production .jq-grid-production-accounts {
+  height: 70%;
+  margin: 10px;
+}

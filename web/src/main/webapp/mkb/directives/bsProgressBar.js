@@ -6,24 +6,23 @@ app.directive('bsProgressBar', function($window){
     },
     template: '<div class="progress"><div class="bar"></div></div>',
     controller: function($scope, $element) {
-      var progress = $element.find('div.progress');
       var bar = $element.find('div.bar');
 
       $scope.$watch('pbar', function(pbar) {
         if(pbar) {
           pbar.setStriped = function(state) {
             if(state === false) {
-              progress.removeClass('progress-striped');
+              $element.removeClass('progress-striped');
             } else {
-              progress.addClass('progress-striped');
+              $element.addClass('progress-striped');
             }
           };
 
           pbar.setActive = function(state) {
             if(state === false) {
-              progress.removeClass('active');
+              $element.removeClass('active');
             } else {
-              progress.addClass('active');
+              $element.addClass('active');
             }
           };
 

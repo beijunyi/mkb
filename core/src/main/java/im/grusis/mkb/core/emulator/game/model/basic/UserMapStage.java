@@ -47,15 +47,4 @@ public class UserMapStage implements Comparable<UserMapStage> {
     return CounterAttackTime != 0;
   }
 
-  public long getCounterAttackTime() {
-    return CounterAttackTime;
-  }
-
-  public void clearCounterAttack() {
-    CounterAttackTime = 0;
-  }
-
-  public int starUp() {
-    return ++FinishedStage;
-  }
 }

@@ -60,7 +60,6 @@ public class EmulatorLogin {
       web.login(username);
       return passportLogin(username);
     }
-    user.getUserInfo(username, true);
     return response.getData();
   }
 

@@ -22,6 +22,7 @@ public class EmulatorMapStage {
   @Autowired GameVersion gameVersion;
   @Autowired AccountService accountService;
   @Autowired AssetsService assetsService;
+  @Autowired EmulatorUser user;
   @Autowired EmulatorCore core;
   @Autowired ResultProcessor resultProcessor;
 
@@ -45,12 +46,17 @@ public class EmulatorMapStage {
   private Level findCurrentLevel(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     MapStageDef stage = getMapStageDetail(username, mapStageDetailId);
     UserMapStage userStage = getUserMapStage(username, mapStageDetailId, false);
-    List<Level> levels = stage.getLevels();
-    int finished = userStage.getFinishedStage();
-    if(finished >= levels.size()) {
-      finished = levels.size() - 1;
+    int finishedStage;
+    if(userStage != null) {
+      finishedStage = userStage.getFinishedStage() - 1;
+    } else {
+      finishedStage = 0;
     }
-    return levels.get(finished);
+    List<Level> levels = stage.getLevels();
+    if(finishedStage >= levels.size()) {
+      finishedStage = levels.size() - 1;
+    }
+    return levels.get(finishedStage);
   }
 
   public Map<Integer, UserMapStage> gameGetUserMapStages(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
@@ -70,6 +76,7 @@ public class EmulatorMapStage {
   }
 
   public UserMapStage editUserMapStages(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     params.put("isManual", Integer.toString(0));
@@ -80,8 +87,7 @@ public class EmulatorMapStage {
       }
       throw new UnknownErrorException();
     }
-    MkbAccount account = accountService.findAccountByUsername(username);
-    account.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExpend());
+    userInfo.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExpend());
     BattleMap result = response.getData();
     resultProcessor.processBattleMapResult(username, result, mapStageDetailId);
     return getUserMapStage(username, mapStageDetailId, false);
@@ -98,11 +104,11 @@ public class EmulatorMapStage {
   }
 
   public Explore explore(String username, int mapStageDetailId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    UserInfo userInfo = user.getUserInfo(username, false);
     Map<String, String> params = new LinkedHashMap<String, String>();
     params.put("MapStageDetailId", Integer.toString(mapStageDetailId));
     MapStageExploreResponse response = core.gameDoAction(username, "mapstage.php", "Explore", params, MapStageExploreResponse.class);
-    MkbAccount account = accountService.findAccountByUsername(username);
-    account.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExplore());
+    userInfo.consumeEnergy(findCurrentLevel(username, mapStageDetailId).getEnergyExplore());
     if(response.badRequest()) {
       throw new UnknownErrorException();
     }

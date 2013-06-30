@@ -44,7 +44,7 @@ public class EmulatorMaze {
       }
       throw new UnknownErrorException();
     }
-    account.consumeEnergy(MazeInfo.EnergyExpend);
+    userInfo.consumeEnergy(MazeInfo.EnergyExpend);
     BattleNormal result = response.getData();
     resultProcessor.processBattleMazeResult(username, result, mazeId);
     return result;

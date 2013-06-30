@@ -155,13 +155,6 @@ public class MkbAccount {
     newCards.add(cardId);
   }
 
-
-  public void consumeEnergy(int amount) {
-    if(userInfo != null) {
-      userInfo.consumeEnergy(amount);
-    }
-  }
-
   public LoginToken getProfile() {
     return profile;
   }

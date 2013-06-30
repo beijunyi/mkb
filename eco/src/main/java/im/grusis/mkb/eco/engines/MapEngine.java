@@ -1,4 +1,4 @@
-package im.grusis.mkb.core.emulator.engines;
+package im.grusis.mkb.eco.engines;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class MapEngine {
     Collection<UserMapStage> stages = stageMap.values();
     Set<UserMapStage> ret = new TreeSet<UserMapStage>();
     for(UserMapStage s : stages) {
-      if(s.getCounterAttackTime() != 0) {
+      if(s.isCounterAttacked()) {
         ret.add(s);
       }
     }

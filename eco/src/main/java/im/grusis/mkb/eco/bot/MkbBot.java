@@ -14,6 +14,11 @@ public abstract class MkbBot<T> implements Callable<T> {
 
   @Override
   public T call() throws Exception {
-    return bot();
+    try {
+      return bot();
+    } catch(Exception e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 }

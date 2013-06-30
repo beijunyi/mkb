@@ -10,7 +10,7 @@ public class ItemCode {
   public static final int Tutorial_Fight = 1;
   public static final int[] Tutorial_Fight_Stages = {21};
   public static final int Tutorial_Card = 2;
-  public static final int[] Tutorial_Card_Stages = {10, 16};
+  public static final int[] Tutorial_Card_Stages = {10, 17};
   public static final int Tutorial_Streng = 3;
   public static final int[] Tutorial_Streng_Stages = {17};
   public static final int Tutorial_Rune = 4;

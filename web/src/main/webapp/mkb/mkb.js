@@ -12,7 +12,7 @@ app.config(function($routeProvider, $locationProvider, $httpProvider) {
       templateUrl: 'mkb/views/system.html',
       controller: 'SystemCtrl'
     })
-    .when('/auto', {
+    .when('/production', {
       templateUrl: 'mkb/views/production.html',
       controller: 'AutomatedProductionCtrl'
     })
