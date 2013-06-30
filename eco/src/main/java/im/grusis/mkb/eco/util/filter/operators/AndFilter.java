@@ -20,9 +20,9 @@ public class AndFilter implements AccountFilter {
     this.filters = filters;
   }
 
-  public AndFilter(AccountFilter... filters) {
-    List<AccountFilter> accountFilters = new ArrayList<AccountFilter>();
-    Collections.addAll(accountFilters, filters);
+  public AndFilter(AccountFilter... accountFilters) {
+    filters = new ArrayList<AccountFilter>();
+    Collections.addAll(filters, accountFilters);
   }
 
   @Override

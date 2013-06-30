@@ -8,4 +8,5 @@ import im.grusis.mkb.core.emulator.game.model.basic.*;
  * Time: 上午1:15
  */
 public class LoginPassportLoginResponse extends GameData<PassportLogin> {
+  //passport签名验证失败!
 }

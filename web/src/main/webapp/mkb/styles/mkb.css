@@ -3,7 +3,7 @@ body {
 }
 
 label {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 i {
@@ -19,6 +19,10 @@ span.label[ng-click] {
 a.btn-mini {
   font-size: 12px;
   margin-left: 5px;
+}
+
+form.form-inline div {
+  margin-bottom: 5px;
 }
 
 

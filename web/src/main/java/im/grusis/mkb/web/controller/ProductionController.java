@@ -2,9 +2,11 @@ package im.grusis.mkb.web.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.core.service.AssetsService;
@@ -24,7 +26,7 @@ import org.springframework.stereotype.Controller;
 @Path("api/production")
 public class ProductionController {
 
-  private Map<String, AccountBotProgress> progresses = new HashMap<String, AccountBotProgress>();
+  private Map<HttpSession, AccountBotProgress> progresses = new HashMap<HttpSession, AccountBotProgress>();
 
 
   @Autowired ProductionService productionService;
@@ -64,20 +66,21 @@ public class ProductionController {
 
   @POST
   @Path("/produce")
-  public Response produceAccounts(AccountBotSettings accountBotSettings) {
+  public Response produceAccounts(AccountBotSettings accountBotSettings, @Context HttpServletRequest httpRequest) {
+    HttpSession session = httpRequest.getSession();
     AccountBotProgress progress = new AccountBotProgress(accountBotSettings.getTotal());
-    String uuid = UUID.randomUUID().toString();
-    progresses.put(uuid, progress);
+    progresses.put(session, progress);
     executorService.submit(botService.newAccountBot(accountBotSettings, progress));
-    return Response.ok(uuid).build();
+    return Response.ok().build();
   }
 
   @GET
   @Path("/update")
-  public Response getProductionUpdate(@QueryParam("uuid") String uuid) {
-    AccountBotProgress progress = progresses.get(uuid);
+  public Response getProductionUpdate(@Context HttpServletRequest httpRequest) {
+    HttpSession session = httpRequest.getSession();
+    AccountBotProgress progress = progresses.get(session);
     if(progress.isFinish()) {
-      progresses.remove(uuid);
+      progresses.remove(session);
     }
     return Response.ok(progress).build();
   }

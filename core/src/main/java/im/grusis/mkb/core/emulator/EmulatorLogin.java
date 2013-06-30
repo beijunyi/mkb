@@ -47,13 +47,13 @@ public class EmulatorLogin {
     }
     LOG.debug("Obtained login token for account {} as login token", username);
     Map<String, String> paramMap = new LinkedHashMap<String, String>();
-    paramMap.put("Devicetoken", "");
     paramMap.put("time", Long.toString(token.getTime()));
     paramMap.put("key", token.getKey());
-    paramMap.put("Origin", "TTGM");
     paramMap.put("Udid", token.getMac());
-    paramMap.put("UserName", username);
     paramMap.put("Password", Long.toString(token.getUid()));
+    paramMap.put("Devicetoken", "");
+    paramMap.put("UserName", username.toLowerCase());
+    paramMap.put("Origin", "com");
     LoginPassportLoginResponse response = core.gameDoAction(username, "login.php", "PassportLogin", paramMap, LoginPassportLoginResponse.class);
     if(response.badRequest()) {
       LOG.info("Passport login for account {} has failed. Now try web login", username);

@@ -10,7 +10,16 @@ var ProductionService = function ($resource) {
 
     getServers: function(callbeck) {
       return $resource('/api/production/servers').get({}, callbeck);
+    },
+
+    produceAccounts: function(settings, callback) {
+      return $resource('/api/production/produce').save(settings, callback);
+    },
+
+    getProductionUpdate: function(callback) {
+      return $resource('/api/production/update').get({}, callback);
     }
+
   }
 };
 

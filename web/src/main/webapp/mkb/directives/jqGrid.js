@@ -27,7 +27,7 @@ app.directive('jqGrid', function($window){
         }
       });
 
-      $scope.$watch('grid.data', function(data, old) {
+      $scope.$watch('grid.data', function(data) {
         var table = $element.find('table.jq-grid-table');
         if(data)
           if(typeof data == 'object') {
@@ -43,8 +43,6 @@ app.directive('jqGrid', function($window){
     },
     replace: true,
     link: function(scope, elem, attr) {
-      var table = elem.find('table.jq-grid-table');
-
     }
   };
 });

@@ -1,7 +1,7 @@
 package im.grusis.mkb.eco.bot.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import im.grusis.mkb.core.repository.model.MkbAccount;
 
@@ -11,7 +11,7 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
  * Time: 下午11:29
  */
 public class AccountBotProgress {
-  private Map<String, MkbAccount> accounts = new HashMap<String, MkbAccount>();
+  private List<MkbAccount> accounts = new ArrayList<MkbAccount>();
   private int total;
   private boolean finish = false;
 
@@ -19,7 +19,7 @@ public class AccountBotProgress {
     this.total = total;
   }
 
-  public Map<String, MkbAccount> getAccounts() {
+  public List<MkbAccount> getAccounts() {
     return accounts;
   }
 
@@ -31,8 +31,8 @@ public class AccountBotProgress {
     return finish;
   }
 
-  public void addCount(MkbAccount account) {
-    accounts.put(account.getUsername(), account);
+  public void addAccount(MkbAccount account) {
+    accounts.add(account);
   }
 
   public void finish() {

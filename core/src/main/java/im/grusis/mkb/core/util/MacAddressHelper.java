@@ -17,7 +17,7 @@ public class MacAddressHelper {
       if(i != 0) {
         sb.append(':');
       }
-      sb.append(Integer.toHexString(r.nextInt(256)));
+      sb.append(Integer.toHexString(16 + r.nextInt(240)));
     }
     return sb.toString().toUpperCase();
   }

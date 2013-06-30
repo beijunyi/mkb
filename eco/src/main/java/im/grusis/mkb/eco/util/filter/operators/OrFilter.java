@@ -20,9 +20,9 @@ public class OrFilter implements AccountFilter {
     this.filters = filters;
   }
 
-  public OrFilter(AccountFilter... filters) {
-    List<AccountFilter> accountFilters = new ArrayList<AccountFilter>();
-    Collections.addAll(accountFilters, filters);
+  public OrFilter(AccountFilter... accountFilters) {
+    filters = new ArrayList<AccountFilter>();
+    Collections.addAll(filters, accountFilters);
   }
   @Override
   public boolean accept(MkbAccount account) {

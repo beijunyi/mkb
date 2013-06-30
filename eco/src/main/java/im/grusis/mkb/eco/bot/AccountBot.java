@@ -85,7 +85,7 @@ public class AccountBot extends MkbBot<AccountBotProgress> {
       }
       boolean success = productionEngine.registerNewAccount(username, password, settings.getGender(), nicknameDict, settings.getServerId(), inviteCode);
       if(success) {
-        progress.addCount(accountService.findAccountByUsername(username));
+        progress.addAccount(accountService.findAccountByUsername(username));
         if(invitor != null) {
           UserInfo invitorInfo = emulator.user().getUserInfo(username, false);
           invitorInfo.addInviteNum();
