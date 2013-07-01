@@ -19,6 +19,12 @@
       <artifactId>mkb-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>im.grusis.mkb</groupId>
+      <artifactId>mkb-eco</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

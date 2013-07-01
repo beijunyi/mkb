@@ -31,6 +31,9 @@ public class EmulatorBoss {
       if(response.isBossDown()) {
         return null;
       }
+      if(response.isBossUnavailable()) {
+        return null;
+      }
       throw new UnknownErrorException();
     }
     return response.getData();
