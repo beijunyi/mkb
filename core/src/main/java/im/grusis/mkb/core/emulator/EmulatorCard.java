@@ -10,6 +10,7 @@ import im.grusis.mkb.core.exception.WrongCredentialException;
 import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.service.AssetsService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,32 @@ public class EmulatorCard {
     }
     return cardGroup;
   }
+
+
+  public long setCardGroup(String username, Group group) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("Cards", group.getUserCardIds());
+    params.put("Runes", group.getUserRuneIds());
+    params.put("GroupId", Long.toString(group.getGroupId()));
+    CardSetCardGroupResponse response = core.gameDoAction(username, "card.php", "SetCardGroup", params, CardSetCardGroupResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData().getGroupId();
+  }
+
+  public long setCardGroup(String username, List<Long> userCardIds, List<Long> userRuneIds, long groupId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    Map<String, String> params = new LinkedHashMap<String, String>();
+    params.put("Cards", StringUtils.join(userCardIds, "_"));
+    params.put("Runes", StringUtils.join(userRuneIds, "_"));
+    params.put("GroupId", Long.toString(groupId));
+    CardSetCardGroupResponse response = core.gameDoAction(username, "card.php", "SetCardGroup", params, CardSetCardGroupResponse.class);
+    if(response.badRequest()) {
+      throw new UnknownErrorException();
+    }
+    return response.getData().getGroupId();
+  }
+
 
 
   public Map<Integer, SkillDef> getAllSkill(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
