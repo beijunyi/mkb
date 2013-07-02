@@ -14,14 +14,14 @@ public class FindAccounts {
 
 //    EcoSystemConfig.KeepConfig scl = ctx.getBean(EcoSystemConfig.KeepConfig.class);
 
-//    String username = "urnmso90377";
-    String username = "tug100";
+    String username = "urnmso90377";
+//    String username = "tug100";
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     EmulatorMaze maze = ctx.getBean(EmulatorMaze.class);
     EmulatorUser user = ctx.getBean(EmulatorUser.class);
 
 //    core.login("tug100", "mewhome123", MacAddressHelper.getMacAddress());
-//    core.getUserInfo(username, true);
+    user.getUserInfo(username, true);
 //    ase.clearCounterAttacks(username, 5);
     maze.show(username, 8, true);
     maze.show(username, 7, true);
