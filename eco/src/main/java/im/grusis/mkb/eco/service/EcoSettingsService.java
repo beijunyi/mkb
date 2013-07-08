@@ -3,7 +3,7 @@ package im.grusis.mkb.eco.service;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import im.grusis.mkb.eco.model.UserPoolSettings;
+import im.grusis.mkb.eco.model.*;
 import im.grusis.mkb.eco.repository.EcoSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,26 +21,26 @@ public class EcoSettingsService {
 
   @Autowired EcoSettingsRepository ecoSettingsRepository;
 
-  private UserPoolSettings bossPool;
-  private UserPoolSettings mazePool;
-  private UserPoolSettings mapPool;
-  private UserPoolSettings fenergyPool;
-  private UserPoolSettings legionPool;
-  private UserPoolSettings friendsPool;
+  private BossPoolSettings bossPool;
+  private MazePoolSettings mazePool;
+  private MapPoolSettings mapPool;
+  private FEnergyPoolSettings fenergyPool;
+  private LegionPoolSettings legionPool;
+  private FriendsPoolSettings friendsPool;
 
   @PostConstruct
   public void init() {
-    bossPool = ecoSettingsRepository.read(BOSS, UserPoolSettings.class);
-    mazePool = ecoSettingsRepository.read(MAZE, UserPoolSettings.class);
-    mapPool = ecoSettingsRepository.read(MAP, UserPoolSettings.class);
-    fenergyPool = ecoSettingsRepository.read(FENERGY, UserPoolSettings.class);
-    legionPool = ecoSettingsRepository.read(LEGION, UserPoolSettings.class);
-    friendsPool = ecoSettingsRepository.read(FRIENDS, UserPoolSettings.class);
+    bossPool = ecoSettingsRepository.read(BOSS, BossPoolSettings.class);
+    mazePool = ecoSettingsRepository.read(MAZE, MazePoolSettings.class);
+    mapPool = ecoSettingsRepository.read(MAP, MapPoolSettings.class);
+    fenergyPool = ecoSettingsRepository.read(FENERGY, FEnergyPoolSettings.class);
+    legionPool = ecoSettingsRepository.read(LEGION, LegionPoolSettings.class);
+    friendsPool = ecoSettingsRepository.read(FRIENDS, FriendsPoolSettings.class);
   }
 
   public void addBossPoolUser(List<String> users) {
     if(bossPool == null) {
-      bossPool = new UserPoolSettings(BOSS);
+      bossPool = new BossPoolSettings(BOSS);
     }
     bossPool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(bossPool);
@@ -55,7 +55,7 @@ public class EcoSettingsService {
 
   public void addMazePoolUser(List<String> users) {
     if(mazePool == null) {
-      mazePool = new UserPoolSettings(MAZE);
+      mazePool = new MazePoolSettings(MAZE);
     }
     mazePool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(mazePool);
@@ -70,7 +70,7 @@ public class EcoSettingsService {
 
   public void addMapPoolUser(List<String> users) {
     if(mapPool == null) {
-      mapPool = new UserPoolSettings(MAP);
+      mapPool = new MapPoolSettings(MAP);
     }
     mapPool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(mapPool);
@@ -85,7 +85,7 @@ public class EcoSettingsService {
 
   public void addFenergyPoolUser(List<String> users) {
     if(fenergyPool == null) {
-      fenergyPool = new UserPoolSettings(FENERGY);
+      fenergyPool = new FEnergyPoolSettings(FENERGY);
     }
     fenergyPool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(fenergyPool);
@@ -100,7 +100,7 @@ public class EcoSettingsService {
 
   public void addLegionPoolUser(List<String> users) {
     if(legionPool == null) {
-      legionPool = new UserPoolSettings(LEGION);
+      legionPool = new LegionPoolSettings(LEGION);
     }
     legionPool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(legionPool);
@@ -115,7 +115,7 @@ public class EcoSettingsService {
 
   public void addFriendPoolUser(List<String> users) {
     if(friendsPool == null) {
-      friendsPool = new UserPoolSettings(FRIENDS);
+      friendsPool = new FriendsPoolSettings(FRIENDS);
     }
     friendsPool.addUsers(users);
     ecoSettingsRepository.createOrUpdateSettings(friendsPool);
@@ -128,5 +128,27 @@ public class EcoSettingsService {
     }
   }
 
+  public BossPoolSettings getBossPool() {
+    return bossPool;
+  }
 
+  public MazePoolSettings getMazePool() {
+    return mazePool;
+  }
+
+  public MapPoolSettings getMapPool() {
+    return mapPool;
+  }
+
+  public FEnergyPoolSettings getFenergyPool() {
+    return fenergyPool;
+  }
+
+  public LegionPoolSettings getLegionPool() {
+    return legionPool;
+  }
+
+  public FriendsPoolSettings getFriendsPool() {
+    return friendsPool;
+  }
 }

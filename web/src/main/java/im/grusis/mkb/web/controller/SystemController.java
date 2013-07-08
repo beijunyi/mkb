@@ -1,6 +1,7 @@
 package im.grusis.mkb.web.controller;
 
 import java.util.*;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -14,6 +15,7 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.service.ArchiveService;
 import im.grusis.mkb.core.util.AccountFilter;
+import im.grusis.mkb.eco.service.EcoSettingsService;
 import im.grusis.mkb.eco.util.filter.common.*;
 import im.grusis.mkb.eco.util.filter.operators.AndFilter;
 import im.grusis.mkb.web.model.AccountView;
@@ -35,6 +37,7 @@ public class SystemController {
   @Autowired EmulatorUser user;
   @Autowired EmulatorWeb web;
   @Autowired ArchiveService archiveService;
+  @Autowired EcoSettingsService ecoSettingsService;
 
   private AccountFilter createFilter(List<Map<String, String>> filterMap) {
     List<AccountFilter> ret = new ArrayList<AccountFilter>();
@@ -78,6 +81,42 @@ public class SystemController {
       ret.add(new AccountView(servers.get(a.getServer()).getGsName(), un, ui.getNickName(), ui.getLevel()));
     }
     return Response.ok(new FindAccountResponse(ret)).build();
+  }
+
+  @GET
+  @Path("/boss")
+  public Response getBossPool() {
+    return Response.ok(ecoSettingsService.getBossPool()).build();
+  }
+
+  @GET
+  @Path("/maze")
+  public Response getMazePool() {
+    return Response.ok(ecoSettingsService.getMazePool()).build();
+  }
+
+  @GET
+  @Path("/map")
+  public Response getMapPool() {
+    return Response.ok(ecoSettingsService.getMapPool()).build();
+  }
+
+  @GET
+  @Path("/fenergy")
+  public Response getFenergyPool() {
+    return Response.ok(ecoSettingsService.getFenergyPool()).build();
+  }
+
+  @GET
+  @Path("/friends")
+  public Response getFriendsPool() {
+    return Response.ok(ecoSettingsService.getFriendsPool()).build();
+  }
+
+  @GET
+  @Path("/legion")
+  public Response getLegionPool() {
+    return Response.ok(ecoSettingsService.getLegionPool()).build();
   }
 
 

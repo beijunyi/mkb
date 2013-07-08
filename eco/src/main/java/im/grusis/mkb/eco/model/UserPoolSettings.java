@@ -1,15 +1,16 @@
 package im.grusis.mkb.eco.model;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.*;
 
-public class UserPoolSettings extends EcoSettings {
+public abstract class UserPoolSettings<T> extends EcoSettings {
 
-  TreeSet<String> usernames;
+  private TreeSet<String> usernames;
+  private T defaultSettings;
+  private Map<String, T> customSettings;
 
-  public UserPoolSettings(String name) {
+  public UserPoolSettings(String name, T defaultSettings) {
     super(name);
+    this.defaultSettings = defaultSettings;
   }
 
   public void addUsers(List<String> users) {
@@ -27,5 +28,23 @@ public class UserPoolSettings extends EcoSettings {
 
   public TreeSet<String> getUsernames() {
     return usernames;
+  }
+
+  public T getSettings(String username) {
+    if(customSettings == null) {
+      return null;
+    }
+    T settings = customSettings.get(username);
+    if(settings == null) {
+      return defaultSettings;
+    }
+    return settings;
+  }
+
+  public void setSetting(String username, T settings) {
+    if(customSettings == null) {
+      customSettings = new HashMap<String, T>();
+    }
+    customSettings.put(username, settings);
   }
 }

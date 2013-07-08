@@ -24,8 +24,8 @@ public class StrengCard {
 
     String username = "urnmso90377";
     String cardName = "机械飞龙";
-    int cardLevel = 8;
-    int targetLevel = 10;
+    int cardLevel = 10;
+    int targetLevel = 15;
 
     AutomatedServiceEngine ase = ctx.getBean(AutomatedServiceEngine.class);
     EmulatorCard card = ctx.getBean(EmulatorCard.class);
