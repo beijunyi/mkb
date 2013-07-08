@@ -18,9 +18,7 @@ import im.grusis.mkb.core.util.AccountFilter;
 import im.grusis.mkb.eco.service.EcoSettingsService;
 import im.grusis.mkb.eco.util.filter.common.*;
 import im.grusis.mkb.eco.util.filter.operators.AndFilter;
-import im.grusis.mkb.web.model.AccountView;
-import im.grusis.mkb.web.model.FindAccountRequest;
-import im.grusis.mkb.web.model.FindAccountResponse;
+import im.grusis.mkb.web.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -83,10 +81,31 @@ public class SystemController {
     return Response.ok(new FindAccountResponse(ret)).build();
   }
 
+  @POST
+  @Path("/addboss")
+  public Response addBossPool(UserPool userPool) {
+    ecoSettingsService.addBossPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getBossPool()).build();
+  }
+
   @GET
   @Path("/boss")
   public Response getBossPool() {
     return Response.ok(ecoSettingsService.getBossPool()).build();
+  }
+
+  @POST
+  @Path("/removeboss")
+  public Response removeBossPool(UserPool userPool) {
+    ecoSettingsService.removeBossPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getBossPool()).build();
+  }
+
+  @POST
+  @Path("/addmaze")
+  public Response addMazePool(UserPool userPool) {
+    ecoSettingsService.addMazePoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getMazePool()).build();
   }
 
   @GET
@@ -95,10 +114,38 @@ public class SystemController {
     return Response.ok(ecoSettingsService.getMazePool()).build();
   }
 
+  @POST
+  @Path("/removemaze")
+  public Response removeMazePool(UserPool userPool) {
+    ecoSettingsService.removeMazePoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getMazePool()).build();
+  }
+
+  @POST
+  @Path("/addmap")
+  public Response addMapPool(UserPool userPool) {
+    ecoSettingsService.addMapPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getMapPool()).build();
+  }
+
   @GET
   @Path("/map")
   public Response getMapPool() {
     return Response.ok(ecoSettingsService.getMapPool()).build();
+  }
+
+  @POST
+  @Path("/removemap")
+  public Response removeMapPool(UserPool userPool) {
+    ecoSettingsService.removeMapPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getMapPool()).build();
+  }
+
+  @POST
+  @Path("/addfenergy")
+  public Response addFenergyPool(UserPool userPool) {
+    ecoSettingsService.addFenergyPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getFenergyPool()).build();
   }
 
   @GET
@@ -107,15 +154,50 @@ public class SystemController {
     return Response.ok(ecoSettingsService.getFenergyPool()).build();
   }
 
+  @POST
+  @Path("/removefenergy")
+  public Response removeFenergyPool(UserPool userPool) {
+    ecoSettingsService.removeFenergyPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getFenergyPool()).build();
+  }
+
+  @POST
+  @Path("/addfriends")
+  public Response addFriendsPool(UserPool userPool) {
+    ecoSettingsService.addFriendsPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getFriendsPool()).build();
+  }
+
   @GET
   @Path("/friends")
   public Response getFriendsPool() {
     return Response.ok(ecoSettingsService.getFriendsPool()).build();
   }
 
+  @POST
+  @Path("/removefriends")
+  public Response removeFriendsPool(UserPool userPool) {
+    ecoSettingsService.removeFriendsPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getFriendsPool()).build();
+  }
+
+  @POST
+  @Path("/addlegion")
+  public Response addLegionPool(UserPool userPool) {
+    ecoSettingsService.addLegionPoolUser(userPool.getUsernames());
+    return Response.ok(ecoSettingsService.getLegionPool()).build();
+  }
+
   @GET
   @Path("/legion")
   public Response getLegionPool() {
+    return Response.ok(ecoSettingsService.getLegionPool()).build();
+  }
+
+  @POST
+  @Path("/removelegion")
+  public Response removeLegionPool(UserPool userPool) {
+    ecoSettingsService.removeLegionPoolUser(userPool.getUsernames());
     return Response.ok(ecoSettingsService.getLegionPool()).build();
   }
 

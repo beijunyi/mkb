@@ -113,7 +113,7 @@ public class EcoSettingsService {
     }
   }
 
-  public void addFriendPoolUser(List<String> users) {
+  public void addFriendsPoolUser(List<String> users) {
     if(friendsPool == null) {
       friendsPool = new FriendsPoolSettings(FRIENDS);
     }

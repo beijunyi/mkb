@@ -30,6 +30,14 @@ public abstract class UserPoolSettings<T> extends EcoSettings {
     return usernames;
   }
 
+  public T getDefaultSettings() {
+    return defaultSettings;
+  }
+
+  public Map<String, T> getCustomSettings() {
+    return customSettings;
+  }
+
   public T getSettings(String username) {
     if(customSettings == null) {
       return null;
