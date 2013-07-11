@@ -1,6 +1,6 @@
 package im.grusis.mkb.eco.model;
 
-public class CardRating {
+public class Rating {
   private int overall;
   private int againstCard;
   private int againstHero;
@@ -12,10 +12,10 @@ public class CardRating {
   private int maxUse;
   private int maxKeep;
 
-  public CardRating() {
+  public Rating() {
   }
 
-  public CardRating(int overall, int againstCard, int againstHero, int againstTheif, int againstBoss, int protectHero, int protectAllies, int maxStreng, int maxUse, int maxKeep) {
+  public Rating(int overall, int againstCard, int againstHero, int againstTheif, int againstBoss, int protectHero, int protectAllies, int maxStreng, int maxUse, int maxKeep) {
     this.overall = overall;
     this.againstCard = againstCard;
     this.againstHero = againstHero;
@@ -28,8 +28,7 @@ public class CardRating {
     this.maxKeep = maxKeep;
   }
 
-  public static CardRating GetDefaultCardRating(int star) {
-    CardRating ret = new CardRating();
+  public static Rating GetDefaultCardRating(int star) {
     int defaultScore = star * 100;
     int maxStreng;
     int maxUse;
@@ -56,7 +55,12 @@ public class CardRating {
         maxUse = 5;
         maxKeep = Integer.MAX_VALUE;
     }
-    return new CardRating(defaultScore, defaultScore, defaultScore, defaultScore, defaultScore, 0, 0, maxStreng, maxUse, maxKeep);
+    return new Rating(defaultScore, defaultScore, defaultScore, defaultScore, defaultScore, 0, 0, maxStreng, maxUse, maxKeep);
+  }
+
+  public static Rating GetDefaultRuneRating(int star) {
+    int defaultScore = star * 100;
+    return new Rating(defaultScore, defaultScore, 0, defaultScore, 0, 0, 0, 0, 1, 1);
   }
 
   public int getOverall() {

@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import im.grusis.mkb.core.emulator.game.model.basic.CardDef;
+import im.grusis.mkb.core.emulator.game.model.basic.RuneDef;
 import im.grusis.mkb.core.service.AssetsService;
 import im.grusis.mkb.eco.model.*;
 import im.grusis.mkb.eco.repository.EcoSettingsRepository;
@@ -22,6 +23,7 @@ public class EcoSettingsService {
   public static final String FRIENDS = "friends";
 
   public static final String CARD_RATINGS = "card_ratings";
+  public static final String RUNE_RATINGS = "rune_ratings";
 
 
   @Autowired EcoSettingsRepository ecoSettingsRepository;
@@ -33,7 +35,8 @@ public class EcoSettingsService {
   private FenergyPoolSettings fenergyPool;
   private LegionPoolSettings legionPool;
   private FriendsPoolSettings friendsPool;
-  private CardRatingSettings cardRatingSettings;
+  private RatingSettings cardRatingSettings;
+  private RatingSettings runeRatingSettings;
 
   @PostConstruct
   public void init() {
@@ -43,7 +46,8 @@ public class EcoSettingsService {
     fenergyPool = ecoSettingsRepository.read(FENERGY, FenergyPoolSettings.class);
     legionPool = ecoSettingsRepository.read(LEGION, LegionPoolSettings.class);
     friendsPool = ecoSettingsRepository.read(FRIENDS, FriendsPoolSettings.class);
-    cardRatingSettings = ecoSettingsRepository.read(CARD_RATINGS, CardRatingSettings.class);
+    cardRatingSettings = ecoSettingsRepository.read(CARD_RATINGS, RatingSettings.class);
+    runeRatingSettings = ecoSettingsRepository.read(RUNE_RATINGS, RatingSettings.class);
   }
 
   public void addBossPoolUser(List<String> users) {
@@ -232,20 +236,20 @@ public class EcoSettingsService {
     return friendsPool;
   }
 
-  public CardRatingSettings getCardRatingSettings() {
+  public RatingSettings getCardRatingSettings() {
     if(cardRatingSettings == null) {
-      cardRatingSettings = new CardRatingSettings(CARD_RATINGS);
+      cardRatingSettings = new RatingSettings(CARD_RATINGS);
     }
-    Map<Integer, CardRating> cardRatingMap = cardRatingSettings.getCardRatings();
+    Map<Integer, Rating> cardRatingMap = cardRatingSettings.getRatings();
     Map<Integer, CardDef> cards = assetsService.getCardLookup();
     boolean save = false;
     for(Map.Entry<Integer, CardDef> cardDefEntry : cards.entrySet()) {
       int cardId = cardDefEntry.getKey();
-      CardRating cardRating = cardRatingMap.get(cardId);
-      if(cardRating == null) {
+      Rating rating = cardRatingMap.get(cardId);
+      if(rating == null) {
         int star = cardDefEntry.getValue().getColor();
-        cardRating = CardRating.GetDefaultCardRating(star);
-        cardRatingMap.put(cardId, cardRating);
+        rating = Rating.GetDefaultCardRating(star);
+        cardRatingMap.put(cardId, rating);
         save = true;
       }
     }
@@ -255,12 +259,44 @@ public class EcoSettingsService {
     return cardRatingSettings;
   }
 
-  public CardRating modifyCardRatting(int cardId, CardRating cardRating) {
-    if(cardRatingSettings == null) {
-      cardRatingSettings = new CardRatingSettings(CARD_RATINGS);
+  public RatingSettings getRuneRatingSettings() {
+    if(runeRatingSettings == null) {
+      runeRatingSettings = new RatingSettings(RUNE_RATINGS);
     }
-    Map<Integer, CardRating> cardRatingMap = cardRatingSettings.getCardRatings();
-    cardRatingMap.put(cardId, cardRating);
-    return cardRating;
+    Map<Integer, Rating> runeRatingMap = runeRatingSettings.getRatings();
+    Map<Integer, RuneDef> runes = assetsService.getRuneLookup();
+    boolean save = false;
+    for(Map.Entry<Integer, RuneDef> runeDefEntry : runes.entrySet()) {
+      int runeId = runeDefEntry.getKey();
+      Rating rating = runeRatingMap.get(runeId);
+      if(rating == null) {
+        int star = runeDefEntry.getValue().getColor();
+        rating = Rating.GetDefaultCardRating(star);
+        runeRatingMap.put(runeId, rating);
+        save = true;
+      }
+    }
+    if(save) {
+      ecoSettingsRepository.createOrUpdateSettings(runeRatingSettings);
+    }
+    return runeRatingSettings;
+  }
+
+  public Rating modifyCardRatting(int cardId, Rating rating) {
+    if(cardRatingSettings == null) {
+      cardRatingSettings = new RatingSettings(CARD_RATINGS);
+    }
+    Map<Integer, Rating> cardRatingMap = cardRatingSettings.getRatings();
+    cardRatingMap.put(cardId, rating);
+    return rating;
+  }
+
+  public Rating modifyRuneRatting(int runeId, Rating runeRating) {
+    if(runeRatingSettings == null) {
+      runeRatingSettings = new RatingSettings(RUNE_RATINGS);
+    }
+    Map<Integer, Rating> runeRatingMap = runeRatingSettings.getRatings();
+    runeRatingMap.put(runeId, runeRating);
+    return runeRating;
   }
 }
