@@ -135,19 +135,17 @@ public class MapEngine {
     }
   }
 
-  public MazeStatus resetAndClearMaze(String username, int mazeId, int maxTry, int resetBudget) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
+  public MazeStatus resetAndClearMaze(String username, int mazeId, int maxTry, int resetMax) throws ServerNotAvailableException, WrongCredentialException, UnknownErrorException {
     UserInfo userInfo = user.getUserInfo(username, false);
-    LOG.debug("{} is starting automatic maze reset and clear process at maze {} with reset budget", userInfo, mazeId, resetBudget);
-    if(userInfo.getCash() < resetBudget) {
-      resetBudget = userInfo.getCash();
-      LOG.debug("{} has a reset budget that is higher than the cash it owns", userInfo, mazeId, resetBudget);
+    LOG.debug("{} is starting automatic maze reset and clear process at maze {} with reset budget", userInfo, mazeId, resetMax);
+    if(userInfo.getCash() < resetMax) {
+      resetMax = userInfo.getCash();
+      LOG.debug("{} has a reset budget that is higher than the cash it owns", userInfo, mazeId, resetMax);
     }
     MazeStatus mazeStatus = maze.show(username, mazeId, false);
-    int resetTotal = 0;
     while(true) {
       if(mazeStatus.isMazeClear()) {
-        if(mazeStatus.allowFreeReset() || resetTotal + mazeStatus.getResetCash() <= resetBudget) {
-          resetTotal += mazeStatus.getResetCash();
+        if(mazeStatus.allowFreeReset() || mazeStatus.getResetCash() <= resetMax) {
           mazeStatus = maze.reset(username, mazeId);
         } else {
           break;

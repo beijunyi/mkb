@@ -21,7 +21,7 @@ public class TTTT {
 //    String username = "tug100";
     EmulatorBoss ase = ctx.getBean(EmulatorBoss.class);
     ExecutorService es = ctx.getBean(ExecutorService.class);
-    es.submit(new BossBot("tug100", ase));
+    es.submit(new BossBot(username, ase));
 
   }
 }

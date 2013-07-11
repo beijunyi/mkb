@@ -4,6 +4,7 @@ import java.util.*;
 
 public class MazeSettings {
   private List<Integer> clearOrder;
+  private int specialCardGroup;
   private Map<Integer, Integer> resetBudgets;
   private int maxTry;
 
@@ -12,6 +13,7 @@ public class MazeSettings {
 
   public MazeSettings(int maxMaze) {
     clearOrder = new ArrayList<Integer>();
+    specialCardGroup = 1;
     resetBudgets = new TreeMap<Integer, Integer>();
     for(int i = maxMaze; i > 1; i--) {
       clearOrder.add(i);
@@ -42,5 +44,13 @@ public class MazeSettings {
 
   public void setMaxTry(int maxTry) {
     this.maxTry = maxTry;
+  }
+
+  public int getSpecialCardGroup() {
+    return specialCardGroup;
+  }
+
+  public void setSpecialCardGroup(int specialCardGroup) {
+    this.specialCardGroup = specialCardGroup;
   }
 }

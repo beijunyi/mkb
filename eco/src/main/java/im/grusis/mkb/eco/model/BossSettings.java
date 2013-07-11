@@ -6,8 +6,10 @@ public class BossSettings {
   public BossSettings() {
   }
 
-  public BossSettings(int specialCardGroup) {
-    this.specialCardGroup = specialCardGroup;
+  public static BossSettings DefaultBossSettings() {
+    BossSettings ret = new BossSettings();
+    ret.setSpecialCardGroup(1);
+    return ret;
   }
 
   public int getSpecialCardGroup() {

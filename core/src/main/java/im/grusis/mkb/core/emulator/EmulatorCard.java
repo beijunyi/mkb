@@ -93,7 +93,13 @@ public class EmulatorCard {
     return response.getData().getGroupId();
   }
 
+  public long getDefaultCardGroup(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    return -1;
+  }
 
+  public long setDefaultCardGroup(String username, long cardGroupId) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
+    return -1;
+  }
 
   public Map<Integer, SkillDef> getAllSkill(String username, boolean refresh) throws ServerNotAvailableException, UnknownErrorException, WrongCredentialException {
     Map<Integer, SkillDef> skills;

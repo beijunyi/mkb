@@ -12,83 +12,90 @@ public class CardRating {
   private int maxUse;
   private int maxKeep;
 
-  public int getOverall() {
-    return overall;
+  public CardRating() {
   }
 
-  public void setOverall(int overall) {
+  public CardRating(int overall, int againstCard, int againstHero, int againstTheif, int againstBoss, int protectHero, int protectAllies, int maxStreng, int maxUse, int maxKeep) {
     this.overall = overall;
+    this.againstCard = againstCard;
+    this.againstHero = againstHero;
+    this.againstTheif = againstTheif;
+    this.againstBoss = againstBoss;
+    this.protectHero = protectHero;
+    this.protectAllies = protectAllies;
+    this.maxStreng = maxStreng;
+    this.maxUse = maxUse;
+    this.maxKeep = maxKeep;
+  }
+
+  public static CardRating GetDefaultCardRating(int star) {
+    CardRating ret = new CardRating();
+    int defaultScore = star * 100;
+    int maxStreng;
+    int maxUse;
+    int maxKeep;
+    switch(star) {
+      case 1:
+      case 2:
+        maxStreng = 0;
+        maxUse = 0;
+        maxKeep = 0;
+        break;
+      case 3:
+        maxStreng = 0;
+        maxUse = 0;
+        maxKeep = Integer.MAX_VALUE;
+        break;
+      case 4:
+        maxStreng = 2;
+        maxUse = 2;
+        maxKeep = Integer.MAX_VALUE;
+        break;
+      default:
+        maxStreng = 5;
+        maxUse = 5;
+        maxKeep = Integer.MAX_VALUE;
+    }
+    return new CardRating(defaultScore, defaultScore, defaultScore, defaultScore, defaultScore, 0, 0, maxStreng, maxUse, maxKeep);
+  }
+
+  public int getOverall() {
+    return overall;
   }
 
   public int getAgainstCard() {
     return againstCard;
   }
 
-  public void setAgainstCard(int againstCard) {
-    this.againstCard = againstCard;
-  }
-
   public int getAgainstHero() {
     return againstHero;
-  }
-
-  public void setAgainstHero(int againstHero) {
-    this.againstHero = againstHero;
   }
 
   public int getAgainstTheif() {
     return againstTheif;
   }
 
-  public void setAgainstTheif(int againstTheif) {
-    this.againstTheif = againstTheif;
-  }
-
   public int getAgainstBoss() {
     return againstBoss;
-  }
-
-  public void setAgainstBoss(int againstBoss) {
-    this.againstBoss = againstBoss;
   }
 
   public int getProtectHero() {
     return protectHero;
   }
 
-  public void setProtectHero(int protectHero) {
-    this.protectHero = protectHero;
-  }
-
   public int getProtectAllies() {
     return protectAllies;
-  }
-
-  public void setProtectAllies(int protectAllies) {
-    this.protectAllies = protectAllies;
   }
 
   public int getMaxStreng() {
     return maxStreng;
   }
 
-  public void setMaxStreng(int maxStreng) {
-    this.maxStreng = maxStreng;
-  }
-
   public int getMaxUse() {
     return maxUse;
   }
 
-  public void setMaxUse(int maxUse) {
-    this.maxUse = maxUse;
-  }
-
   public int getMaxKeep() {
     return maxKeep;
-  }
-
-  public void setMaxKeep(int maxKeep) {
-    this.maxKeep = maxKeep;
   }
 }

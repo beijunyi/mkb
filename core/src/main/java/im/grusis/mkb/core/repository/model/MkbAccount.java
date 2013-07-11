@@ -2,6 +2,7 @@ package im.grusis.mkb.core.repository.model;
 
 import java.util.*;
 
+import com.google.gson.annotations.Expose;
 import im.grusis.mkb.core.emulator.LoginToken;
 import im.grusis.mkb.core.emulator.game.model.basic.*;
 
@@ -19,6 +20,7 @@ public class MkbAccount {
   private List<Integer> newCards;
   private Map<Long, Integer> energyRecord;
   private Map<Long, BattleRecord> battleRecordMap;
+  @Expose(serialize = false, deserialize = false)
   private Map<Integer, MazeStatus> mazeStatuses;
 
   private LoginToken profile;

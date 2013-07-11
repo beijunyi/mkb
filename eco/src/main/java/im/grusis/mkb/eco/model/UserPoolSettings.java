@@ -34,6 +34,10 @@ public abstract class UserPoolSettings<T> extends EcoSettings {
     return defaultSettings;
   }
 
+  public void setDefaultSettings(T defaultSettings) {
+    this.defaultSettings = defaultSettings;
+  }
+
   public Map<String, T> getCustomSettings() {
     return customSettings;
   }
