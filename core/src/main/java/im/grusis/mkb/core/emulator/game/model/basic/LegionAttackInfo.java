@@ -7,7 +7,7 @@ import java.util.List;
  * Date: 13-6-16
  * Time: 下午2:19
  */
-public class LegionAttackInfo {
+public class LegionAttackInfo extends MkbObject {
 
   private LegionAttackUInfo uinfo;
   private List<LegionAttackDetail> info;

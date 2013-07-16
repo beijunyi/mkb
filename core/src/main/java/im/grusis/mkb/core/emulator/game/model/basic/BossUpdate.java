@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-15
  * Time: 下午6:22
  */
-public class BossUpdate {
+public class BossUpdate extends MkbObject {
   private Boss Boss;
   private int MyHonor;
   private int CanFightTime;

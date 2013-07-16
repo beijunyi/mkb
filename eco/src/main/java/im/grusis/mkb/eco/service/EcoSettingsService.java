@@ -192,7 +192,7 @@ public class EcoSettingsService {
     return fenergyPool;
   }
 
-  public FenergyPoolSettings updateMapPool(String username, FenergySettings fenergySettings) {
+  public FenergyPoolSettings updateFenergyPool(String username, FenergySettings fenergySettings) {
     if(fenergyPool == null) {
       fenergyPool = new FenergyPoolSettings(FENERGY);
     }

@@ -1,6 +1,6 @@
 package im.grusis.mkb.core.emulator.game.model.basic;
 
-public class MazeStatus {
+public class MazeStatus extends MkbObject {
   private String Name;
   private int Layer;
   private int Clear;

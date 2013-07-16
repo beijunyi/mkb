@@ -22,6 +22,12 @@ var SystemService = function ($resource) {
       }, callback);
     },
 
+    updateBossPool: function(username, bossSettings, callback) {
+      return $resource('/api/system/updateboss').save({
+        username: username
+      }, bossSettings, callback)
+    },
+
     addMapPool: function(usernames, callback) {
       return $resource('/api/system/addmap').save({
         usernames: usernames
@@ -36,6 +42,12 @@ var SystemService = function ($resource) {
       return $resource('/api/system/removemap').save({
         usernames: usernames
       }, callback);
+    },
+
+    updateMapPool: function(username, mapSettings, callback) {
+      return $resource('/api/system/updatemap').save({
+        username: username
+      }, mapSettings, callback)
     },
 
     addMazePool: function(usernames, callback) {
@@ -54,6 +66,12 @@ var SystemService = function ($resource) {
       }, callback);
     },
 
+    updateMazePool: function(username, mazeSettings, callback) {
+      return $resource('/api/system/updatemaze').save({
+        username: username
+      }, mazeSettings, callback)
+    },
+
     addFenergyPool: function(usernames, callback) {
       return $resource('/api/system/addfenergy').save({
         usernames: usernames
@@ -68,6 +86,12 @@ var SystemService = function ($resource) {
       return $resource('/api/system/removefenergy').save({
         usernames: usernames
       }, callback);
+    },
+
+    updateFenergyPool: function(username, fenergySettings, callback) {
+      return $resource('/api/system/updatefenergy').save({
+        username: username
+      }, fenergySettings, callback)
     },
 
     addFriendsPool: function(usernames, callback) {
@@ -86,6 +110,12 @@ var SystemService = function ($resource) {
       }, callback);
     },
 
+    updateFriendsPool: function(username, friendsSettings, callback) {
+      return $resource('/api/system/updatefriends').save({
+        username: username
+      }, friendsSettings, callback)
+    },
+
     addLegionPool: function(usernames, callback) {
       return $resource('/api/system/addlegion').save({
         usernames: usernames
@@ -100,6 +130,12 @@ var SystemService = function ($resource) {
       return $resource('/api/system/removelegion').save({
         usernames: usernames
       }, callback);
+    },
+
+    updatelegionPool: function(username, legionSettings, callback) {
+      return $resource('/api/system/updatelegion').save({
+        username: username
+      }, legionSettings, callback)
     }
   }
 };

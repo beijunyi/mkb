@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-11
  * Time: 上午12:15
  */
-public class Streng {
+public class Streng extends MkbObject {
   private int CardLevel;
   private int Exp;
   private int Coins;

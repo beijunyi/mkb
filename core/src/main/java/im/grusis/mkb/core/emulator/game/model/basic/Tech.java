@@ -7,7 +7,7 @@ import java.util.Map;
  * Date: 13-6-12
  * Time: 下午11:22
  */
-public class Tech {
+public class Tech extends MkbObject {
   private Map<Integer, LegionTech> Techs;
 
   public Map<Integer, LegionTech> getTechs() {

@@ -8,7 +8,7 @@ import java.util.List;
  * Date: 13-6-7
  * Time: 下午11:07
  */
-public class MazeInfo {
+public class MazeInfo extends MkbObject {
 
   public static final int EnergyExpend = 2;
 

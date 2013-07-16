@@ -1,11 +1,13 @@
 package im.grusis.mkb.core.emulator.game.model.response;
 
+import im.grusis.mkb.core.emulator.game.model.basic.MkbObject;
+
 /**
  * User: Mothership
  * Date: 13-5-31
  * Time: 下午8:28
  */
-public class UserEditNickNameResponse extends GameData<String> {
+public class UserEditNickNameResponse extends GameData<MkbObject> {
   public static final String DuplicateNickNameMessage = "昵称已存在!";
   public static final String TooLongMessage = "昵称只能7位以下哦!";
 

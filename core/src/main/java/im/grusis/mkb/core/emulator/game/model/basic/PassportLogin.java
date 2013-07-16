@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-5-27
  * Time: 上午1:07
  */
-public class PassportLogin {
+public class PassportLogin extends MkbObject {
   private int isSetNick;
   private boolean invite;
   private boolean gscode;

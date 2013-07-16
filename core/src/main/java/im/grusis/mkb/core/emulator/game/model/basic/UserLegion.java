@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-12
  * Time: 下午11:22
  */
-public class UserLegion {
+public class UserLegion extends MkbObject {
   private int LegionId;
   private String LegionName;
   private int StrengExpAdd;

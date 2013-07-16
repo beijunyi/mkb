@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-16
  * Time: 下午1:52
  */
-public class MeleeCardGroup {
+public class MeleeCardGroup extends MkbObject {
   private long Uid;
   private int HP;
   private int Cost;

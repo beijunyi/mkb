@@ -5,5 +5,5 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-10
  * Time: 上午12:50
  */
-public abstract class EnergyUser {
+public abstract class EnergyUser extends MkbObject {
 }

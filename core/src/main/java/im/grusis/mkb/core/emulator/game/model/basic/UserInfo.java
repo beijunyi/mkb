@@ -7,7 +7,7 @@ import java.util.Map;
  * Date 13-5-29
  * Time 上午1223
  */
-public class UserInfo {
+public class UserInfo extends MkbObject {
   private long Uid;
   private String PwdLockMessage;
   private int Sex;

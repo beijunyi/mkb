@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-5-29
  * Time: 下午11:15
  */
-public class GroupId {
+public class GroupId extends MkbObject {
   private long GroupId;
 
   public long getGroupId() {

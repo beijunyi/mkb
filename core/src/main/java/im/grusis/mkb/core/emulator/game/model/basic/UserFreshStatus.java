@@ -1,15 +1,10 @@
 package im.grusis.mkb.core.emulator.game.model.basic;
 
-import java.util.ArrayList;
+import java.util.TreeMap;
 
 import im.grusis.mkb.core.emulator.game.model.response.HasTimestamp;
 
-/**
- * User: Mothership
- * Date: 13-6-7
- * Time: 下午9:46
- */
-public class MapStageAll extends ArrayList<MapDef> implements HasTimestamp {
+public class UserFreshStatus extends TreeMap<String, String> implements HasTimestamp {
   private long timestamp = System.currentTimeMillis();
 
   @Override

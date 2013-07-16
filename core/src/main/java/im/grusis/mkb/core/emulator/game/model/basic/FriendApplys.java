@@ -5,5 +5,5 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 12/06/13
  * Time: 17:37
  */
-public class FriendApplys {
+public class FriendApplys extends MkbObject {
 }

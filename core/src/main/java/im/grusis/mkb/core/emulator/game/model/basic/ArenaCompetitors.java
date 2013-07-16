@@ -7,7 +7,7 @@ import java.util.List;
  * Date: 13-6-20
  * Time: 上午12:01
  */
-public class ArenaCompetitors {
+public class ArenaCompetitors extends MkbObject {
   private List<ArenaCompetitor> Competitors;
   private int Countdown;
 

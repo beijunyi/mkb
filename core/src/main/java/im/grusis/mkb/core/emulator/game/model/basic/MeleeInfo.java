@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-16
  * Time: 下午2:06
  */
-public class MeleeInfo {
+public class MeleeInfo extends MkbObject {
   private MeleeDetail coins;
   private MeleeDetail cash;
 

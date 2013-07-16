@@ -7,7 +7,7 @@ import java.util.List;
  * Date: 13-5-29
  * Time: 下午11:15
  */
-public class Friends {
+public class Friends extends MkbObject {
   private List<Friend> Friends;
 
   public List<Friend> getFriends() {

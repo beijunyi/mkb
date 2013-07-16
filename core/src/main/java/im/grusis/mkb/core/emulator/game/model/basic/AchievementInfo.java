@@ -5,7 +5,7 @@ package im.grusis.mkb.core.emulator.game.model.basic;
  * Date: 13-6-9
  * Time: 上午12:53
  */
-public class AchievementInfo {
+public class AchievementInfo extends MkbObject {
   private int AchievementId;
   private String Condition;
   private String Name;

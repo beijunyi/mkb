@@ -1,9 +1,7 @@
 package im.grusis.mkb.web.controller;
 
 import java.util.*;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 import im.grusis.mkb.core.emulator.EmulatorUser;
@@ -15,6 +13,7 @@ import im.grusis.mkb.core.repository.model.MkbAccount;
 import im.grusis.mkb.core.service.AccountService;
 import im.grusis.mkb.core.service.ArchiveService;
 import im.grusis.mkb.core.util.AccountFilter;
+import im.grusis.mkb.eco.model.*;
 import im.grusis.mkb.eco.service.EcoSettingsService;
 import im.grusis.mkb.eco.util.filter.common.*;
 import im.grusis.mkb.eco.util.filter.operators.AndFilter;
@@ -102,6 +101,12 @@ public class SystemController {
   }
 
   @POST
+  @Path("/updateboss")
+  public Response updateBossPool(@QueryParam("username") String username, BossSettings bossSettings) {
+    return Response.ok(ecoSettingsService.updateBossPool(username, bossSettings)).build();
+  }
+
+  @POST
   @Path("/addmaze")
   public Response addMazePool(UserPool userPool) {
     ecoSettingsService.addMazePoolUser(userPool.getUsernames());
@@ -119,6 +124,12 @@ public class SystemController {
   public Response removeMazePool(UserPool userPool) {
     ecoSettingsService.removeMazePoolUser(userPool.getUsernames());
     return Response.ok(ecoSettingsService.getMazePool()).build();
+  }
+
+  @POST
+  @Path("/updatemaze")
+  public Response updateMazePool(@QueryParam("username") String username, MazeSettings mazeSettings) {
+    return Response.ok(ecoSettingsService.updateMazePool(username, mazeSettings)).build();
   }
 
   @POST
@@ -142,6 +153,13 @@ public class SystemController {
   }
 
   @POST
+  @Path("/updatemap")
+  public Response updateMapPool(@QueryParam("username") String username, MapSettings mapSettings) {
+    return Response.ok(ecoSettingsService.updateMapPool(username, mapSettings)).build();
+  }
+
+
+  @POST
   @Path("/addfenergy")
   public Response addFenergyPool(UserPool userPool) {
     ecoSettingsService.addFenergyPoolUser(userPool.getUsernames());
@@ -160,6 +178,13 @@ public class SystemController {
     ecoSettingsService.removeFenergyPoolUser(userPool.getUsernames());
     return Response.ok(ecoSettingsService.getFenergyPool()).build();
   }
+
+  @POST
+  @Path("/updatefenergy")
+  public Response updateFenergyPool(@QueryParam("username") String username, FenergySettings fenergySettings) {
+    return Response.ok(ecoSettingsService.updateFenergyPool(username, fenergySettings)).build();
+  }
+
 
   @POST
   @Path("/addfriends")
@@ -182,6 +207,12 @@ public class SystemController {
   }
 
   @POST
+  @Path("/updatefriends")
+  public Response updateFriendsPool(@QueryParam("username") String username, FriendsSettings friendsSettings) {
+    return Response.ok(ecoSettingsService.updateFriendsPool(username, friendsSettings)).build();
+  }
+
+  @POST
   @Path("/addlegion")
   public Response addLegionPool(UserPool userPool) {
     ecoSettingsService.addLegionPoolUser(userPool.getUsernames());
@@ -199,6 +230,12 @@ public class SystemController {
   public Response removeLegionPool(UserPool userPool) {
     ecoSettingsService.removeLegionPoolUser(userPool.getUsernames());
     return Response.ok(ecoSettingsService.getLegionPool()).build();
+  }
+
+  @POST
+  @Path("/updatelegion")
+  public Response updateLegionPool(@QueryParam("username") String username, LegionSettings legionSettings) {
+    return Response.ok(ecoSettingsService.updateLegionPool(username, legionSettings)).build();
   }
 
 
