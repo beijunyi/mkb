@@ -98,7 +98,7 @@ public class MapEngine {
     MazeInfo currentLayer = maze.info(username, mazeId, layer);
     int maxLayer = currentLayer.getTotalLayer();
     while(true) {
-      List<Integer> enemies = currentLayer.getEnemyIndices();
+      List<Integer> enemies = currentLayer.getEnemyIndices(true, true);
       for(int e : enemies) {
         if(userInfo.getEnergy() < MazeInfo.EnergyExpend) {
           LOG.info("{} cannot clear maze {} due to insufficient energy", userInfo, mazeId);

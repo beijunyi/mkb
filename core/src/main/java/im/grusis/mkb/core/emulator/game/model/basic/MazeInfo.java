@@ -27,7 +27,7 @@ public class MazeInfo extends MkbObject {
   private int TotalLayer;
   private MazeMap Map;
 
-  public List<Integer> getEnemyIndices() {
+  public List<Integer> getEnemyIndices(boolean includeMonster, boolean includeBox) {
     int[] items = Map.getItems();
     int upstairIndex = -1;
     List<Integer> ret = new ArrayList<Integer>();
@@ -37,8 +37,14 @@ public class MazeInfo extends MkbObject {
       item = items[i];
       switch(item) {
         case Monster:
+          if(includeMonster) {
+            ret.add(i);
+          }
+          break;
         case Box:
-          ret.add(i);
+          if(includeBox) {
+            ret.add(i);
+          }
           break;
         case UpStair:
           upstairIndex = i;

@@ -19,20 +19,23 @@ public class FindCard {
 
   public static void main(String args[]) throws Exception {
     String username = "tug100";
-    String cardName = "光明之龙";
+    String cardName = "毁灭之龙";
+    int level = 10;
 
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(MkbCoreConfig.class);
     ctx.start();
     List<Long> userCardIds = new ArrayList<Long>();
     MkbEmulator emulator = ctx.getBean(MkbEmulator.class);
 
-    Map<Long, UserCard> userCards = emulator.card().getUserCards(username, false);
-    Map<Integer, CardDef> cardDefs = emulator.card().getAllCard(username, false);
+    Map<Long, UserCard> userCards = emulator.card().getUserCards(username, true);
+    Map<Integer, CardDef> cardDefs = emulator.card().getAllCard(username, true);
 
     for(UserCard card : userCards.values()) {
       CardDef def = cardDefs.get(card.getCardId());
       if(def.getCardName().contains(cardName)) {
-        userCardIds.add(card.getUserCardId());
+        if(level < 0 || card.getLevel() == level ) {
+          userCardIds.add(card.getUserCardId());
+        }
       }
     }
 

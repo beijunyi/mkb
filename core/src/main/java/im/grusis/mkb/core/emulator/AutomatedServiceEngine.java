@@ -51,7 +51,7 @@ public class AutomatedServiceEngine {
     return mapStage.getMapStageDetail(username, stageDetailId).getName();
   }
 
-  public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget) throws MkbException {
+  public boolean clearMaze(String username, int mapStageId, int maxTry, boolean reset, int resetBudget, boolean topOnly) throws MkbException {
     if(maxTry < 1) {
       Log.warn("Max try time {} is invalid. A valid value must be at least 1", maxTry);
       maxTry = 1;
@@ -77,7 +77,16 @@ public class AutomatedServiceEngine {
     MazeInfo currentLayer = maze.info(username, mapStageId, layer);
     int maxLayer = currentLayer.getTotalLayer();
     while(true) {
-      List<Integer> enemies = currentLayer.getEnemyIndices();
+      List<Integer> enemies;
+      if(topOnly) {
+        if(maxLayer == layer) {
+          enemies = currentLayer.getEnemyIndices(false, true);
+        } else {
+          enemies = currentLayer.getEnemyIndices(false, false);
+        }
+      } else {
+        enemies = currentLayer.getEnemyIndices(true, true);
+      }
       for(int e : enemies) {
         if(getEnergy(username) < MazeInfo.EnergyExpend) {
           Log.info("Cannot clear maze {} {}. {} {} has insufficient energy", mapStageId, mazeStatus.getName(), username, getNickname(username));
@@ -105,6 +114,9 @@ public class AutomatedServiceEngine {
             break;
           }
         }
+      }
+      if(topOnly && layer == maxLayer) {
+        return true;
       }
       layer++;
       if(layer > maxLayer) {

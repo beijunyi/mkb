@@ -48,7 +48,12 @@ public class MkbGame {
   }
 
   public String doAction(String service, String action, Map<String, String> params, DefaultHttpClient httpClient) throws ServerNotAvailableException {
-    String url = host + service + "?do=" + action + "&phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
+    String url;
+    if(action != null) {
+      url = host + service + "?do=" + action + "&phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
+    } else {
+      url = host + service + "?phpp=" + phpp + "&phpl=" + phpl + "&pvc=" + pvc + "&pvb=" + pvb;
+    }
     String paramJson = "";
     HttpPost post = new HttpPost(url);
     if(params != null) {

@@ -26,6 +26,7 @@ public class MkbEmulator {
   @Autowired EmulatorStreng streng;
   @Autowired EmulatorUser user;
   @Autowired EmulatorWeb web;
+  @Autowired EmulatorEvolution evolution;
 
   public EmulatorArena arena() {
     return arena;
@@ -89,5 +90,9 @@ public class MkbEmulator {
 
   public EmulatorWeb web() {
     return web;
+  }
+
+  public EmulatorEvolution evolution() {
+    return evolution;
   }
 }
